@@ -1,0 +1,152 @@
+package io.github.jevaengine.world.physics;
+
+import io.github.jevaengine.math.Circle3F;
+import io.github.jevaengine.math.Rect3F;
+import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.util.IObserverRegistry;
+import io.github.jevaengine.util.Nullable;
+import io.github.jevaengine.util.Observers;
+import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.entity.IEntity;
+
+public final class NonparticipantPhysicsBody implements IPhysicsBody
+{
+	private final IEntity m_owner;
+	private Vector3F m_location = new Vector3F();
+	private Direction m_direction = Direction.Zero;
+
+	private final Observers m_observers = new Observers();
+	
+	public NonparticipantPhysicsBody(IEntity owner)
+	{
+		m_owner = owner;
+	}
+
+	public NonparticipantPhysicsBody()
+	{
+		m_owner = null;
+	}
+	
+	@Override
+	public void destory() { }
+	
+	@Override
+	public IImmutablePhysicsWorld getWorld()
+	{
+		return new NullPhysicsWorld();
+	}
+
+	@Override
+	public boolean hasOwner()
+	{
+		return m_owner != null;
+	}
+	
+	@Override
+	public IEntity getOwner()
+	{
+		return m_owner;
+	}
+
+	@Override
+	public boolean isStatic()
+	{
+		return true;
+	}
+	
+	@Override
+	public float getMass()
+	{
+		return 1.0F;
+	}
+	
+	@Override
+	public float getFriction()
+	{
+		return 0;
+	}
+	
+	@Override
+	public Vector3F getLocation()
+	{
+		return new Vector3F(m_location);
+	}
+
+	@Override
+	public Direction getDirection()
+	{
+		return m_direction;
+	}
+
+	@Override
+	public Vector3F getLinearVelocity()
+	{
+		return new Vector3F();
+	}
+
+	@Override
+	public float getAngularVelocity()
+	{
+		return 0;
+	}
+
+	@Override
+	@Nullable
+	public RayCastResults castRay(Vector3F direction, float maxCast)
+	{
+		return null;
+	}
+	
+	@Override
+	public IObserverRegistry getObservers()
+	{
+		return m_observers;
+	}
+
+	@Override
+	public void setLocation(Vector3F location)
+	{
+		m_location = new Vector3F(location);
+		m_observers.raise(IPhysicsBodyOrientationObserver.class).locationSet();
+	}
+
+	@Override
+	public void setDirection(Direction direction)
+	{
+		m_direction = direction;
+		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
+	}
+	
+	@Override
+	public void applyLinearImpulse(Vector3F impulse) { }
+
+	@Override
+	public void applyAngularImpulse(float impulse) { }
+
+	@Override
+	public void applyForceToCenter(Vector3F force) { }
+
+	@Override
+	public void applyTorque(float torque) { }
+	
+	@Override
+	public void setLinearVelocity(Vector3F velocity) { }
+	
+	@Override
+	public boolean isCollidable()
+	{
+		return false;
+	}
+
+	@Override
+	public Rect3F getAABB()
+	{
+		return new Rect3F();
+	}
+
+	@Override
+	public Circle3F getBoundingCircle()
+	{
+		return new Circle3F();
+	}
+}
