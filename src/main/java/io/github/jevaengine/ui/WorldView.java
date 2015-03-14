@@ -26,7 +26,7 @@ import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
-import io.github.jevaengine.world.IImmutableSceneBuffer;
+import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.NullSceneBuffer;
 
 import java.awt.Color;

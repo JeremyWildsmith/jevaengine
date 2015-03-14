@@ -14,7 +14,7 @@ package io.github.jevaengine.game;
 
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector3F;
-import io.github.jevaengine.world.IImmutableSceneBuffer;
+import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.World;
 
 public interface ICamera
