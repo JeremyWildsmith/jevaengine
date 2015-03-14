@@ -29,7 +29,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 {
 	private static final int NUM_CONCURRENT_SORTS = Runtime.getRuntime().availableProcessors();
 	
-	private final ExecutorService m_exector = Executors.newFixedThreadPool(NUM_CONCURRENT_SORTS, new ThreadFactory() {
+	private static final ExecutorService m_exector = Executors.newFixedThreadPool(NUM_CONCURRENT_SORTS, new ThreadFactory() {
 		@Override
 		public Thread newThread(Runnable r) {
 			Thread t = new Thread(r);
