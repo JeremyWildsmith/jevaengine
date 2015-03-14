@@ -228,7 +228,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		sort();
 		for (Vertex v : m_sortedVertices)
 		{	
-			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location);
+			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
 			debugDrawBack(g, offsetX, offsetY, scale, v.m_entry.bounds);
 			v.m_entry.graphic.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
 			debugDrawFront(g, offsetX, offsetY, scale, v.m_entry.bounds);
