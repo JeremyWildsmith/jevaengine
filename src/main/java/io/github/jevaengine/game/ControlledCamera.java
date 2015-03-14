@@ -12,11 +12,15 @@
  ******************************************************************************/
 package io.github.jevaengine.game;
 
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBufferFactory;
 
 public final class ControlledCamera extends SceneBufferCamera
 {
+	private static final float MIN_ZOOM = 0.1F;
+	
 	private Vector3F m_lookAtTile;
 	
 	private float m_zoom = 1.0F;
@@ -27,6 +31,11 @@ public final class ControlledCamera extends SceneBufferCamera
 		m_lookAtTile = new Vector3F();
 	}
 
+	public void setZoom(float zoom)
+	{
+		m_zoom = Math.max(MIN_ZOOM, zoom);
+	}
+	
 	public float getZoom()
 	{
 		return m_zoom;
@@ -46,6 +55,13 @@ public final class ControlledCamera extends SceneBufferCamera
 	public Vector3F getLookAt()
 	{
 		return m_lookAtTile;
+	}
+	
+	
+	@Override
+	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale)
+	{
+		return super.getScene(bounds, scale * m_zoom);
 	}
 
 	@Override
