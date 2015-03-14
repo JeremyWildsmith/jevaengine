@@ -149,6 +149,12 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 	}
 	
 	@Override
+	public Vector2F translateScreenToWorld(Vector3F screenLocation)
+	{
+		return translateScreenToWorld(screenLocation, 1.0F);
+	}
+	
+	@Override
 	public Vector2D translateWorldToScreen(Vector3F location, float fScale)
 	{
 		Vector3D translation = m_worldToScreenMatrix.scale(fScale).dot(location).add(new Vector3F(m_translation, 0)).round();

@@ -25,6 +25,12 @@ public final class NullSceneBuffer implements ISceneBuffer
 	{
 		return new Vector2D();
 	}
+	
+	@Override
+	public Vector2F translateScreenToWorld(Vector3F screenLocation)
+	{
+		return translateScreenToWorld(screenLocation, 1.0F);
+	}
 
 	@Override
 	public Vector2D translateWorldToScreen(Vector3F location)
