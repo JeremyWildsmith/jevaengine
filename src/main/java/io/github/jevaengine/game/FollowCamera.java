@@ -22,13 +22,14 @@ import java.lang.ref.WeakReference;
 
 public final class FollowCamera extends SceneBufferCamera
 {
+	private final EntityObserver m_observer = new EntityObserver();
+
 	private WeakReference<IEntity> m_target;	
-	private EntityObserver m_observer = new EntityObserver();
 	
 	public FollowCamera(ISceneBufferFactory sceneBufferFactory)
 	{
 		super(sceneBufferFactory);
-		m_target = new WeakReference<IEntity>(null);
+		m_target = new WeakReference<>(null);
 	}
 
 	public void setTarget(@Nullable IEntity target)
