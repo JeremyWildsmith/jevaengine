@@ -51,8 +51,7 @@ public abstract class Control implements IImmutableControl, IDisposable
 	@Override
 	public void dispose()
 	{
-		if(m_style != null)
-			m_style.dispose();
+		m_style.dispose();
 	}
 
 	public final boolean hasFocus()
@@ -107,8 +106,7 @@ public abstract class Control implements IImmutableControl, IDisposable
 	
 	public final void setStyle(IUIStyle style)
 	{
-		if(m_style != null)
-			m_style.dispose();
+		m_style.dispose();
 		
 		m_style = style;
 		onStyleChanged();
