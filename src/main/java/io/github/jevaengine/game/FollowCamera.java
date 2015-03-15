@@ -12,23 +12,27 @@
  ******************************************************************************/
 package io.github.jevaengine.game;
 
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
+import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.entity.IEntity.IEntityWorldObserver;
+import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBufferFactory;
 
 import java.lang.ref.WeakReference;
 
-public final class FollowCamera extends SceneBufferCamera
+public final class FollowCamera implements ICamera
 {
+	private final ControlledCamera m_camera;
 	private final EntityObserver m_observer = new EntityObserver();
 
 	private WeakReference<IEntity> m_target;	
 	
 	public FollowCamera(ISceneBufferFactory sceneBufferFactory)
 	{
-		super(sceneBufferFactory);
+		m_camera = new ControlledCamera(sceneBufferFactory);
 		m_target = new WeakReference<>(null);
 	}
 
@@ -53,12 +57,24 @@ public final class FollowCamera extends SceneBufferCamera
 	}
 
 	@Override
-	protected void onAttach() { }
-	
-	@Override
-	public void onDettach()
+	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale)
 	{
-		setTarget(null);
+		Vector3F target = m_target.get() == null ? new Vector3F() : m_target.get().getBody().getLocation();
+		m_camera.lookAt(target);
+		
+		return m_camera.getScene(bounds, scale);
+	}
+
+	@Override
+	public void dettach()
+	{
+		m_camera.dettach();
+	}
+
+	@Override
+	public void attach(World world)
+	{
+		m_camera.attach(world);
 	}
 	
 	private class EntityObserver implements IEntityWorldObserver

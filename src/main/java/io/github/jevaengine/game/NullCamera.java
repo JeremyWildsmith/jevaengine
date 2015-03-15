@@ -8,7 +8,6 @@ import io.github.jevaengine.world.scene.NullSceneBuffer;
 
 public final class NullCamera implements ICamera
 {
-
 	@Override
 	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale)
 	{
