@@ -42,7 +42,7 @@ public class LogicController implements IEntity
 
 	private World m_world;
 	
-	private HashMap<String, Integer> m_flags = new HashMap<String, Integer>();
+	private HashMap<String, Integer> m_flags = new HashMap<>();
 	
 	private LogicControllerBridge m_bridge;
 	private final IEntityTaskModel m_taskModel;
