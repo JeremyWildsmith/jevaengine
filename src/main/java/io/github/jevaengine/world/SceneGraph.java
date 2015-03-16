@@ -166,7 +166,7 @@ public final class SceneGraph implements IDisposable
 
 	void enqueueRender(ISceneBuffer targetScene, Rect2F renderBounds)
 	{
-		HashSet<Integer> renderSectors = new HashSet<Integer>();
+		HashSet<Integer> renderSectors = new HashSet<>();
 
 		int sectorX = (int)Math.floor((float)renderBounds.x / EntitySector.SECTOR_DIMENSIONS);
 		int sectorY = (int)Math.floor((float)renderBounds.y / EntitySector.SECTOR_DIMENSIONS);
@@ -181,7 +181,7 @@ public final class SceneGraph implements IDisposable
 			}
 		}
 
-		HashSet<IEntity> renderEntities = new HashSet<IEntity>();
+		HashSet<IEntity> renderEntities = new HashSet<>();
 		for (Integer i : renderSectors)
 		{
 			if (i >= 0)
@@ -387,7 +387,7 @@ public final class SceneGraph implements IDisposable
 
 		public List<IEntity> getEntities()
 		{
-			ArrayList<IEntity> all = new ArrayList<IEntity>(m_dynamic);
+			ArrayList<IEntity> all = new ArrayList<>(m_dynamic);
 			all.addAll(m_static);
 			
 			return all;
@@ -540,7 +540,7 @@ public final class SceneGraph implements IDisposable
 		private IEntity[] getContainedEntities(Rect2D region)
 		{
 			//Used to prevent entry duplication for Entities that are contained by multiple sectors.
-			HashSet<IEntity> entities = new HashSet<IEntity>();
+			HashSet<IEntity> entities = new HashSet<>();
 			
 			final int startX = (int)Math.floor(region.x / (float)EntitySector.SECTOR_DIMENSIONS) * EntitySector.SECTOR_DIMENSIONS;
 			final int startY = (int)Math.floor(region.y / (float)EntitySector.SECTOR_DIMENSIONS) * EntitySector.SECTOR_DIMENSIONS;
@@ -563,7 +563,7 @@ public final class SceneGraph implements IDisposable
 			
 			Rect2D searchBounds = m_region == null ? filter.getSearchBounds() : m_region.getOverlapping(filter.getSearchBounds());
 			
-			ArrayList<IEntity> found = new ArrayList<IEntity>();
+			ArrayList<IEntity> found = new ArrayList<>();
 
 			for (IEntity entity : getContainedEntities(searchBounds))
 			{
@@ -579,7 +579,7 @@ public final class SceneGraph implements IDisposable
 			if(m_region != null)
 				return getContainedEntities(m_region);
 			
-			ArrayList<IEntity> entities = new ArrayList<IEntity>();
+			ArrayList<IEntity> entities = new ArrayList<>();
 			
 			for(EntityEntry e : m_entities)
 				entities.add(e.getSubject());
