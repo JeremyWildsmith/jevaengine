@@ -9,6 +9,7 @@ import io.github.jevaengine.audio.IAudioClipFactory;
 import io.github.jevaengine.audio.NullAudioClipFactory;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
+import io.github.jevaengine.script.IScriptBuilder.ScriptConstructionException;
 import io.github.jevaengine.script.NullFunctionFactory;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
@@ -74,7 +75,7 @@ public class LogicController implements IEntity
 		try
 		{
 			behavior.create(m_bridge);
-		} catch (IScriptBuilder.ScriptConstructionException e)
+		} catch (ScriptConstructionException e)
 		{
 			m_logger.error("Unable to instantiate behavior for entity " + m_name + ". Assuming null behavior", e);
 		}
