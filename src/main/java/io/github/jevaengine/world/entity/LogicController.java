@@ -7,7 +7,6 @@ package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.audio.IAudioClipFactory;
 import io.github.jevaengine.audio.NullAudioClipFactory;
-import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.NullFunctionFactory;
@@ -65,7 +64,7 @@ public class LogicController implements IEntity
 		m_taskModel = taskModelFactory.create(this);
 	}
 	
-	public LogicController(IEntityTaskModelFactory taskModelFactory, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, @Nullable String name) throws ValueSerializationException
+	public LogicController(IEntityTaskModelFactory taskModelFactory, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, @Nullable String name)
 	{
 		m_name = (name == null ? this.getClass().getName() + m_unnamedCount.getAndIncrement() : name);	
 		m_taskModel = taskModelFactory.create(this);
