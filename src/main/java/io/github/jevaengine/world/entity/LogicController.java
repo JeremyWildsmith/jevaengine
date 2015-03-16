@@ -18,7 +18,6 @@ import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.NullPhysicsBody;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
-import io.github.jevaengine.world.scene.model.ISceneModel;
 import io.github.jevaengine.world.scene.model.NullSceneModel;
 import java.net.URI;
 import java.util.Collections;
@@ -47,7 +46,6 @@ public class LogicController implements IEntity
 	private LogicControllerBridge m_bridge;
 	private final IEntityTaskModel m_taskModel;
 	
-	private final ISceneModel m_model = new NullSceneModel();
 	private final IPhysicsBody m_body = new NullPhysicsBody();
 	
 	private final Observers m_observers = new Observers();
@@ -194,7 +192,7 @@ public class LogicController implements IEntity
 	@Override
 	public final IImmutableSceneModel getModel()
 	{
-		return m_model;
+		return new NullSceneModel();
 	}
 	
 	@Override
@@ -210,7 +208,6 @@ public class LogicController implements IEntity
 			throw new WorldAssociationException("Entity is unassociated with a world and thus cannot process logic.");
 
 		m_taskModel.update(deltaTime);
-		m_model.update(deltaTime);
 		doLogic(deltaTime);
 	}
 	
