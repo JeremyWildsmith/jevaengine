@@ -18,13 +18,11 @@ package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.audio.IAudioClipFactory;
 import io.github.jevaengine.audio.NullAudioClipFactory;
-import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.IScriptBuilder.ScriptConstructionException;
 import io.github.jevaengine.script.NullFunctionFactory;
 import io.github.jevaengine.util.IObserverRegistry;
-import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.physics.IPhysicsBody;
@@ -39,22 +37,19 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class DefaultEntity implements IEntity
 {
-	private static AtomicInteger m_unnamedCount = new AtomicInteger(0);
-
 	private final Logger m_logger = LoggerFactory.getLogger(DefaultEntity.class);
 	
 	private final String m_name;
 
 	private World m_world;
 	
-	private HashMap<String, Integer> m_flags = new HashMap<String, Integer>();
+	private HashMap<String, Integer> m_flags = new HashMap<>();
 	private PhysicsBodyDescription m_physicsBodyDescription = null;
 	
 	private DefaultEntityBridge m_bridge;
@@ -70,17 +65,17 @@ public final class DefaultEntity implements IEntity
 		this(taskModelFactory, null);
 	}
 
-	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, @Nullable String name)
+	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, String name)
 	{
-		m_name = (name == null ? this.getClass().getName() + m_unnamedCount.getAndIncrement() : name);	
+		m_name = name;	
 		m_bridge = new DefaultEntityBridge(new NullAudioClipFactory(), new NullFunctionFactory(), URI.create(""));
 
 		m_taskModel = taskModelFactory.create(this);
 	}
 	
-	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, ISceneModel model, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, PhysicsBodyDescription physicsBodyDescription, @Nullable String name) throws ValueSerializationException
+	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, ISceneModel model, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, PhysicsBodyDescription physicsBodyDescription, String name)
 	{
-		m_name = (name == null ? this.getClass().getName() + m_unnamedCount.getAndIncrement() : name);	
+		m_name = name;	
 		m_model = model;
 		m_physicsBodyDescription = physicsBodyDescription;
 		m_taskModel = taskModelFactory.create(this);

@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
  */
 public class LogicController implements IEntity
 {
-	private static AtomicInteger m_unnamedCount = new AtomicInteger(0);
-
 	private final Logger m_logger = LoggerFactory.getLogger(DefaultEntity.class);
 	
 	private final String m_name;
@@ -56,17 +54,17 @@ public class LogicController implements IEntity
 		this(taskModelFactory, null);
 	}
 
-	public LogicController(IEntityTaskModelFactory taskModelFactory, @Nullable String name)
+	public LogicController(IEntityTaskModelFactory taskModelFactory, String name)
 	{
-		m_name = (name == null ? this.getClass().getName() + m_unnamedCount.getAndIncrement() : name);	
+		m_name = name;	
 		m_bridge = new LogicControllerBridge(new NullAudioClipFactory(), new NullFunctionFactory(), URI.create(""));
 
 		m_taskModel = taskModelFactory.create(this);
 	}
 	
-	public LogicController(IEntityTaskModelFactory taskModelFactory, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, @Nullable String name)
+	public LogicController(IEntityTaskModelFactory taskModelFactory, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, String name)
 	{
-		m_name = (name == null ? this.getClass().getName() + m_unnamedCount.getAndIncrement() : name);	
+		m_name = name;	
 		m_taskModel = taskModelFactory.create(this);
 	
 		m_bridge = new LogicControllerBridge(audioClipFactory, behavior.getFunctionFactory(), behavior.getUri());

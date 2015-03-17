@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public final class SceneArtifact implements IEntity
 {
-	private static AtomicInteger m_unnamedCount = new AtomicInteger(0);
+	private static final AtomicInteger m_unnamedCount = new AtomicInteger(0);
 
 	private final String m_name;
 	
