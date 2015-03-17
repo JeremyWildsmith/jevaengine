@@ -16,6 +16,7 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.physics.IPhysicsBody;
+import io.github.jevaengine.world.physics.NonparticipantPhysicsBody;
 import io.github.jevaengine.world.physics.NullPhysicsBody;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 import io.github.jevaengine.world.scene.model.NullSceneModel;
@@ -46,7 +47,7 @@ public class LogicController implements IEntity
 	private LogicControllerBridge m_bridge;
 	private final IEntityTaskModel m_taskModel;
 	
-	private final IPhysicsBody m_body = new NullPhysicsBody();
+	private IPhysicsBody m_body = new NullPhysicsBody();
 	
 	private final Observers m_observers = new Observers();
 	
@@ -86,6 +87,24 @@ public class LogicController implements IEntity
 		
 		if(m_world != null)
 			m_world.removeEntity(this);
+	}
+	
+	private void createPhysicsBody()
+	{
+		if(m_world == null)
+			return;
+		
+		m_body = new NonparticipantPhysicsBody(this);
+
+		m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), m_body);
+	}
+	
+	private void destoryPhysicsBody()
+	{
+		m_body.destory();
+		m_body = new NullPhysicsBody();
+		
+		m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), new NullPhysicsBody());
 	}
 	
 	@Override
@@ -171,6 +190,7 @@ public class LogicController implements IEntity
 		m_world = world;
 
 		m_observers.raise(IEntityWorldObserver.class).enterWorld();
+		createPhysicsBody();
 	}
 
 	@Override
@@ -182,7 +202,7 @@ public class LogicController implements IEntity
 		m_taskModel.cancelTasks();
 
 		m_observers.raise(IEntityWorldObserver.class).leaveWorld();
-
+		destoryPhysicsBody();
 		m_world = null;
 	}
 	
