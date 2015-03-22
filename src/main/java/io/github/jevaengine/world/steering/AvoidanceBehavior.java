@@ -8,6 +8,7 @@ import io.github.jevaengine.world.physics.RayCastResults;
 
 public final class AvoidanceBehavior implements ISteeringBehavior
 {
+	private final int RAYCAST_ITERATIONS = 3;
 	private final float m_reactionDistance;
 	
 	public AvoidanceBehavior(float reactionDistance)
@@ -24,10 +25,10 @@ public final class AvoidanceBehavior implements ISteeringBehavior
 		Circle2F bounds = subject.getAABB().getXy().getBoundingCircle();
 		float reactionDistance = m_reactionDistance + bounds.radius;
 		
-		float angle = (float)Math.PI / 8;
+		float angle = (float)Math.PI / (2 * RAYCAST_ITERATIONS);
 		Vector2F travelDirection = currentDirection.normalize();
 		
-		for(int i = 0; i < Math.ceil(2 * Math.PI / angle); i++)
+		for(int i = 0; i < RAYCAST_ITERATIONS; i++)
 		{
 			Vector2F rayDirectionLeft = travelDirection.rotate(-angle);
 			Vector2F rayDirectionRight = travelDirection.rotate(angle);
@@ -37,7 +38,7 @@ public final class AvoidanceBehavior implements ISteeringBehavior
 			RayCastResults resultsStraight = subject.castRay(new Vector3F(travelDirection, 0), reactionDistance);
 			
 			if(resultsLeft != null && resultsRight != null && resultsStraight != null)
-				return new Vector2F();
+					return new Vector2F();
 			else if(resultsLeft != null && resultsRight != null)
 				break;
 			else if(resultsLeft != null)
