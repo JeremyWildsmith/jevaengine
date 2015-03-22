@@ -76,7 +76,7 @@ public final class Route
 		if (m_path.size() <= maxSteps)
 			return;
 
-		m_path = new ArrayList<Vector2F>(m_path.subList(0, maxSteps));
+		m_path = new ArrayList<>(m_path.subList(0, maxSteps));
 	}
 
 	public int length()
