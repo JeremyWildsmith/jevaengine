@@ -38,7 +38,7 @@ public final class AvoidanceBehavior implements ISteeringBehavior
 			RayCastResults resultsStraight = subject.castRay(new Vector3F(travelDirection, 0), reactionDistance);
 			
 			if(resultsLeft != null && resultsRight != null && resultsStraight != null)
-					return new Vector2F();
+				return new Vector2F();
 			else if(resultsLeft != null && resultsRight != null)
 				break;
 			else if(resultsLeft != null)
