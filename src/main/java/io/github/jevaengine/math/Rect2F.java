@@ -5,6 +5,7 @@ import io.github.jevaengine.config.ISerializable;
 import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.ValueSerializationException;
+import static io.github.jevaengine.math.Rect3F.TOLERANCE;
 
 /**
  *
@@ -58,6 +59,10 @@ public final class Rect2F implements ISerializable
 		return new Rect2F(x + v.x, y + v.y, width, height);
 	}
 	
+	public boolean hasArea()
+	{
+		return width > TOLERANCE && height > TOLERANCE;
+	}
 
 	public Rect2F add(Vector2D v)
 	{
