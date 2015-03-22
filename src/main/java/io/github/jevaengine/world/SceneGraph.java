@@ -400,9 +400,9 @@ public final class SceneGraph implements IDisposable
 
 		private void blendEffectMap(EffectMap map, IPhysicsBody body)
 		{
-			Rect3F bounds = body.getAABB();
+			Rect2F bounds = body.getAABB().getXy();
 			
-			if(body.isCollidable() && bounds.hasVolume())
+			if(body.isCollidable() && bounds.hasArea())
 			{
 				int x = (int)Math.floor(bounds.x);
 				int y = (int)Math.floor(bounds.y);
