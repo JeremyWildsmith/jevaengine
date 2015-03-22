@@ -406,12 +406,12 @@ public final class SceneGraph implements IDisposable
 			{
 				int x = (int)Math.floor(bounds.x);
 				int y = (int)Math.floor(bounds.y);
-				int width = (int)Math.ceil(bounds.width);
-				int height = (int)Math.ceil(bounds.height);
+				int right = x + (int)Math.ceil(bounds.width);
+				int bottom = y + (int)Math.ceil(bounds.height);
 				
-				for(; x < width; x++)
+				for(; x < right; x++)
 				{
-					for(; y < height; y++)
+					for(; y < bottom; y++)
 						map.applyOverlayEffects(new Vector2D(x, y), new TileEffects(false));
 				}
 			}
