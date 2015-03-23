@@ -123,7 +123,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 	{
 		m_isTopologicalSortDirty = true;
 		
-		for(ISceneModelComponent c : model.getComponents())
+		for(ISceneModelComponent c : model.getComponents(new Matrix3X3(m_worldToScreenMatrix)))
 			m_unsortedVertices.add(new Vertex(new SceneGraphicEntry(dispatcher, c, location.add(c.getOrigin()), m_worldToScreenMatrix)));
 	}
 

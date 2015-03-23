@@ -1,5 +1,6 @@
 package io.github.jevaengine.world.scene.model;
 
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.NullObservers;
@@ -97,7 +98,7 @@ public interface IActionSceneModel extends ISceneModel
 		public void setDirection(Direction direction) { }
 
 		@Override
-		public List<ISceneModelComponent> getComponents()
+		public List<ISceneModelComponent> getComponents(Matrix3X3 projection)
 		{
 			return new ArrayList<>();
 		}

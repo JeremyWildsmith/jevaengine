@@ -1,5 +1,6 @@
 package io.github.jevaengine.world.scene.model.action;
 
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
@@ -61,9 +62,9 @@ public final class DefaultActionModel implements IActionSceneModel
 	}
 	
 	@Override
-	public Collection<ISceneModelComponent> getComponents()
+	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection)
 	{
-		return m_sceneModel.getComponents();
+		return m_sceneModel.getComponents(projection);
 	}
 
 	@Override

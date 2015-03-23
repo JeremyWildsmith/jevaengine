@@ -3,6 +3,7 @@ package io.github.jevaengine.world.scene.model.sprite;
 import io.github.jevaengine.IDisposable;
 import io.github.jevaengine.audio.IAudioClip;
 import io.github.jevaengine.audio.IAudioClipFactory.AudioClipConstructionException;
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
@@ -66,7 +67,7 @@ public final class SpriteSceneModel implements IAnimationSceneModel
 	}
 	
 	@Override
-	public List<ISceneModelComponent> getComponents()
+	public List<ISceneModelComponent> getComponents(Matrix3X3 projection)
 	{
 		if(m_currentAnimation == null)
 			return new ArrayList<>();

@@ -1,5 +1,6 @@
 package io.github.jevaengine.world.scene.model;
 
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Observers;
@@ -66,13 +67,13 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel
 	}
 
 	@Override
-	public Collection<ISceneModelComponent> getComponents()
+	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection)
 	{
 		Map<String, List<ISceneModelComponent>> componentBuffer = new HashMap<>();
 		
 		for(ISceneModel m : m_models)
 		{
-			for(ISceneModelComponent c : m.getComponents())
+			for(ISceneModelComponent c : m.getComponents(projection))
 			{
 				String name = c.getName().split("\\.")[0];
 				if(componentBuffer.containsKey(name))
@@ -168,6 +169,7 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel
 				return AnimationSceneModelAnimationState.Stop;
 			}
 			
+			@Override
 			public IObserverRegistry getObservers()
 			{
 				if(!m_observerRelays.containsKey(name))

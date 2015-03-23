@@ -1,5 +1,6 @@
 package io.github.jevaengine.world.scene.model;
 
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.world.Direction;
 
@@ -42,11 +43,11 @@ public final class DecoratedSceneModel implements ISceneModel
 	}
 	
 	@Override
-	public List<ISceneModelComponent> getComponents()
+	public List<ISceneModelComponent> getComponents(Matrix3X3 projection)
 	{
 		ArrayList<ISceneModelComponent> components = new ArrayList<>();
 		
-		components.addAll(m_model.getComponents());
+		components.addAll(m_model.getComponents(projection));
 		components.addAll(m_additionalComponents);
 		
 		return components;

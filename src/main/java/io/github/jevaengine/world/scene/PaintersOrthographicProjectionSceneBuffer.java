@@ -94,7 +94,7 @@ public final class PaintersOrthographicProjectionSceneBuffer implements ISceneBu
 	public void addModel(IImmutableSceneModel model, @Nullable IEntity dispatcher, Vector3F location)
 	{
 		
-		for(ISceneModelComponent c : model.getComponents())
+		for(ISceneModelComponent c : model.getComponents(new Matrix3X3(m_worldToScreenMatrix)))
 		{
 			Vector3F componentLocation = c.getOrigin().add(location);
 			if (!m_renderQueue.containsKey(componentLocation))
