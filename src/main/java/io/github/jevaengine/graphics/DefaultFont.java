@@ -70,7 +70,7 @@ public final class DefaultFont implements IFont
 	}
 	
 	@Override
-	public Rect2D getTextBounds(String text)
+	public Rect2D getTextBounds(String text, float scale)
 	{
 		int x = 0;
 		int y = 0;
@@ -81,8 +81,8 @@ public final class DefaultFont implements IFont
 			
 			if(charBounds != null)
 			{
-				x += charBounds.width;
-				y = Math.max(y, charBounds.height);
+				x += charBounds.width * scale;
+				y = Math.max(y, (int)(charBounds.height * scale));
 			}
 		}
 		

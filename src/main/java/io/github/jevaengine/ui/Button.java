@@ -69,7 +69,7 @@ public final class Button extends Control
 		
 		m_font = stateStyle.getFont();
 		
-		Rect2D textBounds = m_font.getTextBounds(m_text);
+		Rect2D textBounds = m_font.getTextBounds(m_text, 1.0F);
 		m_frame = stateStyle.createFrame(textBounds.width, textBounds.height);
 	}
 	
@@ -128,7 +128,7 @@ public final class Button extends Control
 	{
 		m_frame.render(g, x, y, scale);
 		
-		Rect2D stringBounds = m_font.getTextBounds(m_text);
+		Rect2D stringBounds = m_font.getTextBounds(m_text, 1.0F);
 
 		int textAnchorX = m_frame.getBounds().width / 2 - stringBounds.width / 2;
 		int textAnchorY = m_frame.getBounds().height / 2 - stringBounds.height / 2;

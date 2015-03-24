@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 public final class NullFont implements IFont
 {
 	@Override
-	public Rect2D getTextBounds(String text)
+	public Rect2D getTextBounds(String text, float scale)
 	{
 		return new Rect2D(1, 1);
 	}

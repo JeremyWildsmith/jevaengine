@@ -116,7 +116,7 @@ public class TextArea extends Control
 					word = word.substring(0, newLineIndex + 1);
 				}
 
-				lineLength += font.getTextBounds(word).width;
+				lineLength += font.getTextBounds(word, 1.0F).width;
 				
 				lineBuffer.append(word);
 				
@@ -128,7 +128,7 @@ public class TextArea extends Control
 				if(nextWord != null)
 				{
 					int nextWordNewline = nextWord.indexOf('\n');
-					int nextLength = font.getTextBounds(nextWordNewline >= 0 ? nextWord.substring(0, nextWordNewline) : nextWord).width;	
+					int nextLength = font.getTextBounds(nextWordNewline >= 0 ? nextWord.substring(0, nextWordNewline) : nextWord, 1.0F).width;	
 					nextLineLength = nextLength + lineLength;
 				}
 				
@@ -352,7 +352,7 @@ public class TextArea extends Control
 			int cursorX = x;
 			
 			for(i = 0; cursorX > 0 && i < m_text.length(); i++)
-				cursorX -= m_font.getTextBounds(String.valueOf(m_text.charAt(i))).width;
+				cursorX -= m_font.getTextBounds(String.valueOf(m_text.charAt(i)), 1.0F).width;
 			
 			return Math.min(m_text.length(), i) + m_startIndex;
 		}
@@ -367,7 +367,7 @@ public class TextArea extends Control
 			{
 				int cursorOffsetX = 0;
 				for(int i = 0; cursorLocation > 0; i++, cursorLocation--)
-					cursorOffsetX += m_font.getTextBounds(String.valueOf(m_text.charAt(i))).width;
+					cursorOffsetX += m_font.getTextBounds(String.valueOf(m_text.charAt(i)), 1.0F).width;
 				
 				g.setColor(Color.gray);
 				g.fillRect(x + cursorOffsetX, y, 1, m_font.getMaxCharacterBounds().height);
@@ -395,7 +395,7 @@ public class TextArea extends Control
 			for(int i = 0; i < text.length(); i++)
 			{
 				String character = String.valueOf(text.charAt(i));
-				Rect2D charBounds = font.getTextBounds(character);
+				Rect2D charBounds = font.getTextBounds(character, 1.0F);
 				
 				if((lineWidth != 0 && lineWidth + charBounds.width >= bounds.width) || character.equals("\n"))
 				{

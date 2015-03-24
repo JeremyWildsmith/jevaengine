@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 public interface IFont
 {
-	Rect2D getTextBounds(String text);
+	Rect2D getTextBounds(String text, float scale);
 	Rect2D drawText(Graphics2D g, int x, int y, float scale, String text);
 	Rect2D getMaxCharacterBounds();
 	boolean doesMappingExists(char keyChar);

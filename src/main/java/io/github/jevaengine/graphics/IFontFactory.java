@@ -19,4 +19,19 @@ public interface IFontFactory
 			super("Error constructing font " + assetName.toString(), cause);
 		}
 	}
+	
+	public final class NullFontFactory implements IFontFactory
+	{
+		@Override
+		public IFont create(URI name, Color color)
+		{
+			return new NullFont();
+		}
+		
+		@Override
+		public IFont create(URI name)
+		{
+			return new NullFont();
+		}
+	}
 }

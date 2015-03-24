@@ -55,7 +55,7 @@ public final class Label extends Control
 	public Rect2D getBounds()
 	{
 		IFont font = getComponentStyle().getStateStyle(ComponentState.Default).getFont();	
-		return font.getTextBounds(m_text);
+		return font.getTextBounds(m_text, 1.0F);
 	}
 	
 	public void setText(String text)
