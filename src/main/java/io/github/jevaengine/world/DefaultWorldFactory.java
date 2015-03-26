@@ -13,6 +13,7 @@ import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.ISpriteFactory;
 import io.github.jevaengine.math.Rect2D;
+import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.IScriptBuilderFactory;
@@ -23,6 +24,7 @@ import io.github.jevaengine.util.ThreadSafe;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.ArtifactPlane;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.EntityImportDeclaration;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.SceneArtifactDeclaration;
+import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.ZoneDeclaration;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.entity.IEntityFactory;
 import io.github.jevaengine.world.entity.IEntityFactory.EntityConstructionException;
@@ -217,6 +219,9 @@ public class DefaultWorldFactory implements IWorldFactory
 				}
 			}
 			
+			for(ZoneDeclaration z : worldConfig.zones)
+				world.addZone(z.name, z.region);
+			
 			monitor.statusChanged(1.0F, "Completed");
 		
 			return world;
@@ -247,7 +252,8 @@ public class DefaultWorldFactory implements IWorldFactory
 		public SceneArtifactDeclaration[] artifacts = new SceneArtifactDeclaration[0];
 		public ArtifactPlane[] artifactPlanes = new ArtifactPlane[0];
 		public EntityImportDeclaration[] entities = new EntityImportDeclaration[0];
-
+		public ZoneDeclaration[] zones = new ZoneDeclaration[0];
+		
 		public WorldConfiguration() {}
 		
 		@Override
@@ -264,6 +270,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			target.addChild("artifacts").setValue(this.artifacts);
 			target.addChild("artifactPlanes").setValue(this.artifactPlanes);
 			target.addChild("entities").setValue(this.entities);
+			target.addChild("zones").setValue(this.zones);
 		}
 
 		@Override
@@ -282,6 +289,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				this.artifacts = source.getChild("artifacts").getValues(SceneArtifactDeclaration[].class);
 				this.artifactPlanes = source.getChild("artifactPlanes").getValues(ArtifactPlane[].class);
 				this.entities = source.getChild("entities").getValues(EntityImportDeclaration[].class);
+				this.zones = source.getChild("zones").getValues(ZoneDeclaration[].class);
 			} catch(NoSuchChildVariableException e)
 			{
 				throw new ValueSerializationException(e);
@@ -429,6 +437,38 @@ public class DefaultWorldFactory implements IWorldFactory
 					throw new ValueSerializationException(e);
 				}
 			}
+		}
+		
+		public static final class ZoneDeclaration implements ISerializable
+		{
+			@Nullable
+			public String name;
+			
+			@Nullable
+			public Rect3F region;
+			
+			public ZoneDeclaration() {}
+
+			@Override
+			public void serialize(IVariable target) throws ValueSerializationException
+			{
+				target.addChild("name").setValue(name);
+				target.addChild("region").setValue(region);
+			}
+
+			@Override
+			public void deserialize(IImmutableVariable source) throws ValueSerializationException
+			{
+				try
+				{
+					name = source.getChild("name").getValue(String.class);
+					region = source.getChild("region").getValue(Rect3F.class);
+				} catch(NoSuchChildVariableException e)
+				{
+					throw new ValueSerializationException(e);
+				}
+			}
+			
 		}
 	}
 }

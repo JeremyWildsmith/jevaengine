@@ -23,8 +23,10 @@ import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Rect2F;
+import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
+import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.script.IFunction;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
@@ -53,6 +55,10 @@ import io.github.jevaengine.world.search.ISearchFilter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +67,9 @@ public final class World implements IDisposable
 {
 	private final Logger m_logger = LoggerFactory.getLogger(World.class);
 	private final Observers m_observers = new Observers();
-
+	
+	private final Map<String, Rect3F> m_zones = new HashMap<>();
+	
 	private SceneGraph m_entityContainer;
 	private Rect2D m_worldBounds;
 	
@@ -143,6 +151,28 @@ public final class World implements IDisposable
 		return tileEffects.toArray(new TileEffects[tileEffects.size()]);
 	}
 
+	public void addZone(String name, Rect3F zone)
+	{
+		m_zones.put(name, zone);
+	}
+	
+	public Map<String, Rect3F> getZones()
+	{
+		return Collections.unmodifiableMap(m_zones);
+	}
+	
+	public Map<String, Rect3F> getContainingZones(Vector3F location)
+	{
+		Map<String, Rect3F> containingZones = new HashMap<>();
+		for(Map.Entry<String, Rect3F> z : m_zones.entrySet())
+		{
+			if(z.getValue().contains(location))
+				containingZones.put(z.getKey(), new Rect3F(z.getValue()));
+		}
+		
+		return containingZones;
+	}
+	
 	public void addEntity(IEntity entity)
 	{
 		entity.associate(this);
@@ -351,6 +381,12 @@ public final class World implements IDisposable
 		public void removeEntity(EntityBridge entity)
 		{
 			World.this.removeEntity(entity.getEntity());
+		}
+		
+		public Rect3F[] getContainingZones(Vector3F location)
+		{
+			Collection<Rect3F> zones = World.this.getContainingZones(location).values();
+			return zones.toArray(new Rect3F[zones.size()]);
 		}
 	}
 }
