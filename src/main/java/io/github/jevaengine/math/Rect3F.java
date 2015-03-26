@@ -109,6 +109,16 @@ public class Rect3F implements ISerializable
 		return new Rect3F(x + v.x, y + v.y, z + v.z, width, height, depth);
 	}
 	
+	public boolean contains(Vector3F location)
+	{
+		return (location.x >= x &&
+				location.x - x <= width &&
+				location.y >= y &&
+				location.y - y <= height &&
+				location.z >= z &&
+				location.z - z <= depth);
+	}
+	
 	@Override
 	public void serialize(IVariable target) throws ValueSerializationException
 	{
