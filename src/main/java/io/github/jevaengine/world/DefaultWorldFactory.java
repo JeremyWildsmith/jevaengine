@@ -1,3 +1,21 @@
+/* 
+ * Copyright (C) 2015 Jeremy Wildsmith.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 package io.github.jevaengine.world;
 
 import io.github.jevaengine.IEngineThreadPool;
@@ -33,6 +51,7 @@ import io.github.jevaengine.world.entity.SceneArtifact;
 import io.github.jevaengine.world.entity.ThreadPooledEntityFactory;
 import io.github.jevaengine.world.physics.IPhysicsWorld;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
+import io.github.jevaengine.world.physics.ScaledPhysicsWorld;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModelFactory;
 import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
@@ -80,9 +99,9 @@ public class DefaultWorldFactory implements IWorldFactory
 		m_animationSceneModelFactory = animationSceneModelFactory;
 	}
 	
-	protected World createBaseWorld(float friction, int worldWidthTiles, int worldHeightTiles, @Nullable URI worldScript)
+	protected World createBaseWorld(float friction, float metersPerUnit, int worldWidthTiles, int worldHeightTiles, @Nullable URI worldScript)
 	{
-		IPhysicsWorld physicsWorld = m_physicsWorldFactory.create(friction, worldWidthTiles, worldHeightTiles);
+		IPhysicsWorld physicsWorld = new ScaledPhysicsWorld(m_physicsWorldFactory.create(friction, worldWidthTiles, worldHeightTiles), metersPerUnit);
 
 		IScriptBuilder scriptBuilder = new NullScriptBuilder();
 		
@@ -180,8 +199,8 @@ public class DefaultWorldFactory implements IWorldFactory
 		{
 			final WorldConfiguration worldConfig = m_configurationFactory.create(name).getValue(WorldConfiguration.class);
 			
-			World world = createBaseWorld(worldConfig.friction, 
-											worldConfig.worldWidth, worldConfig.worldHeight, 
+			World world = createBaseWorld(worldConfig.friction, worldConfig.metersPerUnit,
+											worldConfig.worldWidth, worldConfig.worldHeight,
 											worldConfig.script == null ? null : name.resolve(new URI(worldConfig.script)));
 			
 			for (int i = 0; i < worldConfig.artifactPlanes.length; i++)
@@ -247,6 +266,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		public int worldWidth;
 		public int worldHeight;
 		
+		public float metersPerUnit;
 		public float friction;
 		
 		public SceneArtifactDeclaration[] artifacts = new SceneArtifactDeclaration[0];
@@ -265,6 +285,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			target.addChild("worldWidth").setValue(this.worldWidth);
 			target.addChild("worldHeight").setValue(this.worldHeight);
 
+			target.addChild("metersPerUnit").setValue(this.metersPerUnit);
 			target.addChild("friction").setValue(this.friction);
 			
 			target.addChild("artifacts").setValue(this.artifacts);
@@ -284,6 +305,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				this.worldWidth = source.getChild("worldWidth").getValue(Integer.class);
 				this.worldHeight = source.getChild("worldHeight").getValue(Integer.class);
 				
+				this.metersPerUnit = source.getChild("metersPerUnit").getValue(Double.class).floatValue();
 				this.friction = source.getChild("friction").getValue(Double.class).floatValue();
 				
 				this.artifacts = source.getChild("artifacts").getValues(SceneArtifactDeclaration[].class);

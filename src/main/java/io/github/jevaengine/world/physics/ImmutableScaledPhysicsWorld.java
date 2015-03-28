@@ -16,37 +16,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.audio;
+package io.github.jevaengine.world.physics;
 
-import io.github.jevaengine.util.IObserverRegistry;
-import io.github.jevaengine.util.NullObservers;
-
-public final class NullAudioClip implements IAudioClip
+/**
+ *
+ * @author Jeremy
+ */
+public class ImmutableScaledPhysicsWorld implements IImmutablePhysicsWorld
 {
-	@Override
-	public IAudioClip create()
+	private final IImmutablePhysicsWorld m_world;
+	protected final float m_scale;
+	
+	public ImmutableScaledPhysicsWorld(IImmutablePhysicsWorld world, float scale)
 	{
-		return new NullAudioClip();
+		m_world = world;
+		m_scale = scale;
 	}
 	
 	@Override
-	public void dispose() { }
-	
-	@Override
-	public void play() { }
-
-	@Override
-	public void stop() { }
-
-	@Override
-	public void repeat() { }
-
-	@Override
-	public void setVolume(float volume) { }
-	
-	@Override
-	public IObserverRegistry getObservers()
+	public float getMaxFrictionForce()
 	{
-		return new NullObservers();
+		return m_world.getMaxFrictionForce() / m_scale;
 	}
 }
