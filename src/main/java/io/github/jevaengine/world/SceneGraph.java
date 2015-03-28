@@ -40,6 +40,7 @@ import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyShap
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
 import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.search.ISearchFilter;
+import java.lang.reflect.Array;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -87,7 +88,7 @@ public final class SceneGraph implements IDisposable
 		
 		if (!m_sectors.contains(sectorCoordinates))
 			m_sectors.add(new EntitySector(location));
-
+		
 		int sec = m_sectors.indexOf(sectorCoordinates);
 
 		EntitySector sector = m_sectors.get(sec);
@@ -334,7 +335,7 @@ public final class SceneGraph implements IDisposable
 
 	private final class EntitySector implements IDisposable
 	{
-		protected static final int SECTOR_DIMENSIONS = 10;
+		protected static final int SECTOR_DIMENSIONS = 60;
 
 		private final ArrayList<IEntity> m_dynamic =  new ArrayList<>();
 		private final ArrayList<IEntity> m_static = new ArrayList<>();
@@ -518,11 +519,8 @@ public final class SceneGraph implements IDisposable
 		{
 			if(m_region != null)
 			{
-				for(IEntity e : getContainedEntities(m_region))
-				{
-					if(e.getInstanceName().equals(name) && clazz.isAssignableFrom(e.getClass()))
-						return (T)e;
-				}
+				for(T e : getContainedEntities(clazz, m_region))
+					return e;
 			} else
 			{
 				for(EntityEntry entry : m_entities)
@@ -537,10 +535,10 @@ public final class SceneGraph implements IDisposable
 			return null;
 		}
 		
-		private IEntity[] getContainedEntities(Rect2D region)
+		private <T extends IEntity> T[] getContainedEntities(Class<T> clazz, Rect2D region)
 		{
 			//Used to prevent entry duplication for Entities that are contained by multiple sectors.
-			HashSet<IEntity> entities = new HashSet<>();
+			HashSet<T> entities = new HashSet<>();
 			
 			final int startX = (int)Math.floor(region.x / (float)EntitySector.SECTOR_DIMENSIONS) * EntitySector.SECTOR_DIMENSIONS;
 			final int startY = (int)Math.floor(region.y / (float)EntitySector.SECTOR_DIMENSIONS) * EntitySector.SECTOR_DIMENSIONS;
@@ -549,35 +547,39 @@ public final class SceneGraph implements IDisposable
 			{
 				  for(int y = startY; y < region.y + region.height; y+=EntitySector.SECTOR_DIMENSIONS)
 				  {
-					  entities.addAll(getSector(new Vector2F(x + 1, + 1)).getEntities());
-				  }
+						for(IEntity e : getSector(new Vector2F(x + 1, y + 1)).getEntities())
+						{
+							if(clazz.isAssignableFrom(e.getClass()))
+								entities.add((T)e);
+						}
+					}
 			}
 			
-			return entities.toArray(new IEntity[entities.size()]);
+			return entities.toArray((T[])Array.newInstance(clazz, entities.size()));
 		}
 		
-		public IEntity[] search(ISearchFilter<IEntity> filter)
+		public <T extends IEntity> T[] search(Class<T> clazz, ISearchFilter<T> filter)
 		{
 			//if m_region == null, use filter's search bounds,
 			//otherwise use intersecting area.
 			
 			Rect2D searchBounds = m_region == null ? filter.getSearchBounds() : m_region.getOverlapping(filter.getSearchBounds());
 			
-			ArrayList<IEntity> found = new ArrayList<>();
+			ArrayList<T> found = new ArrayList<>();
 
-			for (IEntity entity : getContainedEntities(searchBounds))
+			for (T entity : getContainedEntities(clazz, searchBounds))
 			{
 				if (filter.shouldInclude(entity.getBody().getLocation().getXy()))
 					found.add(entity);
 			}
 
-			return found.toArray(new IEntity[found.size()]);
+			return found.toArray((T[])Array.newInstance(clazz, found.size()));
 		}
 		
 		public IEntity[] all()
 		{
 			if(m_region != null)
-				return getContainedEntities(m_region);
+				return getContainedEntities(IEntity.class, m_region);
 			
 			ArrayList<IEntity> entities = new ArrayList<>();
 			
