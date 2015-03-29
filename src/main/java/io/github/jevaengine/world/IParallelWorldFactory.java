@@ -25,5 +25,6 @@ import java.net.URI;
 
 public interface IParallelWorldFactory
 {
-	void create(final URI name, final float tileWidthMeters, final float tileHeightMeters, final IInitializationMonitor<World, WorldConstructionException> monitor);	
+	void create(final URI name, final IInitializationMonitor<World, WorldConstructionException> monitor);	
+	IWorldFactory getFactory();
 }

@@ -24,9 +24,8 @@ import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
 public final class JBox2DWorldFactory implements IPhysicsWorldFactory
 {
 	@Override
-	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters, int worldWidthTiles, int worldHeightTiles)
+	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters)
 	{
-		return new JBox2DWorld(maxSurfaceFrictionForceNewtonMeters, worldWidthTiles, worldHeightTiles);
+		return new JBox2DWorld(maxSurfaceFrictionForceNewtonMeters);
 	}
-
 }

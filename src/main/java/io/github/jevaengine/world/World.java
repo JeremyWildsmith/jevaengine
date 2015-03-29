@@ -51,6 +51,8 @@ import io.github.jevaengine.world.entity.IEntity.EntityBridge;
 import io.github.jevaengine.world.entity.IEntityFactory.EntityConstructionException;
 import io.github.jevaengine.world.entity.IParallelEntityFactory;
 import io.github.jevaengine.world.physics.IPhysicsWorld;
+import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
+import io.github.jevaengine.world.physics.ScaledPhysicsWorld;
 import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.search.ISearchFilter;
 
@@ -74,6 +76,7 @@ public final class World implements IDisposable
 	
 	private SceneGraph m_entityContainer;
 	private Rect2D m_worldBounds;
+	private final float m_metersPerUnit;
 	
 	private WorldBridgeNotifier m_script;
 
@@ -82,24 +85,20 @@ public final class World implements IDisposable
 	private final IPhysicsWorld m_physicsWorld;
 	private final IParallelEntityFactory m_entityFactory;
 	
-	public World(int worldWidth, int worldHeight, IPhysicsWorld physicsWorld, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
+	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, IPhysicsWorldFactory physicsWorldFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
 	{
+		m_physicsWorld = new ScaledPhysicsWorld(physicsWorldFactory.create(friction), metersPerUnit);
+		m_metersPerUnit = metersPerUnit;
 		m_entityFactory = entityFactory;
-		m_physicsWorld = physicsWorld;
 		m_worldBounds = new Rect2D(worldWidth, worldHeight);
 		
-		m_entityContainer = new SceneGraph(physicsWorld);
+		m_entityContainer = new SceneGraph(m_physicsWorld);
 		m_entityContainer.getObservers().add(new WorldEntityObserver());
 		
 		if (scriptFactory != null)
 			m_script = new WorldBridgeNotifier(scriptFactory);
 		else
 			m_script = new WorldBridgeNotifier();
-	}
-	
-	public World(int worldWidth, int worldHeight, IPhysicsWorld physicsWorld, IParallelEntityFactory entityFactory)
-	{
-		this(worldWidth, worldHeight, physicsWorld, entityFactory, null);
 	}
 	
 	@Override
@@ -121,6 +120,11 @@ public final class World implements IDisposable
 	public Rect2D getBounds()
 	{
 		return new Rect2D(m_worldBounds);
+	}
+	
+	public float getMetersPerUnit()
+	{
+		return m_metersPerUnit;
 	}
 
 	public TileEffects getTileEffects(Vector2D location)
@@ -229,7 +233,7 @@ public final class World implements IDisposable
 		}
 	}
 	
-	private class WorldBridgeNotifier
+	private class WorldBridgeNotifier implements IWorldObserver
 	{		
 		private WorldBridge m_bridge;
 		
@@ -255,6 +259,30 @@ public final class World implements IDisposable
 				m_logger.error("Error instantiating world script", e);
 			}
 		}
+
+		@Override
+		public void addedEntity(IEntity subject)
+		{
+			try
+			{
+				m_bridge.onEntityEnter.fire(subject.getBody());
+			} catch (ScriptExecuteException e)
+			{
+				m_logger.error("Unable to completely invoke onEntityEnter script event", e);
+			}
+		}
+
+		@Override
+		public void removedEntity(IEntity subject)
+		{
+			try
+			{
+				m_bridge.onEntityLeave.fire(subject.getBody());
+			} catch (ScriptExecuteException e)
+			{
+				m_logger.error("Unable to completely invoke onEntityEnter script event", e);
+			}
+		}
 	}
 
 	public interface IWorldObserver
@@ -268,6 +296,8 @@ public final class World implements IDisposable
 		private final IFunctionFactory m_functionFactory;
 		
 		public final ScriptEvent onTick;
+		public final ScriptEvent onEntityEnter;
+		public final ScriptEvent onEntityLeave;
 		
 		private final Logger m_logger = LoggerFactory.getLogger(WorldBridge.class);
 		
@@ -276,6 +306,9 @@ public final class World implements IDisposable
 		private WorldBridge(IFunctionFactory functionFactory)
 		{
 			onTick = new ScriptEvent(functionFactory);
+			onEntityEnter = new ScriptEvent(functionFactory);
+			onEntityLeave = new ScriptEvent(functionFactory);
+			
 			m_functionFactory = functionFactory;
 		}
 			

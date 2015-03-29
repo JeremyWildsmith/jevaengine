@@ -18,8 +18,6 @@
  */
 package io.github.jevaengine.world.entity;
 
-import io.github.jevaengine.audio.IAudioClipFactory;
-import io.github.jevaengine.audio.NullAudioClipFactory;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.IScriptBuilder.ScriptConstructionException;
@@ -70,19 +68,19 @@ public final class DefaultEntity implements IEntity
 	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, String name)
 	{
 		m_name = name;	
-		m_bridge = new DefaultEntityBridge(new NullAudioClipFactory(), new NullFunctionFactory(), URI.create(""));
+		m_bridge = new DefaultEntityBridge(new NullFunctionFactory(), URI.create(""));
 
 		m_taskModel = taskModelFactory.create(this);
 	}
 	
-	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, ISceneModel model, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, PhysicsBodyDescription physicsBodyDescription, String name)
+	public DefaultEntity(IEntityTaskModelFactory taskModelFactory, ISceneModel model, IScriptBuilder behavior, PhysicsBodyDescription physicsBodyDescription, String name)
 	{
 		m_name = name;	
 		m_model = model;
 		m_physicsBodyDescription = physicsBodyDescription;
 		m_taskModel = taskModelFactory.create(this);
 	
-		m_bridge = new DefaultEntityBridge(audioClipFactory, behavior.getFunctionFactory(), behavior.getUri());
+		m_bridge = new DefaultEntityBridge(behavior.getFunctionFactory(), behavior.getUri());
 		
 		try
 		{
@@ -258,9 +256,9 @@ public final class DefaultEntity implements IEntity
 	
 	public final class DefaultEntityBridge extends EntityBridge
 	{	
-		private DefaultEntityBridge(IAudioClipFactory audioClipFactory, IFunctionFactory functionFactory, URI scriptUri)
+		private DefaultEntityBridge(IFunctionFactory functionFactory, URI scriptUri)
 		{
-			super(DefaultEntity.this, audioClipFactory, functionFactory, scriptUri);
+			super(DefaultEntity.this, functionFactory, scriptUri);
 		}
 		public final void setFlag(String name, int value)
 		{

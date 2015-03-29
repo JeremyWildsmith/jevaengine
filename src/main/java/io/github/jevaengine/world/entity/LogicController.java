@@ -19,13 +19,11 @@
 package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.audio.IAudioClipFactory;
-import io.github.jevaengine.audio.NullAudioClipFactory;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.IScriptBuilder.ScriptConstructionException;
 import io.github.jevaengine.script.NullFunctionFactory;
 import io.github.jevaengine.util.IObserverRegistry;
-import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.physics.IPhysicsBody;
@@ -37,7 +35,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,17 +67,17 @@ public class LogicController implements IEntity
 	public LogicController(IEntityTaskModelFactory taskModelFactory, String name)
 	{
 		m_name = name;	
-		m_bridge = new LogicControllerBridge(new NullAudioClipFactory(), new NullFunctionFactory(), URI.create(""));
+		m_bridge = new LogicControllerBridge(new NullFunctionFactory(), URI.create(""));
 
 		m_taskModel = taskModelFactory.create(this);
 	}
 	
-	public LogicController(IEntityTaskModelFactory taskModelFactory, IScriptBuilder behavior, IAudioClipFactory audioClipFactory, String name)
+	public LogicController(IEntityTaskModelFactory taskModelFactory, IScriptBuilder behavior, String name)
 	{
 		m_name = name;	
 		m_taskModel = taskModelFactory.create(this);
 	
-		m_bridge = new LogicControllerBridge(audioClipFactory, behavior.getFunctionFactory(), behavior.getUri());
+		m_bridge = new LogicControllerBridge(behavior.getFunctionFactory(), behavior.getUri());
 		
 		try
 		{
@@ -246,9 +243,9 @@ public class LogicController implements IEntity
 	
 	public final class LogicControllerBridge extends EntityBridge
 	{	
-		private LogicControllerBridge(IAudioClipFactory audioClipFactory, IFunctionFactory functionFactory, URI scriptUri)
+		private LogicControllerBridge(IFunctionFactory functionFactory, URI scriptUri)
 		{
-			super(LogicController.this, audioClipFactory, functionFactory, scriptUri);
+			super(LogicController.this, functionFactory, scriptUri);
 		}
 		
 		public final void setFlag(String name, int value)

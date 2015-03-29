@@ -38,7 +38,7 @@ public final class ThreadPooledWorldFactory implements IParallelWorldFactory
 	}
 	
 	@Override
-	public void create(final URI name, final float tileWidthMeters, final float tileHeightMeters, final IInitializationMonitor<World, WorldConstructionException> monitor)
+	public void create(final URI name, final IInitializationMonitor<World, WorldConstructionException> monitor)
 	{
 		m_threadPool.execute(Purpose.Loading, new Runnable() {
 			@Override
@@ -46,12 +46,18 @@ public final class ThreadPooledWorldFactory implements IParallelWorldFactory
 			{
 				try
 				{
-					monitor.completed(new FutureResult<World, WorldConstructionException>(m_worldFactory.create(name, tileWidthMeters, tileHeightMeters, monitor)));
+					monitor.completed(new FutureResult<World, WorldConstructionException>(m_worldFactory.create(name, monitor)));
 				} catch(WorldConstructionException e)
 				{
 					monitor.completed(new FutureResult<World, WorldConstructionException>(e));
 				}
 			}
 		});
+	}
+	
+	@Override
+	public IWorldFactory getFactory()
+	{
+		return m_worldFactory;
 	}
 }

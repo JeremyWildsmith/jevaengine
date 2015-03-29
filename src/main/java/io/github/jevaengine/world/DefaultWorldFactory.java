@@ -101,8 +101,6 @@ public class DefaultWorldFactory implements IWorldFactory
 	
 	protected World createBaseWorld(float friction, float metersPerUnit, int worldWidthTiles, int worldHeightTiles, @Nullable URI worldScript)
 	{
-		IPhysicsWorld physicsWorld = new ScaledPhysicsWorld(m_physicsWorldFactory.create(friction, worldWidthTiles, worldHeightTiles), metersPerUnit);
-
 		IScriptBuilder scriptBuilder = new NullScriptBuilder();
 		
 		try
@@ -115,7 +113,13 @@ public class DefaultWorldFactory implements IWorldFactory
 			m_logger.error("Unable to instantiate script builder for world, assuming no behavior associated to world.", e);
 		}
 		
-		return new World(worldWidthTiles, worldHeightTiles, physicsWorld, new ThreadPooledEntityFactory(m_entityFactory, m_threadPool), scriptBuilder);
+		return new World(worldWidthTiles,
+											worldHeightTiles,
+											friction,
+											metersPerUnit,
+											m_physicsWorldFactory, 
+											new ThreadPooledEntityFactory(m_entityFactory, m_threadPool),
+											scriptBuilder);
 	}
 	
 	protected IEntity createSceneArtifact(SceneArtifactDeclaration artifactDecl) throws EntityConstructionException
@@ -193,7 +197,7 @@ public class DefaultWorldFactory implements IWorldFactory
 	
 	@Override
 	@ThreadSafe
-	public final World create(URI name, float tileWidthMeters, float tileHeightMeters, final IInitializationProgressMonitor monitor) throws WorldConstructionException
+	public final World create(URI name, final IInitializationProgressMonitor monitor) throws WorldConstructionException
 	{
 		try
 		{

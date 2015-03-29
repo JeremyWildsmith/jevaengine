@@ -19,9 +19,6 @@
 package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.IDisposable;
-import io.github.jevaengine.audio.IAudioClipFactory;
-import io.github.jevaengine.audio.IAudioClipFactory.AudioClipConstructionException;
-import io.github.jevaengine.audio.NullAudioClipFactory;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.script.IFunction;
 import io.github.jevaengine.script.IFunctionFactory;
@@ -38,7 +35,6 @@ import io.github.jevaengine.world.World.WorldBridge;
 import io.github.jevaengine.world.entity.tasks.IdleTask;
 import io.github.jevaengine.world.entity.tasks.InvokeScriptFunctionTask;
 import io.github.jevaengine.world.entity.tasks.InvokeScriptTimeoutFunctionTask;
-import io.github.jevaengine.world.entity.tasks.PlayAudioTask;
 import io.github.jevaengine.world.entity.tasks.SynchronousOneShotTask;
 import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsBodyOrientationObserver;
@@ -121,7 +117,6 @@ public interface IEntity extends IDisposable
 		private final Logger m_logger = LoggerFactory.getLogger(EntityBridge.class);
 		
 		private final IEntity m_host;
-		private final IAudioClipFactory m_audioClipFactory;
 		private final IFunctionFactory m_functionFactory;
 		
 		public final ScriptEvent onEnter;
@@ -135,11 +130,10 @@ public interface IEntity extends IDisposable
 		
 		protected final URI m_context;
 		
-		public EntityBridge(IEntity host, IAudioClipFactory audioClipFactory, IFunctionFactory functionFactory, URI context)
+		public EntityBridge(IEntity host, IFunctionFactory functionFactory, URI context)
 		{
 			m_host = host;
 			m_context = context;
-			m_audioClipFactory = audioClipFactory;
 			m_functionFactory = functionFactory;
 			
 			onEnter = new ScriptEvent(functionFactory);
@@ -152,14 +146,14 @@ public interface IEntity extends IDisposable
 			host.getBody().getObservers().add(m_notifier);
 		}
 		
-		public EntityBridge(IEntity host, IAudioClipFactory audioClipFactory, IFunctionFactory functionFactory)
+		public EntityBridge(IEntity host, IFunctionFactory functionFactory)
 		{
-			this(host, audioClipFactory, functionFactory, URI.create(""));
+			this(host, functionFactory, URI.create(""));
 		}
 
 		public EntityBridge(IEntity host)
 		{
-			this(host, new NullAudioClipFactory(), new NullFunctionFactory());
+			this(host, new NullFunctionFactory());
 		}
 		
 		@ScriptHiddenMember
@@ -220,17 +214,6 @@ public interface IEntity extends IDisposable
 		public final void cancelTasks()
 		{
 			getEntity().getTaskModel().cancelTasks();
-		}
-
-		public final void playAudio(String audioName)
-		{
-			try
-			{
-				getEntity().getTaskModel().addTask(new PlayAudioTask(m_audioClipFactory.create(m_context.resolve(new URI(audioName)))));
-			} catch (URISyntaxException | AudioClipConstructionException e)
-			{
-				m_logger.error("Error playing audio on entity " + getEntity().getInstanceName(), e);
-			}
 		}
 		
 		public final void invoke(Object target, Object ... parameters)

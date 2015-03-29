@@ -27,7 +27,7 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(DefaultWorldFactory.class)
 public interface IWorldFactory
 {
-	World create(URI name, float tileWidthMeters, float tileHeightMeters, IInitializationProgressMonitor progressMonitor) throws WorldConstructionException;
+	World create(URI name, IInitializationProgressMonitor progressMonitor) throws WorldConstructionException;
 
 	public static final class WorldConstructionException extends Exception
 	{
@@ -42,8 +42,7 @@ public interface IWorldFactory
 	{
 
 		@Override
-		public World create(URI name, float tileWidthMeters,
-				float tileHeightMeters,
+		public World create(URI name,
 				IInitializationProgressMonitor progressMonitor)
 				throws WorldConstructionException
 		{

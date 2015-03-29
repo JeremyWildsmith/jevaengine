@@ -49,7 +49,7 @@ import org.jbox2d.dynamics.joints.FrictionJointDef;
 
 public final class JBox2DWorld implements IPhysicsWorld
 {
-	private World m_physicsWorld = new World(new Vec2());
+	private final World m_physicsWorld = new World(new Vec2());
 
 	private static final float WORLD_STEP_INTERVAL = 1000.0F / 30.0F; //1/30th of a second
 	
@@ -61,21 +61,13 @@ public final class JBox2DWorld implements IPhysicsWorld
 	
 	private final PhysicsContactListener m_contactListener = new PhysicsContactListener();
 	
-	public JBox2DWorld(float maxSurfaceFrictionForceNewtonMeters, int worldWidthTiles, int worldHeightTiles)
+	public JBox2DWorld(float maxSurfaceFrictionForceNewtonMeters)
 	{
 		m_maxSurfaceFrictionForceNewtonMeters = maxSurfaceFrictionForceNewtonMeters;
 		
 		BodyDef surfaceBodyDef = new BodyDef();
 		surfaceBodyDef.type = BodyType.STATIC;
 		m_surfaceBody = m_physicsWorld.createBody(surfaceBodyDef);
-		
-		FixtureDef surfaceFixtureDef = new FixtureDef();
-		
-		PolygonShape surfaceShape = new PolygonShape();
-		surfaceShape.setAsBox(worldWidthTiles, worldHeightTiles);
-		surfaceFixtureDef.shape = surfaceShape;
-		surfaceFixtureDef.filter.categoryBits = 0;
-		m_surfaceBody.createFixture(surfaceFixtureDef);
 		
 		m_physicsWorld.setContactListener(m_contactListener);
 	}

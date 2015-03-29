@@ -25,5 +25,5 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(JBox2DWorldFactory.class)
 public interface IPhysicsWorldFactory
 {
-	IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters, int worldWidthTiles, int worldHeightTiles);
+	IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters);
 }
