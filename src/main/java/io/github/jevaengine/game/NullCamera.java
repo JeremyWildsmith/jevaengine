@@ -18,10 +18,12 @@
  */
 package io.github.jevaengine.game;
 
+import io.github.jevaengine.world.scene.camera.ICamera;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.World;
+import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.NullSceneBuffer;
 
 public final class NullCamera implements ICamera
@@ -31,6 +33,12 @@ public final class NullCamera implements ICamera
 	{
 		return new NullSceneBuffer();
 	}
+	
+	@Override
+	public void addEffect(ISceneBufferEffect e) { }
+	
+	@Override
+	public void removeEffect(ISceneBufferEffect e) { }
 
 	@Override
 	public void dettach() { }

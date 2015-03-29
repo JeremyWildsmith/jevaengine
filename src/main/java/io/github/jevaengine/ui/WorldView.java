@@ -18,7 +18,7 @@
  */
 package io.github.jevaengine.ui;
 
-import io.github.jevaengine.game.ICamera;
+import io.github.jevaengine.world.scene.camera.ICamera;
 import io.github.jevaengine.game.NullCamera;
 import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.graphics.NullGraphic;

@@ -16,29 +16,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.game;
+package io.github.jevaengine.world.scene.camera;
 
-import io.github.jevaengine.graphics.IRenderable;
-import io.github.jevaengine.math.Vector2D;
+import io.github.jevaengine.math.Rect2D;
+import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
+import io.github.jevaengine.world.World;
+import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-
-public final class NullRenderer implements IRenderer
+public interface ICamera
 {
-	@Override
-	public GraphicsConfiguration getGraphicsConfiguration()
-	{
-		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
-	}
+	IImmutableSceneBuffer getScene(Rect2D bounds, float scale);
+	
+	Vector3F getLookAt();
 
-	@Override
-	public void render(IRenderable frame) { }
-
-	@Override
-	public Vector2D getResolution()
-	{
-		return new Vector2D();
-	}
-
+	void addEffect(ISceneBufferEffect effect);
+	void removeEffect(ISceneBufferEffect effect);
+	
+	void dettach();
+	void attach(World world);
 }

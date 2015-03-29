@@ -16,25 +16,30 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.world.scene;
+package io.github.jevaengine.world.scene.camera;
 
-import io.github.jevaengine.math.Matrix3X3;
+import io.github.jevaengine.game.IRenderer;
+import io.github.jevaengine.graphics.IRenderable;
+import io.github.jevaengine.math.Vector2D;
 
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 
-
-public class PaintersOrthographicProjectionSceneBufferFactory implements ISceneBufferFactory
+public final class NullRenderer implements IRenderer
 {
-	private final Matrix3X3 m_projection;
-
-	public PaintersOrthographicProjectionSceneBufferFactory(Matrix3X3 projection)
-	{
-		m_projection = new Matrix3X3(projection);
-	}
-	
 	@Override
-	public ISceneBuffer create()
+	public GraphicsConfiguration getGraphicsConfiguration()
 	{
-		return new PaintersOrthographicProjectionSceneBuffer(new Matrix3X3(m_projection));
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+	}
+
+	@Override
+	public void render(IRenderable frame) { }
+
+	@Override
+	public Vector2D getResolution()
+	{
+		return new Vector2D();
 	}
 
 }

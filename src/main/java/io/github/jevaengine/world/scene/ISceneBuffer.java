@@ -18,17 +18,42 @@
  */
 package io.github.jevaengine.world.scene;
 
+import io.github.jevaengine.graphics.IRenderable;
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
+import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelComponent;
+import java.awt.Graphics2D;
+import java.util.Collection;
 
 public interface ISceneBuffer extends IImmutableSceneBuffer
 {		
 	void addModel(IImmutableSceneModel model, @Nullable IEntity dispatcher, Vector3F location);
 	void addModel(IImmutableSceneModel model, Vector3F location);
+	void addEffect(ISceneBufferEffect effect);
 	void reset();
 	
 	void translate(Vector2D translation);
+	
+	public interface ISceneBufferEffect
+	{
+		IRenderable getUnderlay();
+		IRenderable getOverlay();
+		
+		void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
+		void postRenderComponent();
+	}
+	
+	public interface ISceneBufferEntry
+	{
+		@Nullable
+		IEntity getDispatcher();
+		
+		ISceneModelComponent getComponent();
+		
+		Rect2D getProjectedAABB();
+	}
 }

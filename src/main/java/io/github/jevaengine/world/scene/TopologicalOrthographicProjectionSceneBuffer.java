@@ -65,6 +65,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 
 	private final LinkedList<Vertex> m_unsortedVertices = new LinkedList<>();
 	private final LinkedList<Vertex> m_sortedVertices = new LinkedList<>();
+	private final List<ISceneBufferEffect> m_effects = new ArrayList<>();
 	
 	private final ConcurrentLinkedQueue<Vertex> m_dependencyMappingWorkQueue = new ConcurrentLinkedQueue<>();
 	
@@ -150,6 +151,12 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 	{
 		addModel(model, null, location);
 	}
+	
+	@Override
+	public void addEffect(ISceneBufferEffect effect)
+	{
+		m_effects.add(effect);
+	}
 
 	@Override
 	public void reset()
@@ -157,6 +164,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		m_isTopologicalSortDirty = false;
 		m_unsortedVertices.clear();
 		m_sortedVertices.clear();
+		m_effects.clear();
 		m_translation = new Vector2D();
 	}
 	
@@ -240,17 +248,46 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		g.drawLine(offsetX + bfC.x, offsetY + bfC.y, offsetX + tfC.x, offsetY + tfC.y);
 	}
 	
+	private void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, Vertex subject)
+	{
+		List<ISceneBufferEntry> beneath = new ArrayList<>();
+		
+		for(Vertex v : subject.getPersistentIns())
+			beneath.add(v.m_entry);
+		
+		for(ISceneBufferEffect e : m_effects)
+			e.preRenderComponent(g, offsetX, offsetY, scale, subject.m_entry, beneath);
+
+	}
+	
+	private void postRenderComponent()
+	{
+		for(ISceneBufferEffect e : m_effects)
+			e.postRenderComponent();
+	}
+	
 	@Override
 	public void render(Graphics2D g, int offsetX, int offsetY, float scale)
 	{
+		for(ISceneBufferEffect e : m_effects)
+			e.getUnderlay().render(g, offsetY, offsetY, scale);
+		
 		sort();
 		for (Vertex v : m_sortedVertices)
-		{	
+		{
+			preRenderComponent(g, offsetX, offsetY, scale, v);			
+			
 			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
 			debugDrawBack(g, offsetX, offsetY, scale, v.m_entry.bounds);
-			v.m_entry.graphic.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
+			v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
 			debugDrawFront(g, offsetX, offsetY, scale, v.m_entry.bounds);
+			
+			postRenderComponent();
 		}
+		
+		for(ISceneBufferEffect e : m_effects)
+			e.getOverlay().render(g, offsetY, offsetY, scale);
+		
 	}
 	
 	@Override
@@ -276,7 +313,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			
 			if(dispatcher != null &&
 				clazz.isAssignableFrom(dispatcher.getClass()) &&
-				entry.graphic.testPick(relativePick.x, relativePick.y, scale))
+				entry.component.testPick(relativePick.x, relativePick.y, scale))
 				return (T)dispatcher;
 		}
 		
@@ -324,9 +361,9 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		}
 	}
 	
-	private static final class SceneGraphicEntry
+	private static final class SceneGraphicEntry implements ISceneBufferEntry
 	{
-		private ISceneModelComponent graphic;
+		private ISceneModelComponent component;
 		
 		@Nullable
 		private IEntity dispatcher;
@@ -338,15 +375,15 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		
 		public SceneGraphicEntry(IEntity _dispatcher, ISceneModelComponent _graphic, Vector3F _location, Matrix3X3 projectionMatrix)
 		{
-			graphic = _graphic;
+			component = _graphic;
 			dispatcher = _dispatcher;
 			bounds = new Rect3F(_graphic.getBounds()).add(_location);
-			projectedAABB = getProjectedAABB(bounds, projectionMatrix);
+			projectedAABB = calculateProjectedAABB(bounds, projectionMatrix);
 			
 			location = new Vector3F(_location);
 		}
 		
-		private static Rect2D getProjectedAABB(Rect3F a, Matrix3X3 projectionMatrix)
+		private static Rect2D calculateProjectedAABB(Rect3F a, Matrix3X3 projectionMatrix)
 		{
 			Rect2D aAABB = new Rect2D();
 			
@@ -357,6 +394,24 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			
 			return aAABB;
 		}
+
+		@Override
+		public IEntity getDispatcher()
+		{
+			return dispatcher;
+		}
+
+		@Override
+		public ISceneModelComponent getComponent()
+		{
+			return component;
+		}
+
+		@Override
+		public Rect2D getProjectedAABB()
+		{
+			return projectedAABB;
+		}
 	}
 	
 	private static final class Vertex
@@ -364,6 +419,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		private SceneGraphicEntry m_entry;
 		private boolean m_wasVisited = false;
 		private final ArrayList<Vertex> m_ins = new ArrayList<>();
+		private final ArrayList<Vertex> m_persistentIns = new ArrayList<>();
 		
 		public Vertex(SceneGraphicEntry e)
 		{
@@ -373,6 +429,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		public void inFrom(Vertex src)
 		{
 			m_ins.add(src);
+			m_persistentIns.add(src);
 		}
 	
 		public void clearIns()
@@ -410,6 +467,12 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			m_ins.remove(0);
 			
 			return v;
+		}
+		
+		@Nullable
+		public Vertex[] getPersistentIns()
+		{
+			return m_persistentIns.toArray(new Vertex[m_persistentIns.size()]);
 		}
 	}
 }

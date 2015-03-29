@@ -67,7 +67,10 @@ public final class NullSceneBuffer implements ISceneBuffer
 
 	@Override
 	public void addModel(IImmutableSceneModel model, Vector3F location) { }
-
+	
+	@Override
+	public void addEffect(ISceneBufferEffect effect) { }
+	
 	@Override
 	public void reset() { }
 

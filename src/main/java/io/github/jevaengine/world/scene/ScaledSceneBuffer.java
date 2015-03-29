@@ -88,6 +88,12 @@ public final class ScaledSceneBuffer implements ISceneBuffer
 	}
 
 	@Override
+	public void addEffect(ISceneBufferEffect e)
+	{
+		m_buffer.addEffect(e);
+	}
+	
+	@Override
 	public void reset()
 	{
 		m_buffer.reset();
