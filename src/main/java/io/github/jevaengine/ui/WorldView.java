@@ -19,7 +19,7 @@
 package io.github.jevaengine.ui;
 
 import io.github.jevaengine.world.scene.camera.ICamera;
-import io.github.jevaengine.game.NullCamera;
+import io.github.jevaengine.world.scene.camera.NullCamera;
 import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.joystick.InputKeyEvent;
@@ -144,7 +144,7 @@ public final class WorldView extends Control
 		g.clipRect(x, y, getBounds().width, getBounds().height);
 		
 		m_lastScene = m_camera.getScene(getBounds(), scale);
-		m_lastScene.render(g, x, y, scale);
+		m_lastScene.render(g, x, y, scale, getBounds());
 			
 		g.setClip(oldClip);
 	}

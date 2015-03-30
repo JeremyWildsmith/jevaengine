@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.game;
+package io.github.jevaengine.world.scene.camera;
 
 import io.github.jevaengine.world.scene.camera.ICamera;
 import io.github.jevaengine.math.Rect2D;
