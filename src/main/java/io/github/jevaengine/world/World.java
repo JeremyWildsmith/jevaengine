@@ -44,6 +44,7 @@ import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.util.SynchronousExecutor;
 import io.github.jevaengine.util.SynchronousExecutor.ISynchronousTask;
 import io.github.jevaengine.world.EffectMap.TileEffects;
+import io.github.jevaengine.world.IWeatherFactory.IWeather;
 import io.github.jevaengine.world.SceneGraph.EntitySet;
 import io.github.jevaengine.world.SceneGraph.ISceneGraphObserver;
 import io.github.jevaengine.world.entity.IEntity;
@@ -85,8 +86,11 @@ public final class World implements IDisposable
 	private final IPhysicsWorld m_physicsWorld;
 	private final IParallelEntityFactory m_entityFactory;
 	
-	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, IPhysicsWorldFactory physicsWorldFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
+	private final IWeather m_weather;
+	
+	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, IWeather weather, IPhysicsWorldFactory physicsWorldFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
 	{
+		m_weather = weather;
 		m_physicsWorld = new ScaledPhysicsWorld(physicsWorldFactory.create(friction), metersPerUnit);
 		m_metersPerUnit = metersPerUnit;
 		m_entityFactory = entityFactory;
@@ -104,6 +108,7 @@ public final class World implements IDisposable
 	@Override
 	public void dispose()
 	{
+		m_weather.dispose();
 		m_entityContainer.dispose();
 	}
 
@@ -211,11 +216,13 @@ public final class World implements IDisposable
 		//It is important that the physics world be updated after the entities have been updated.
 		//The forces to be applied this cycle may be relative to the delta time elapsed since last cycle.
 		m_physicsWorld.update(delta);
+		m_weather.update(delta);
 	}
 	
 	public void fillScene(ISceneBuffer sceneBuffer, Rect2F region)
 	{
 		m_entityContainer.enqueueRender(sceneBuffer, region);
+		sceneBuffer.addEffect(m_weather);
 	}
 	
 	private class WorldEntityObserver implements ISceneGraphObserver

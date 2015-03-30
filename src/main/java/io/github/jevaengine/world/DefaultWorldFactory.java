@@ -43,15 +43,16 @@ import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.Artifac
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.EntityImportDeclaration;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.SceneArtifactDeclaration;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.ZoneDeclaration;
+import io.github.jevaengine.world.IWeatherFactory.IWeather;
+import io.github.jevaengine.world.IWeatherFactory.NullWeather;
+import io.github.jevaengine.world.IWeatherFactory.WeatherConstructionException;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.entity.IEntityFactory;
 import io.github.jevaengine.world.entity.IEntityFactory.EntityConstructionException;
 import io.github.jevaengine.world.entity.IEntityFactory.UnsupportedEntityTypeException;
 import io.github.jevaengine.world.entity.SceneArtifact;
 import io.github.jevaengine.world.entity.ThreadPooledEntityFactory;
-import io.github.jevaengine.world.physics.IPhysicsWorld;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
-import io.github.jevaengine.world.physics.ScaledPhysicsWorld;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModelFactory;
 import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
@@ -79,6 +80,8 @@ public class DefaultWorldFactory implements IWorldFactory
 	protected final IPhysicsWorldFactory m_physicsWorldFactory;
 	protected final IAnimationSceneModelFactory m_animationSceneModelFactory;
 	
+	private final IWeatherFactory m_weatherFactory;
+	
 	@Inject
 	public DefaultWorldFactory(IEngineThreadPool threadPool,
 								IEntityFactory entityFactory,
@@ -87,7 +90,8 @@ public class DefaultWorldFactory implements IWorldFactory
 								ISpriteFactory spriteFactory,
 								IAudioClipFactory audioClipFactory,
 								IPhysicsWorldFactory physicsWorldFactory,
-								IAnimationSceneModelFactory animationSceneModelFactory)
+								IAnimationSceneModelFactory animationSceneModelFactory,
+								IWeatherFactory weatherFactory)
 	{
 		m_threadPool = threadPool;
 		m_entityFactory = entityFactory;
@@ -97,9 +101,10 @@ public class DefaultWorldFactory implements IWorldFactory
 		m_audioClipFactory = audioClipFactory;
 		m_physicsWorldFactory = physicsWorldFactory;
 		m_animationSceneModelFactory = animationSceneModelFactory;
+		m_weatherFactory = weatherFactory;
 	}
 	
-	protected World createBaseWorld(float friction, float metersPerUnit, int worldWidthTiles, int worldHeightTiles, @Nullable URI worldScript)
+	protected World createBaseWorld(float friction, float metersPerUnit, int worldWidthTiles, int worldHeightTiles, IWeather weather, @Nullable URI worldScript)
 	{
 		IScriptBuilder scriptBuilder = new NullScriptBuilder();
 		
@@ -117,6 +122,7 @@ public class DefaultWorldFactory implements IWorldFactory
 											worldHeightTiles,
 											friction,
 											metersPerUnit,
+											weather,
 											m_physicsWorldFactory, 
 											new ThreadPooledEntityFactory(m_entityFactory, m_threadPool),
 											scriptBuilder);
@@ -195,6 +201,22 @@ public class DefaultWorldFactory implements IWorldFactory
 		monitor.statusChanged(1.0F, "Completed");
 	}
 	
+	private IWeather createWeather(URI context, WorldConfiguration world)
+	{
+		try
+		{
+			if(world.weather == null)
+				return new NullWeather();
+			
+			return m_weatherFactory.create(context.resolve(new URI(world.weather)));
+		} catch (WeatherConstructionException | URISyntaxException e)
+		{
+			m_logger.error("Unable to construct world weather, using null weather instead.", e);
+			
+			return new NullWeather();
+		}
+	}
+	
 	@Override
 	@ThreadSafe
 	public final World create(URI name, final IInitializationProgressMonitor monitor) throws WorldConstructionException
@@ -205,6 +227,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			
 			World world = createBaseWorld(worldConfig.friction, worldConfig.metersPerUnit,
 											worldConfig.worldWidth, worldConfig.worldHeight,
+											createWeather(name, worldConfig),
 											worldConfig.script == null ? null : name.resolve(new URI(worldConfig.script)));
 			
 			for (int i = 0; i < worldConfig.artifactPlanes.length; i++)
@@ -266,6 +289,8 @@ public class DefaultWorldFactory implements IWorldFactory
 	{	
 		@Nullable
 		public String script;
+
+		public String weather;
 		
 		public int worldWidth;
 		public int worldHeight;
@@ -286,6 +311,9 @@ public class DefaultWorldFactory implements IWorldFactory
 			if(this.script != null)
 				target.addChild("script").setValue(this.script);
 			
+			if(this.weather != null)
+				target.addChild("weather").setValue(weather);
+			
 			target.addChild("worldWidth").setValue(this.worldWidth);
 			target.addChild("worldHeight").setValue(this.worldHeight);
 
@@ -305,6 +333,9 @@ public class DefaultWorldFactory implements IWorldFactory
 			{
 				if(source.childExists("script"))
 					this.script = source.getChild("script").getValue(String.class);
+				
+				if(source.childExists("weather"))
+					this.weather = source.getChild("weather").getValue(String.class);
 				
 				this.worldWidth = source.getChild("worldWidth").getValue(Integer.class);
 				this.worldHeight = source.getChild("worldHeight").getValue(Integer.class);
