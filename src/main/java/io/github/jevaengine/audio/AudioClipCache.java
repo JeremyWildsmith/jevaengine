@@ -113,6 +113,7 @@ public class AudioClipCache implements IDisposable
 
 	public synchronized void freeClip(Clip clip)
 	{
+		clip.stop();
 		m_busyClips.remove(clip);
 	}
 
