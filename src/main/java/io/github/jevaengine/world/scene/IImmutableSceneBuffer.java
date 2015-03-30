@@ -19,12 +19,14 @@
 package io.github.jevaengine.world.scene;
 
 import io.github.jevaengine.graphics.IRenderable;
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
+import java.awt.Graphics2D;
 
-public interface IImmutableSceneBuffer extends IRenderable
+public interface IImmutableSceneBuffer
 {
 	Vector2F translateScreenToWorld(Vector3F screenLocation, float scale);
 	Vector2F translateScreenToWorld(Vector3F screenLocation);
@@ -33,4 +35,6 @@ public interface IImmutableSceneBuffer extends IRenderable
 
 	@Nullable
 	<T> T pick(Class<T> clazz, int x, int y, float scale);
+	
+	void render(Graphics2D g, int x, int y, float scale, Rect2D bounds);
 }

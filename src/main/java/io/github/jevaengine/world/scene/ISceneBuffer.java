@@ -40,8 +40,8 @@ public interface ISceneBuffer extends IImmutableSceneBuffer
 	
 	public interface ISceneBufferEffect
 	{
-		IRenderable getUnderlay();
-		IRenderable getOverlay();
+		IRenderable getUnderlay(Rect2D bounds);
+		IRenderable getOverlay(Rect2D bounds);
 		
 		void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
 		void postRenderComponent();

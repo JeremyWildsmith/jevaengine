@@ -18,6 +18,7 @@
  */
 package io.github.jevaengine.world.scene;
 
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
@@ -30,7 +31,7 @@ public final class NullSceneBuffer implements ISceneBuffer
 {
 
 	@Override
-	public void render(Graphics2D g, int x, int y, float scale) { }
+	public void render(Graphics2D g, int x, int y, float scale, Rect2D bounds) { }
 
 	@Override
 	public Vector2F translateScreenToWorld(Vector3F screenLocation, float scale)

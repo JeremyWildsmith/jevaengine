@@ -18,6 +18,7 @@
  */
 package io.github.jevaengine.world.scene;
 
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
@@ -70,9 +71,9 @@ public final class ScaledSceneBuffer implements ISceneBuffer
 	}
 
 	@Override
-	public void render(Graphics2D g, int x, int y, float scale)
+	public void render(Graphics2D g, int x, int y, float scale, Rect2D bounds)
 	{
-		m_buffer.render(g, x, y, scale * m_scale);
+		m_buffer.render(g, x, y, scale * m_scale, bounds);
 	}
 
 	@Override

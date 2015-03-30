@@ -267,10 +267,10 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 	}
 	
 	@Override
-	public void render(Graphics2D g, int offsetX, int offsetY, float scale)
+	public void render(Graphics2D g, int offsetX, int offsetY, float scale, Rect2D bounds)
 	{
 		for(ISceneBufferEffect e : m_effects)
-			e.getUnderlay().render(g, offsetY, offsetY, scale);
+			e.getUnderlay(bounds).render(g, offsetX, offsetY, scale);
 		
 		sort();
 		for (Vertex v : m_sortedVertices)
@@ -286,7 +286,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		}
 		
 		for(ISceneBufferEffect e : m_effects)
-			e.getOverlay().render(g, offsetY, offsetY, scale);
+			e.getOverlay(bounds).render(g, offsetX, offsetY, scale);
 		
 	}
 	
