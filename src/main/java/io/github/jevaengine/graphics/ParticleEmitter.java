@@ -22,24 +22,24 @@ import io.github.jevaengine.math.Vector2F;
 
 import java.awt.Graphics2D;
 
-public final class ParticleEmitter implements IRenderable
+public final class ParticleEmitter implements IParticleEmitter
 {
 	private static final int MAX_SPRITES = 25;
 	
-	private Sprite[] m_spriteMaps;
-	private Sprite[] m_particleSprites;
+	private final Sprite[] m_spriteMaps;
+	private final Sprite[] m_particleSprites;
 
-	private Vector2F m_acceleration;
+	private final Vector2F m_acceleration;
 
-	private int m_particleCount;
+	private final int m_particleCount;
 
-	private int m_particleLife;
+	private final int m_particleLife;
 
-	private float m_fVariation;
+	private final float m_fVariation;
 
-	private Vector2F m_velocity;
+	private final Vector2F m_velocity;
 
-	private float[] m_particleBuffer;
+	private final float[] m_particleBuffer;
 
 	private boolean m_isEmitting;
 
@@ -57,6 +57,7 @@ public final class ParticleEmitter implements IRenderable
 		m_isEmitting = false;
 	}
 
+	@Override
 	public void update(int deltaTime)
 	{
 		for (int i = 0; i < m_particleCount; i++)
@@ -112,6 +113,7 @@ public final class ParticleEmitter implements IRenderable
 		}
 	}
 
+	@Override
 	public void setEmit(boolean emit)
 	{
 		m_isEmitting = emit;

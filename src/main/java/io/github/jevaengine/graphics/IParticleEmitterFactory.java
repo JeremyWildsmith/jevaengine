@@ -24,7 +24,7 @@ import java.net.URI;
 @ImplementedBy(DefaultParticleEmitterFactory.class)
 public interface IParticleEmitterFactory
 {
-	ParticleEmitter create(URI name) throws ParticleEmitterConstructionException;
+	IParticleEmitter create(URI name) throws ParticleEmitterConstructionException;
 	
 	public static final class ParticleEmitterConstructionException extends Exception
 	{
