@@ -7,6 +7,7 @@ package io.github.jevaengine.world.scene.effect;
 
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
+import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
@@ -34,13 +35,13 @@ public final class HideEntityObstructionsEffect implements ISceneBufferEffect
 	}
 	
 	@Override
-	public IRenderable getUnderlay()
+	public IRenderable getUnderlay(Rect2D bounds)
 	{
 		return new NullGraphic();
 	}
 
 	@Override
-	public IRenderable getOverlay()
+	public IRenderable getOverlay(Rect2D bounds)
 	{
 		return new NullGraphic();
 	}
