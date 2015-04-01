@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class DefaultRoutingRules implements IRoutingRules
 {
-	private Direction[] m_allowedMovements;
+	private final Direction[] m_allowedMovements;
 	
 	public DefaultRoutingRules(Direction[] allowedMovements)
 	{
@@ -38,7 +38,7 @@ public class DefaultRoutingRules implements IRoutingRules
 	@Override
 	public Direction[] getMovements(World world, SearchNode currentNode, @Nullable Vector2D destination)
 	{
-		ArrayList<Direction> m_directions = new ArrayList<Direction>();
+		ArrayList<Direction> m_directions = new ArrayList<>();
 
 		for (Direction dir : m_allowedMovements)
 		{
