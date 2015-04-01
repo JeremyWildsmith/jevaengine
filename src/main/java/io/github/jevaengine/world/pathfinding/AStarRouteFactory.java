@@ -39,8 +39,8 @@ public final class AStarRouteFactory implements IRouteFactory
 		if(!world.getTileEffects(endPoint.round()).isTraversable() && arrivalTolorance <= 0)
 			throw new IncompleteRouteException(route);
 		
-		ArrayList<SearchNode> open = new ArrayList<SearchNode>();
-		ArrayList<SearchNode> closed = new ArrayList<SearchNode>();
+		ArrayList<SearchNode> open = new ArrayList<>();
+		ArrayList<SearchNode> closed = new ArrayList<>();
 
 		SearchNode base = new SearchNode(world, null, Direction.Zero, startPoint.round());
 		open.add(base);
