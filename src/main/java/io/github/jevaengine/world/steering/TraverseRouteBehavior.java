@@ -40,7 +40,14 @@ public class TraverseRouteBehavior implements ISteeringBehavior
 	
 	@Override
 	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection)
-	{	
+	{		
+		//Attempt to validate path
+		if(subject.getOwner() != null)
+		{
+			if(m_route.validate(subject.getLocation().getXy(), subject.getOwner().getWorld()) == 0)
+				return currentDirection;
+		}
+		
 		Vector2F currentTarget = m_route.getCurrentTarget();
 		
 		if(currentTarget == null)
