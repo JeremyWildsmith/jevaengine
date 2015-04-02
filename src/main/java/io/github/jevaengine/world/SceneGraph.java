@@ -231,7 +231,7 @@ public final class SceneGraph implements IDisposable
 		
 		private void place()
 		{
-			Rect3F aabb = m_subject.getModel().getAABB().add(m_subject.getBody().getLocation());
+			Rect3F aabb = m_subject.getBody().getAABB();
 			Vector2D min = aabb.min().getXy().floor();
 			Vector2D max = aabb.max().getXy().ceil();
 			
@@ -273,6 +273,7 @@ public final class SceneGraph implements IDisposable
 			{
 				oldBody.getObservers().remove(m_observer);
 				newBody.getObservers().add(m_observer);
+				refresh();
 			}
 			
 			@Override
@@ -401,8 +402,9 @@ public final class SceneGraph implements IDisposable
 			return m_staticEffectMap.getTileEffects(location).overlay(m_dynamicEffectMap.getTileEffects(location));
 		}
 
-		private void blendEffectMap(EffectMap map, IPhysicsBody body)
+		private void blendEffectMap(EffectMap map, IEntity entity)
 		{
+			IPhysicsBody body = entity.getBody();
 			Rect2F bounds = body.getAABB().getXy();
 			
 			if(body.isCollidable() && bounds.hasArea())
@@ -412,10 +414,10 @@ public final class SceneGraph implements IDisposable
 				int right = x + (int)Math.ceil(bounds.width);
 				int bottom = y + (int)Math.ceil(bounds.height);
 				
-				for(; x < right; x++)
+				for(int cx = x; cx < right; cx++)
 				{
-					for(; y < bottom; y++)
-						map.applyOverlayEffects(new Vector2D(x, y), new TileEffects(false));
+					for(int cy = y; cy < bottom; cy++)
+						map.applyOverlayEffects(new Vector2D(cx, cy), new TileEffects(entity, false));
 				}
 			}
 		}
@@ -425,14 +427,14 @@ public final class SceneGraph implements IDisposable
 			m_dynamicEffectMap.clear();
 
 			for (IEntity e : m_dynamic)
-				blendEffectMap(m_dynamicEffectMap, e.getBody());
+				blendEffectMap(m_dynamicEffectMap, e);
 			
 			if (m_isDirty)
 			{
 				m_staticEffectMap.clear();
 
 				for (IEntity e : m_static)
-					blendEffectMap(m_staticEffectMap, e.getBody());
+					blendEffectMap(m_staticEffectMap, e);
 				
 				m_isDirty = false;
 			}
