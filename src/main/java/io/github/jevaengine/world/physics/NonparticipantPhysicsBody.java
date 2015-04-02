@@ -30,19 +30,28 @@ import io.github.jevaengine.world.entity.IEntity;
 public final class NonparticipantPhysicsBody implements IPhysicsBody
 {
 	private final IEntity m_owner;
+	private final Rect3F m_aabb;
 	private Vector3F m_location = new Vector3F();
 	private Direction m_direction = Direction.Zero;
 
 	private final Observers m_observers = new Observers();
 	
+	public NonparticipantPhysicsBody(IEntity owner, Rect3F aabb)
+	{
+		m_owner = owner;
+		m_aabb = new Rect3F(aabb);
+	}
+
 	public NonparticipantPhysicsBody(IEntity owner)
 	{
 		m_owner = owner;
+		m_aabb = new Rect3F();
 	}
-
+	
 	public NonparticipantPhysicsBody()
 	{
 		m_owner = null;
+		m_aabb = new Rect3F();
 	}
 	
 	@Override
@@ -159,12 +168,12 @@ public final class NonparticipantPhysicsBody implements IPhysicsBody
 	@Override
 	public Rect3F getAABB()
 	{
-		return new Rect3F();
+		return m_aabb.add(m_location);
 	}
 
 	@Override
 	public Circle3F getBoundingCircle()
 	{
-		return new Circle3F();
+		return new Circle3F(m_location.x, m_location.y, m_location.z, Math.max(Math.max(m_aabb.width, m_aabb.height), m_aabb.depth));
 	}
 }
