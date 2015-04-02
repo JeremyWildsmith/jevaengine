@@ -134,15 +134,12 @@ public final class World implements IDisposable
 
 	public TileEffects getTileEffects(Vector2D location)
 	{
-		if(location.x >= m_worldBounds.width || location.y >= m_worldBounds.height || location.x < 0 || location.y < 0)
-			return new TileEffects(false);
-		else
-			return m_entityContainer.getTileEffects(location);
+		return m_entityContainer.getTileEffects(location);
 	}
 
 	public TileEffects[] getTileEffects(ISearchFilter<TileEffects> filter)
 	{
-		ArrayList<TileEffects> tileEffects = new ArrayList<TileEffects>();
+		ArrayList<TileEffects> tileEffects = new ArrayList<>();
 
 		Rect2D searchBounds = filter.getSearchBounds();
 
@@ -308,7 +305,7 @@ public final class World implements IDisposable
 		
 		private final Logger m_logger = LoggerFactory.getLogger(WorldBridge.class);
 		
-		private URI m_context = URI.create("");
+		private final URI m_context = URI.create("");
 		
 		private WorldBridge(IFunctionFactory functionFactory)
 		{
