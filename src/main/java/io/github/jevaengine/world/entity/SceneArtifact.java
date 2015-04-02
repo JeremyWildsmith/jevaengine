@@ -117,15 +117,19 @@ public final class SceneArtifact implements IEntity
 	private void constructPhysicsBody()
 	{
 		if(m_physicsBodyDescription == null)
-			m_body = new NonparticipantPhysicsBody(this);
+			m_body = new NonparticipantPhysicsBody(this, m_model.getAABB());
 		else
+		{
 			m_body = m_world.getPhysicsWorld().createBody(this, m_physicsBodyDescription);
+			m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), m_body);
+		}
 	}
 	
 	private void destroyPhysicsBody()
 	{
 		m_body.destory();
 		m_body = new NullPhysicsBody();
+		m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), m_body);
 	}
 
 	@Override
