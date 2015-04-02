@@ -21,25 +21,22 @@ package io.github.jevaengine.world;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
+import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.search.ISearchFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class EffectMap
 {
-	private HashMap<Vector2D, TileEffects> m_tileEffects;
+	private final HashMap<Vector2D, TileEffects> m_tileEffects = new HashMap<>();
 
-	public EffectMap()
-	{
-		m_tileEffects = new HashMap<Vector2D, TileEffects>();
-	}
+	public EffectMap() { }
 
 	public EffectMap(EffectMap map)
 	{
-		m_tileEffects = new HashMap<Vector2D, TileEffects>();
-
 		for (Map.Entry<Vector2D, TileEffects> effects : map.m_tileEffects.entrySet())
 			applyOverlayEffects(effects.getKey(), effects.getValue());
 	}
@@ -59,7 +56,7 @@ public final class EffectMap
 
 	public final TileEffects[] getTileEffects(ISearchFilter<TileEffects> filter)
 	{
-		ArrayList<TileEffects> tileEffects = new ArrayList<TileEffects>();
+		List<TileEffects> tileEffects = new ArrayList<>();
 
 		Rect2D searchBounds = filter.getSearchBounds();
 
@@ -96,9 +93,7 @@ public final class EffectMap
 				}
 
 				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && (effects = filter.filter(effects)) != null)
-				{
 					effects.overlay(overlay);
-				}
 			}
 		}
 	}
@@ -124,41 +119,53 @@ public final class EffectMap
 
 	public static class TileEffects
 	{
-		private boolean isTraversable;
-		private float sightEffect;
+		private final Map<IEntity, Boolean> traversable = new HashMap<>();
+		private final Map<IEntity, Float> sightEffect = new HashMap<>();
 		
-		public TileEffects()
-		{
-			isTraversable = true;
-			sightEffect = 1.0F;
-		}
-
+		public TileEffects() { }
+		
 		public TileEffects(TileEffects effects)
 		{
-			isTraversable = effects.isTraversable;
-			sightEffect = effects.sightEffect;
+			traversable.putAll(effects.traversable);
+			sightEffect.putAll(effects.sightEffect);
 		}
 
-		public TileEffects(boolean _isTraversable)
+		public TileEffects(IEntity cause, boolean _isTraversable)
 		{
-			isTraversable = _isTraversable;
-			sightEffect = 1.0F;
+			traversable.put(cause, _isTraversable);
 		}
 
-		public TileEffects(float _sightEffect)
+		public TileEffects(IEntity cause, float _sightEffect)
 		{
-			isTraversable = true;
-			sightEffect = _sightEffect;
+			sightEffect.put(cause, _sightEffect);
 		}
 
 		public boolean isTraversable()
 		{
-			return isTraversable;
+			for(Boolean b : traversable.values())
+			{
+				if(!b)
+					return false;
+			}
+			
+			return true;
 		}
 		
 		public float getSightEffect()
 		{
-			return sightEffect;
+			return 0;
+		}
+		
+		public TileEffects ignore(IEntity subject)
+		{
+			TileEffects newEffects = new TileEffects();
+			newEffects.traversable.putAll(traversable);
+			newEffects.traversable.remove(subject);
+			
+			newEffects.sightEffect.putAll(sightEffect);
+			newEffects.sightEffect.remove(subject);
+			
+			return newEffects;
 		}
 		
 		public static TileEffects merge(TileEffects[] tiles)
@@ -174,9 +181,12 @@ public final class EffectMap
 		public TileEffects overlay(TileEffects overlay)
 		{
 			TileEffects newEffects = new TileEffects();
-			newEffects.isTraversable = isTraversable && overlay.isTraversable;
-			newEffects.sightEffect = Math.min(sightEffect, overlay.sightEffect);
-
+			newEffects.traversable.putAll(traversable);
+			newEffects.traversable.putAll(overlay.traversable);
+			
+			newEffects.sightEffect.putAll(sightEffect);
+			newEffects.sightEffect.putAll(overlay.sightEffect);
+			
 			return newEffects;
 		}
 	}
