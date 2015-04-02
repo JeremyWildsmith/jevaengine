@@ -33,7 +33,7 @@ public final class AStarRouteFactory implements IRouteFactory
 	@Override
 	public Route create(IRoutingRules routingRules, World world, Vector2F startPoint, Vector2F endPoint, float arrivalTolorance) throws IncompleteRouteException
 	{
-		Route route = new Route();
+		Route route = new Route(routingRules);
 
 		//Handle corner-cases, where endpoint cannot be reached or where routing to start point 
 		if(!world.getTileEffects(endPoint.round()).isTraversable() && arrivalTolorance <= 0)
@@ -73,12 +73,15 @@ public final class AStarRouteFactory implements IRouteFactory
 				open.remove(best);
 				closed.add(best);
 
-				for (Direction dir : routingRules.getMovements(world, best, endPoint.round()))
+				for (Direction dir : routingRules.getMovements(world, new Vector2F(best.getLocation())))
 				{
-					SearchNode step = best.addNode(dir);
+					if(!best.isIneffective(dir))
+					{
+						SearchNode step = best.addNode(dir);
 
-					if (!open.contains(step) && !closed.contains(step))
-						open.add(step);
+						if (!open.contains(step) && !closed.contains(step))
+							open.add(step);
+					}
 				}
 			}
 		}
@@ -91,13 +94,13 @@ public final class AStarRouteFactory implements IRouteFactory
 			route.addWaypoints(bestRoute.toArray(new Vector2F[bestRoute.size()]));
 			throw new IncompleteRouteException(route);
 		} else
-			throw new IncompleteRouteException(new Route());
+			throw new IncompleteRouteException(new Route(routingRules));
 	}
 
 	@Override
 	public Route create(IRoutingRules routingRules, World world, Vector2F startPoint, int length)
 	{
-		Route route = new Route();
+		Route route = new Route(routingRules);
 
 		SearchNode tail = new SearchNode(world, null, Direction.Zero, startPoint.round());
 		SearchNode head = tail;
@@ -108,9 +111,12 @@ public final class AStarRouteFactory implements IRouteFactory
 
 		while (head.traverseRoute().size() < length)
 		{
-			for (Direction dir : routingRules.getMovements(world, head, null))
-				head.addNode(dir);
-
+			for (Direction dir : routingRules.getMovements(world, new Vector2F(head.getLocation())))
+			{
+				if(!head.isIneffective(dir))
+					head.addNode(dir);
+			}
+			
 			if (head.getChildren().length <= 0)
 				break;
 			else

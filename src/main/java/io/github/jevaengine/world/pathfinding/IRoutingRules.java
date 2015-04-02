@@ -18,12 +18,11 @@
  */
 package io.github.jevaengine.world.pathfinding;
 
-import io.github.jevaengine.math.Vector2D;
-import io.github.jevaengine.util.Nullable;
+import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.World;
 
 public interface IRoutingRules
 {
-	public Direction[] getMovements(World world, SearchNode currentNode, @Nullable Vector2D destination);
+	public Direction[] getMovements(World world, Vector2F origin);
 }

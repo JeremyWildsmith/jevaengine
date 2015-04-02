@@ -21,56 +21,32 @@ package io.github.jevaengine.world.pathfinding;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.World;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.List;
 
 public final class Route
 {
 	private ArrayList<Vector2F> m_path = new ArrayList<>();
-
-	public Route(Vector2F ... path)
+	private final IRoutingRules m_rules;
+	
+	public Route(IRoutingRules rules, Vector2F ... path)
 	{
+		m_rules = rules;
 		m_path.addAll(Arrays.asList(path));
 	}
 	
-	public Route() { }
+	public Route(IRoutingRules rules)
+	{
+		m_rules = rules;
+	}
 	
 	public Route(Route src)
 	{
+		m_rules = src.m_rules;
 		m_path.addAll(src.m_path);
-	}
-
-	public Route reduce()
-	{
-		if(m_path.size() < 2)
-			return new Route(this);
-		
-		LinkedList<Vector2F> path = new LinkedList<>(m_path);
-		ArrayList<Vector2F> reduced = new ArrayList<>();
-		Direction lastDirection = Direction.Zero;
-		
-		for(Vector2F current; (current = path.poll()) != null;)
-		{
-			if(path.isEmpty())
-				reduced.add(current);
-			else
-			{
-				Vector2F next = path.peek();
-				Direction currentDirection = Direction.fromVector(next.difference(current));
-				
-				if(currentDirection != Direction.Zero)
-				{
-					if(currentDirection != lastDirection)
-						reduced.add(current);
-					
-					lastDirection = currentDirection;
-				}
-			}
-		}
-		
-		return new Route(reduced.toArray(new Vector2F[reduced.size()]));
 	}
 	
 	public void truncate(int maxSteps)
@@ -122,5 +98,39 @@ public final class Route
 	{
 		for(Vector2F node : nodes)
 			addWaypoint(node);
+	}
+	
+	public int validate(Vector2F start, World world)
+	{
+		List<Vector2F> path = new ArrayList<>(m_path);
+		
+		if(path.isEmpty())
+			return 0;
+		
+		if(!path.get(0).difference(start).isZero())
+			path.add(0, start);
+		
+		List<Direction> directions = new ArrayList<>();
+		
+		for(int i = 0; i < m_path.size() - 1; i++)
+		{
+			Vector2F a = m_path.get(i);
+			Vector2F b = m_path.get(i + 1);
+			
+			directions.add(Direction.fromVector(b.difference(a)));
+		}
+		
+		int validSteps = 0;
+		for(; validSteps < m_path.size() - 1; validSteps++)
+		{
+			Vector2F origin = m_path.get(validSteps);
+			
+			Direction movements[] = m_rules.getMovements(world, origin);
+			
+			if(Arrays.binarySearch(movements, directions.get(validSteps)) < 0)
+				break;
+		}
+		
+		return validSteps;
 	}
 }
