@@ -175,15 +175,15 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 				@Override
 				public void render(Graphics2D g, int x, int y, float scale)
 				{
-					if(m_shower.length == 0)
-						return;
-					
-					Vector2D current = new Vector2D();
-					Vector2D end = new Vector2D(bounds.width, bounds.height);
-					for(int i = 0; current.x < end.x && current.y < end.y; i++)
+					if(m_shower.length > 0)
 					{
-						m_shower[i % m_shower.length].render(g, x + current.x, y + current.y, scale);
-						current = current.add(m_showerDeltaPlacement);
+						Vector2D current = new Vector2D();
+						Vector2D end = new Vector2D(bounds.width, bounds.height);
+						for(int i = 0; current.x < end.x && current.y < end.y; i++)
+						{
+							m_shower[i % m_shower.length].render(g, x + current.x, y + current.y, scale);
+							current = current.add(m_showerDeltaPlacement);
+						}
 					}
 					
 					for(DefaultWeatherPhase p : m_phases)
