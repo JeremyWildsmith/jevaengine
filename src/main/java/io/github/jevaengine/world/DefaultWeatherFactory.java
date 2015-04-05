@@ -38,6 +38,7 @@ import io.github.jevaengine.graphics.IParticleEmitterFactory;
 import io.github.jevaengine.graphics.IParticleEmitterFactory.ParticleEmitterConstructionException;
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.Nullable;
@@ -160,16 +161,19 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 		public void dispose()
 		{
 			m_ambientAudio.dispose();
+			
+			for(DefaultWeatherPhase p : m_phases)
+				p.dispose();
 		}
 
 		@Override
-		public IRenderable getUnderlay(Rect2D bounds)
+		public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection)
 		{
 			return new NullGraphic();
 		}
 
 		@Override
-		public IRenderable getOverlay(final Rect2D bounds)
+		public IRenderable getOverlay(final Rect2D bounds, final Matrix3X3 projection)
 		{
 			return new IRenderable() {
 				@Override
@@ -191,12 +195,12 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 				}
 			};
 		}
-
+		
 		@Override
-		public void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, ISceneBuffer.ISceneBufferEntry subject, Collection<ISceneBuffer.ISceneBufferEntry> beneath) { }
-
-		@Override
-		public void postRenderComponent() { }
+		public ISceneBuffer.ISceneComponentEffect getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBuffer.ISceneBufferEntry subject, Collection<ISceneBuffer.ISceneBufferEntry> beneath)
+		{
+			return new ISceneBuffer.NullComponentEffect();
+		}
 	}
 
 	private final class DefaultWeatherPhase implements IDisposable
