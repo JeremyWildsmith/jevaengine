@@ -130,7 +130,7 @@ public final class Route
 		{
 			Vector2F origin = m_path.get(validSteps);
 			
-			Direction movements[] = Direction.ALL_DIRECTIONS; //m_rules.getMovements(world, origin);
+			Direction movements[] = m_rules.getMovements(world, origin);
 			
 			if(Arrays.binarySearch(movements, directions.get(validSteps)) < 0)
 				break;
