@@ -55,9 +55,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			return t;
 		}
 	});
-	
-	private final boolean m_debugDraw;
-	
+		
 	private boolean m_isTopologicalSortDirty = false;
 	private Matrix3X3 m_worldToScreenMatrix;
 	
@@ -71,18 +69,12 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 	
 	private final List<DependencyConstructRoutine> m_dependenyConstructRoutines = new ArrayList<>();
 	
-	public TopologicalOrthographicProjectionSceneBuffer(Matrix3X3 projection, boolean debugDraw)
+	public TopologicalOrthographicProjectionSceneBuffer(Matrix3X3 projection)
 	{
-		m_debugDraw = debugDraw;
 		m_worldToScreenMatrix = new Matrix3X3(projection);
 		
 		for(int i = 0; i < NUM_CONCURRENT_SORTS; i++)
 			m_dependenyConstructRoutines.add(new DependencyConstructRoutine(m_dependencyMappingWorkQueue, m_unsortedVertices));
-	}
-	
-	public TopologicalOrthographicProjectionSceneBuffer(Matrix3X3 projection)
-	{
-		this(projection, false);
 	}
 	
 	@Override
@@ -193,100 +185,44 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		return translateWorldToScreen(location, 1.0F);
 	}
 
-	private void debugDrawFront(Graphics2D g, int offsetX, int offsetY, float scale, Rect3F aabb)
-	{
-		if(!m_debugDraw || !aabb.hasVolume())
-			return;
-
-		//bottom face
-		Vector2D bfA = translateWorldToScreen(aabb.getPoint(0, 1.0F, 0), scale);
-		Vector2D bfB = translateWorldToScreen(aabb.getPoint(1.0F, 1.0F, 0), scale);
-		Vector2D bfC = translateWorldToScreen(aabb.getPoint(1.0F, 0, 0), scale);
-		
-		//top face
-		Vector2D tfA = translateWorldToScreen(aabb.getPoint(0, 1.0F, 1.0F), scale);
-		Vector2D tfB = translateWorldToScreen(aabb.getPoint(1.0F, 1.0F, 1.0F), scale);
-		Vector2D tfC = translateWorldToScreen(aabb.getPoint(1.0F, 0, 1.0F), scale);
-		
-		g.setColor(Color.blue);
-		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + bfB.x, offsetY + bfB.y);
-		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + bfC.x, offsetY + bfC.y);
-		
-		g.drawLine(offsetX + tfA.x, offsetY + tfA.y, offsetX + tfB.x, offsetY + tfB.y);
-		g.drawLine(offsetX + tfB.x, offsetY + tfB.y, offsetX + tfC.x, offsetY + tfC.y);
-
-		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + tfA.x, offsetY + tfA.y);
-		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + tfB.x, offsetY + tfB.y);
-		g.drawLine(offsetX + bfC.x, offsetY + bfC.y, offsetX + tfC.x, offsetY + tfC.y);
-	}
-
-
-	private void debugDrawBack(Graphics2D g, int offsetX, int offsetY, float scale, Rect3F aabb)
-	{
-		if(!m_debugDraw || !aabb.hasVolume())
-			return;
-
-		//bottom face
-		Vector2D bfA = translateWorldToScreen(aabb.getPoint(0, 1.0F, 0), scale);
-		Vector2D bfB = translateWorldToScreen(aabb.getPoint(0.0F, 0.0F, 0), scale);
-		Vector2D bfC = translateWorldToScreen(aabb.getPoint(1.0F, 0, 0), scale);
-		
-		//top face
-		Vector2D tfA = translateWorldToScreen(aabb.getPoint(0, 1.0F, 1), scale);
-		Vector2D tfB = translateWorldToScreen(aabb.getPoint(0.0F, 0.0F, 1), scale);
-		Vector2D tfC = translateWorldToScreen(aabb.getPoint(1.0F, 0, 1), scale);
-		
-		g.setColor(Color.green);
-		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + bfB.x, offsetY + bfB.y);
-		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + bfC.x, offsetY + bfC.y);
-		
-		g.drawLine(offsetX + tfA.x, offsetY + tfA.y, offsetX + tfB.x, offsetY + tfB.y);
-		g.drawLine(offsetX + tfB.x, offsetY + tfB.y, offsetX + tfC.x, offsetY + tfC.y);
-
-		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + tfA.x, offsetY + tfA.y);
-		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + tfB.x, offsetY + tfB.y);
-		g.drawLine(offsetX + bfC.x, offsetY + bfC.y, offsetX + tfC.x, offsetY + tfC.y);
-	}
-	
-	private void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, Vertex subject)
+	private List<ISceneComponentEffect> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, Vertex subject)
 	{
 		List<ISceneBufferEntry> beneath = new ArrayList<>();
 		
 		for(Vertex v : subject.getPersistentIns())
 			beneath.add(v.m_entry);
-		
-		for(ISceneBufferEffect e : m_effects)
-			e.preRenderComponent(g, offsetX, offsetY, scale, subject.m_entry, beneath);
-
-	}
 	
-	private void postRenderComponent()
-	{
+		List<ISceneComponentEffect> effects = new ArrayList<>();
 		for(ISceneBufferEffect e : m_effects)
-			e.postRenderComponent();
+			effects.add(e.getComponentEffect(g, offsetX, offsetY, scale, new Matrix3X3(m_worldToScreenMatrix), subject.m_entry, beneath));
+
+		return effects;
 	}
 	
 	@Override
 	public void render(Graphics2D g, int offsetX, int offsetY, float scale, Rect2D bounds)
 	{
 		for(ISceneBufferEffect e : m_effects)
-			e.getUnderlay(bounds).render(g, offsetX, offsetY, scale);
+			e.getUnderlay(bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
 		
 		sort();
 		for (Vertex v : m_sortedVertices)
 		{
-			preRenderComponent(g, offsetX, offsetY, scale, v);			
-			
 			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
-			debugDrawBack(g, offsetX, offsetY, scale, v.m_entry.bounds);
-			v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
-			debugDrawFront(g, offsetX, offsetY, scale, v.m_entry.bounds);
 			
-			postRenderComponent();
+			List<ISceneComponentEffect> effects = createComponentRenderEffects(g, offsetX + renderLocation.x, offsetY + renderLocation.y, scale, v);			
+			
+			for(ISceneComponentEffect e : effects)
+				e.prerender();
+			
+			v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
+			
+			for(ISceneComponentEffect e : effects)
+				e.postrender();
 		}
 		
 		for(ISceneBufferEffect e : m_effects)
-			e.getOverlay(bounds).render(g, offsetX, offsetY, scale);
+			e.getOverlay(bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
 		
 	}
 	

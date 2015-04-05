@@ -19,6 +19,7 @@
 package io.github.jevaengine.world.scene;
 
 import io.github.jevaengine.graphics.IRenderable;
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector3F;
@@ -40,11 +41,16 @@ public interface ISceneBuffer extends IImmutableSceneBuffer
 	
 	public interface ISceneBufferEffect
 	{
-		IRenderable getUnderlay(Rect2D bounds);
-		IRenderable getOverlay(Rect2D bounds);
+		IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection);
+		IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection);
 		
-		void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
-		void postRenderComponent();
+		ISceneComponentEffect getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
+	}
+	
+	public interface ISceneComponentEffect
+	{
+		public void prerender();
+		public void postrender();
 	}
 	
 	public interface ISceneBufferEntry
@@ -55,5 +61,14 @@ public interface ISceneBuffer extends IImmutableSceneBuffer
 		ISceneModelComponent getComponent();
 		
 		Rect2D getProjectedAABB();
+	}
+	
+	public static final class NullComponentEffect implements ISceneComponentEffect
+	{
+		@Override
+		public void prerender() { }
+
+		@Override
+		public void postrender() { }
 	}
 }
