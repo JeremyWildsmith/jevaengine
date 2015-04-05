@@ -86,7 +86,7 @@ public final class World implements IDisposable
 	private final IPhysicsWorld m_physicsWorld;
 	private final IParallelEntityFactory m_entityFactory;
 	
-	private final IWeather m_weather;
+	private IWeather m_weather;
 	
 	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, IWeather weather, IPhysicsWorldFactory physicsWorldFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
 	{
@@ -112,6 +112,19 @@ public final class World implements IDisposable
 		m_entityContainer.dispose();
 	}
 
+	public IWeather getWeather()
+	{
+		return m_weather;
+	}
+	
+	public void setWeather(IWeather weather)
+	{
+		if(m_weather != null)
+			m_weather.dispose();
+		
+		m_weather = weather;
+	}
+	
 	public IPhysicsWorld getPhysicsWorld()
 	{
 		return m_physicsWorld;
