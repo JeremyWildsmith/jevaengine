@@ -128,11 +128,11 @@ public class DefaultWorldFactory implements IWorldFactory
 											scriptBuilder);
 	}
 	
-	protected IEntity createSceneArtifact(SceneArtifactDeclaration artifactDecl) throws EntityConstructionException
+	protected IEntity createSceneArtifact(SceneArtifactDeclaration artifactDecl, URI context) throws EntityConstructionException
 	{
 		try
 		{
-			IAnimationSceneModel model = m_animationSceneModelFactory.create(new URI(artifactDecl.model));
+			IAnimationSceneModel model = m_animationSceneModelFactory.create(context.resolve(new URI(artifactDecl.model)));
 			model.setDirection(artifactDecl.direction);
 			return new SceneArtifact(model, artifactDecl.isTraversable);
 		} catch (SceneModelConstructionException | URISyntaxException e)
@@ -141,7 +141,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		}
 	}
 	
-	protected IEntity createEntity(EntityImportDeclaration entityConfig) throws EntityConstructionException
+	protected IEntity createEntity(EntityImportDeclaration entityConfig, URI context) throws EntityConstructionException
 	{
 		try
 		{
@@ -153,13 +153,13 @@ public class DefaultWorldFactory implements IWorldFactory
 				throw new EntityConstructionException(new UnsupportedEntityTypeException(entityConfig.type));
 			
 			if(entityConfig.config == null)
-				return m_entityFactory.create(entityClass, 
+				return m_entityFactory.create(entityClass,
 												entityConfig.name,
 												auxConfig);
 		
 			return m_entityFactory.create(entityClass, 
 						entityConfig.name,
-						new URI(entityConfig.config),
+						context.resolve(new URI(entityConfig.config)),
 						auxConfig);
 				
 		} catch (URISyntaxException e)
@@ -168,7 +168,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		}
 	}
 	
-	private void createTiledPlane(World world, SceneArtifactDeclaration tiles[], ArtifactPlane plane, IInitializationProgressMonitor monitor) throws TileIndexOutOfBoundsException
+	private void createTiledPlane(World world, SceneArtifactDeclaration tiles[], ArtifactPlane plane, URI context, IInitializationProgressMonitor monitor) throws TileIndexOutOfBoundsException
 	{
 		Rect2D worldBounds = world.getBounds();
 		int locationOffset = 0;
@@ -184,7 +184,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			
 				try
 				{
-					IEntity tile = createSceneArtifact(tiles[tileIndex]);
+					IEntity tile = createSceneArtifact(tiles[tileIndex], context);
 					world.addEntity(tile);
 
 					tile.getBody().setLocation(new Vector3F((locationOffset + i) % worldBounds.width, (float) Math.floor((locationOffset + i) / worldBounds.height), plane.planeZ));
@@ -233,7 +233,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			for (int i = 0; i < worldConfig.artifactPlanes.length; i++)
 			{
 				final int layer = i;
-				createTiledPlane(world, worldConfig.artifacts, worldConfig.artifactPlanes[i], new IInitializationProgressMonitor() {
+				createTiledPlane(world, worldConfig.artifacts, worldConfig.artifactPlanes[i], name, new IInitializationProgressMonitor() {
 					@Override
 					public void statusChanged(float progress, String status)
 					{
@@ -251,7 +251,7 @@ public class DefaultWorldFactory implements IWorldFactory
 
 					monitor.statusChanged(LOADING_PORTION_LAYERS + ((float)i / worldConfig.entities.length) * (1.0F - LOADING_PORTION_LAYERS), "Entities, " + entityConfig.name);
 
-					IEntity entity = createEntity(entityConfig);
+					IEntity entity = createEntity(entityConfig, name);
 					world.addEntity(entity);
 
 					if(entityConfig.location != null)
