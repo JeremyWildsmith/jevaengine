@@ -44,7 +44,7 @@ public class TraverseRouteBehavior implements ISteeringBehavior
 		//Attempt to validate path
 		if(subject.getOwner() != null)
 		{
-			if(m_route.validate(subject.getLocation().getXy(), subject.getOwner().getWorld()) == 0)
+			if(m_route.validate(subject.getLocation().getXy(), subject.getOwner().getWorld(), 1) == 0)
 				return currentDirection;
 		}
 		

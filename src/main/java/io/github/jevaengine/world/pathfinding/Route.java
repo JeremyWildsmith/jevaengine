@@ -102,6 +102,11 @@ public final class Route
 	
 	public int validate(Vector2F start, World world)
 	{
+		return validate(start, world, Integer.MAX_VALUE);
+	}
+	
+	public int validate(Vector2F start, World world, int maxSteps)
+	{
 		List<Vector2F> path = new ArrayList<>(m_path);
 		
 		if(path.isEmpty())
@@ -112,7 +117,7 @@ public final class Route
 		
 		List<Direction> directions = new ArrayList<>();
 		
-		for(int i = 0; i < m_path.size() - 1; i++)
+		for(int i = 0; i < Math.min(maxSteps, m_path.size() - 1); i++)
 		{
 			Vector2F a = m_path.get(i);
 			Vector2F b = m_path.get(i + 1);
@@ -121,11 +126,11 @@ public final class Route
 		}
 		
 		int validSteps = 0;
-		for(; validSteps < m_path.size() - 1; validSteps++)
+		for(; validSteps < Math.min(maxSteps, m_path.size() - 1); validSteps++)
 		{
 			Vector2F origin = m_path.get(validSteps);
 			
-			Direction movements[] = m_rules.getMovements(world, origin);
+			Direction movements[] = Direction.ALL_DIRECTIONS; //m_rules.getMovements(world, origin);
 			
 			if(Arrays.binarySearch(movements, directions.get(validSteps)) < 0)
 				break;
