@@ -18,68 +18,58 @@
  */
 package io.github.jevaengine.game;
 
-import io.github.jevaengine.IEngineThreadPool;
-import io.github.jevaengine.IEngineThreadPool.Purpose;
 
 import com.google.inject.Inject;
+import io.github.jevaengine.util.Nullable;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public final class GameDriver
 {
+	private static final int GAMELOOP_PERIOD = 1000 / 30;
+	
+	private final ScheduledExecutorService m_executor = new ScheduledThreadPoolExecutor(1);
+	
 	private final IGame m_game;	
-	private final IEngineThreadPool m_threadPool;
 	private final IRenderer m_renderer;
 	
-	private volatile boolean m_runGame = true;
-	private volatile boolean m_isRunning = false;
+	@Nullable
+	private ScheduledFuture<?> m_gameLoop;
 	
 	@Inject
-	public GameDriver(IGameFactory gameFactory, IEngineThreadPool threadPool, IRenderer renderer)
+	public GameDriver(IGameFactory gameFactory, IRenderer renderer)
 	{
 		m_game = gameFactory.create();
-		m_threadPool = threadPool;
 		m_renderer = renderer;
 	}
 	
 	public void begin()
 	{
-		if(m_isRunning)
+		if(m_gameLoop != null && !m_gameLoop.isCancelled() && !m_gameLoop.isDone())
 			return;
 		
-		m_runGame = true;
-		m_isRunning = true;
-		
-		m_threadPool.execute(Purpose.GameLogic, new GameLogicDriver());
+		m_gameLoop = m_executor.scheduleAtFixedRate(new GameLoop(), 0, GAMELOOP_PERIOD, TimeUnit.MILLISECONDS);
 	}
 	
 	public void stop()
 	{
-		m_runGame = false;
+		if(m_gameLoop == null)
+			return;
+		
+		m_gameLoop.cancel(false);
 	}
 	
-	private class GameLogicDriver implements Runnable
+	private class GameLoop implements Runnable
 	{
+		private long lastTime = System.currentTimeMillis();
+		@Override
 		public void run()
-		{
-			long lastTime;
-			
-			do
-			{
-				lastTime = System.currentTimeMillis();
-				
-				try
-				{
-					Thread.sleep(10);
-				} catch (InterruptedException e)
-				{
-					Thread.interrupted();
-				}
-				
-				m_game.render(m_renderer);
-				m_game.update((int)(System.currentTimeMillis() - lastTime));
-				
-			} while(m_runGame);
-			
-			m_isRunning = false;
+		{	
+			m_game.render(m_renderer);
+			m_game.update((int)(System.currentTimeMillis() - lastTime));
+			lastTime = System.currentTimeMillis();
 		}
 	}
 }
