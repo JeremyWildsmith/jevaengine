@@ -21,9 +21,12 @@ package io.github.jevaengine.world;
 import com.google.inject.ImplementedBy;
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
+import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect2D;
-import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
+import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
+import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
+import io.github.jevaengine.world.scene.ISceneBuffer.NullComponentEffect;
 import java.awt.Graphics2D;
 import java.net.URI;
 import java.util.Collection;
@@ -50,22 +53,23 @@ public interface IWeatherFactory
 		public void dispose() { }
 
 		@Override
-		public IRenderable getUnderlay(Rect2D bounds)
+		public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection)
 		{
 			return new NullGraphic();
 		}
 
 		@Override
-		public IRenderable getOverlay(Rect2D bounds)
+		public IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection)
 		{
 			return new NullGraphic();
 		}
 
 		@Override
-		public void preRenderComponent(Graphics2D g, int offsetX, int offsetY, float scale, ISceneBuffer.ISceneBufferEntry subject, Collection<ISceneBuffer.ISceneBufferEntry> beneath) { }
+		public ISceneComponentEffect getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath)
+		{
+			return new NullComponentEffect();
+		}
 
-		@Override
-		public void postRenderComponent() { }
 	}
 	
 	public static final class NullWeatherFactory implements IWeatherFactory
