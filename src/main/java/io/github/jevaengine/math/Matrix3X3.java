@@ -25,12 +25,7 @@ import io.github.jevaengine.config.ValueSerializationException;
 
 public final class Matrix3X3 implements ISerializable
 {
-
 	public final float[][] matrix;
-
-	public static final Matrix3X3 IDENTITY = new Matrix3X3(1, 0, 0, 
-														   0, 1, 0,
-														   0, 0, 1);
 
 	public Matrix3X3(float x0y0, float x1y0, float x2y0, float x0y1, float x1y1, float x2y1, float x0y2, float x1y2, float x2y2)
 	{
