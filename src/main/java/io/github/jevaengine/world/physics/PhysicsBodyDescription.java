@@ -34,6 +34,7 @@ public final class PhysicsBodyDescription implements ISerializable
 	public boolean isFixedRotation;
 	public boolean isSensor;
 	public float friction;
+	public Class<?>[] collisionExceptions;
 	
 	public PhysicsBodyDescription() { }
 	
@@ -46,9 +47,10 @@ public final class PhysicsBodyDescription implements ISerializable
 		isFixedRotation = d.isFixedRotation;
 		isSensor = d.isSensor;
 		friction = d.friction;
+		collisionExceptions = d.collisionExceptions;
 	}
 	
-	public PhysicsBodyDescription(PhysicsBodyType _type, PhysicsBodyShape _shape, Rect3F _aabb, float _density, boolean _isFixedRotation, boolean _isSensor, float _friction)
+	public PhysicsBodyDescription(PhysicsBodyType _type, PhysicsBodyShape _shape, Rect3F _aabb, float _density, boolean _isFixedRotation, boolean _isSensor, float _friction, Class<?> ... _collisionExceptions)
 	{
 		type = _type;
 		shape = _shape;
@@ -57,6 +59,7 @@ public final class PhysicsBodyDescription implements ISerializable
 		isFixedRotation = _isFixedRotation;
 		isSensor = _isSensor;
 		friction = _friction;
+		collisionExceptions = _collisionExceptions;
 	}
 	
 	public enum PhysicsBodyShape

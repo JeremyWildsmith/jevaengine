@@ -32,6 +32,9 @@ import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsBodyContactObserver;
 import io.github.jevaengine.world.physics.IPhysicsBodyOrientationObserver;
 import io.github.jevaengine.world.physics.RayCastResults;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.shapes.ShapeType;
@@ -50,13 +53,16 @@ public final class JBox2DBody implements IPhysicsBody
 	private final IEntity m_owner;
 	private final Observers m_observers = new Observers();
 	
-	public JBox2DBody(JBox2DWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner)
+	private final Set<Class<?>> m_collisionExceptions = new HashSet<>();
+	
+	public JBox2DBody(JBox2DWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?> ... collisionExceptions)
 	{
 		m_body = body;
 		m_fixture = fixture;
 		m_owner = owner;
 		m_body.m_userData = this;
 		m_world = world;
+		m_collisionExceptions.addAll(Arrays.asList(collisionExceptions));
 	}
 	
 	void beginContact(JBox2DBody other)
@@ -129,7 +135,10 @@ public final class JBox2DBody implements IPhysicsBody
 	@Override
 	public boolean collidesWith(IImmutablePhysicsBody body)
 	{
-		return !m_fixture.isSensor();
+		if(m_fixture.isSensor())
+			return false;
+		
+		return body.hasOwner() ? !m_collisionExceptions.contains(body.getOwner().getClass()) : true;
 	}
 	
 	@Override

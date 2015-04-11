@@ -32,16 +32,15 @@ import org.jbox2d.dynamics.Fixture;
 
 final class JBox2DRaycaster
 {
-	private HashSet<Fixture> m_ignoreSet = new HashSet<>();
+	private Fixture m_owner;
 	private Vector2F m_normal;
 	private float m_distance;
 	private boolean m_intersected = false;
 
 	@Nullable
-	public RayCastResults cast(JBox2DWorld world, Vector2F start, Vector2F end, Fixture ... ignoreSet)
+	public RayCastResults cast(JBox2DWorld world, Vector2F start, Vector2F end, Fixture owner)
 	{
-		m_ignoreSet.clear();
-		m_ignoreSet.addAll(Arrays.asList(ignoreSet));
+		m_owner = owner;
 		m_normal = new Vector2F();
 		m_distance = Float.MAX_VALUE;
 		m_intersected = false;
@@ -65,9 +64,19 @@ final class JBox2DRaycaster
 		@Override
 		public float reportFixture(Fixture fixture, Vec2 point, Vec2 normal, float fraction)
 		{
+			
+			final Object oAPhysicsBody = m_owner.getBody().m_userData;
+			final Object oBPhysicsBody = fixture.getBody().m_userData;
+		
+			if(!(oAPhysicsBody instanceof JBox2DBody && oBPhysicsBody instanceof JBox2DBody))
+				return 1.0F;
+
+			JBox2DBody a = (JBox2DBody)oAPhysicsBody;
+			JBox2DBody b = (JBox2DBody)oBPhysicsBody;
+			
 			float distance = m_source.difference(JBox2DUtil.wrap(point)).getLength();
 			
-			if(distance <= m_distance && !fixture.isSensor() && !m_ignoreSet.contains(fixture))
+			if(distance <= m_distance && a.collidesWith(b) && b.collidesWith(a))
 			{
 				m_distance = distance;
 				m_normal = JBox2DUtil.wrap(normal);

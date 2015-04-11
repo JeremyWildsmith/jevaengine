@@ -146,7 +146,7 @@ public final class JBox2DWorld implements IPhysicsWorld
 			m_physicsWorld.createJoint(frictionJointDef);
 		}
 		
-		return new JBox2DBody(this, body, fixture, bodyDescription.aabb.getXy(), owner);
+		return new JBox2DBody(this, body, fixture, bodyDescription.aabb.getXy(), owner, bodyDescription.collisionExceptions);
 	}
 	
 	@Override
@@ -211,7 +211,20 @@ public final class JBox2DWorld implements IPhysicsWorld
 		}
 
 		@Override
-		public void preSolve(Contact contact, Manifold oldManifold) { }
+		public void preSolve(Contact contact, Manifold oldManifold)
+		{
+			final Object oAPhysicsBody = contact.getFixtureA().getBody().m_userData;
+			final Object oBPhysicsBody = contact.getFixtureB().getBody().m_userData;
+		
+			if(!(oAPhysicsBody instanceof JBox2DBody && oBPhysicsBody instanceof JBox2DBody))
+				return;
+
+			JBox2DBody a = (JBox2DBody)oAPhysicsBody;
+			JBox2DBody b = (JBox2DBody)oBPhysicsBody;
+			
+			if(!(a.collidesWith(b) && b.collidesWith(a)))
+				contact.setEnabled(false);
+		}
 
 		@Override
 		public void postSolve(Contact contact, ContactImpulse impulse) { }
