@@ -27,6 +27,7 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.entity.IEntity;
+import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsBodyContactObserver;
 import io.github.jevaengine.world.physics.IPhysicsBodyOrientationObserver;
@@ -41,13 +42,13 @@ import org.jbox2d.dynamics.Fixture;
 public final class JBox2DBody implements IPhysicsBody
 {
 	private JBox2DWorld m_world;
-	private Body m_body;
-	private Fixture m_fixture;
+	private final Body m_body;
+	private final Fixture m_fixture;
 	
 	private float m_depth = 0.0F;
 	
-	private IEntity m_owner;
-	private Observers m_observers = new Observers();
+	private final IEntity m_owner;
+	private final Observers m_observers = new Observers();
 	
 	public JBox2DBody(JBox2DWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner)
 	{
@@ -121,6 +122,12 @@ public final class JBox2DBody implements IPhysicsBody
 	
 	@Override
 	public boolean isCollidable()
+	{
+		return !m_fixture.isSensor();
+	}
+	
+	@Override
+	public boolean collidesWith(IImmutablePhysicsBody body)
 	{
 		return !m_fixture.isSensor();
 	}

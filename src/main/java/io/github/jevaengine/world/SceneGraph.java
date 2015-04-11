@@ -417,7 +417,7 @@ public final class SceneGraph implements IDisposable
 				for(int cx = x; cx < right; cx++)
 				{
 					for(int cy = y; cy < bottom; cy++)
-						map.applyOverlayEffects(new Vector2D(cx, cy), new TileEffects(entity, false));
+						map.applyOverlayEffects(new Vector2D(cx, cy), new TileEffects(entity));
 				}
 			}
 		}

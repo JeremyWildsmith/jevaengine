@@ -22,7 +22,6 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
-import io.github.jevaengine.world.World;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -32,23 +31,20 @@ public final class SearchNode
 	private static final int DIAGONAL_COST = 7;
 	private static final int HORIZONTAL_VERTICAL_COST = 5;
 
-	private SearchNode m_parent;
+	private final SearchNode m_parent;
 
-	private ArrayList<SearchNode> m_children;
+	private final ArrayList<SearchNode> m_children;
 
-	private Direction m_direction;
+	private final Direction m_direction;
 
-	private Vector2D m_location;
+	private final Vector2D m_location;
 
-	private World m_world;
-
-	public SearchNode(World world, SearchNode parent, Direction direction, Vector2D location)
+	public SearchNode(SearchNode parent, Direction direction, Vector2D location)
 	{
 		m_parent = parent;
-		m_children = new ArrayList<SearchNode>();
+		m_children = new ArrayList<>();
 		m_location = location;
 		m_direction = direction;
-		m_world = world;
 	}
 	
 	public SearchNode[] getChildren()
@@ -110,7 +106,7 @@ public final class SearchNode
 
 		Vector2D location = m_location.add(direction.getDirectionVector());
 
-		SearchNode step = new SearchNode(m_world, this, direction, location);
+		SearchNode step = new SearchNode(this, direction, location);
 
 		//Attempt to determine if it is more efficient to get to this node via our parent (or any of it's parents)
 		//before attempting this route.

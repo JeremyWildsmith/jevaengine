@@ -133,6 +133,12 @@ public final class ScaledPhysicsWorld extends ImmutableScaledPhysicsWorld implem
 		{
 			return m_body.isCollidable();
 		}
+		
+		@Override
+		public boolean collidesWith(IImmutablePhysicsBody subject)
+		{
+			return m_body.collidesWith(subject);
+		}
 
 		@Override
 		public Circle3F getBoundingCircle()

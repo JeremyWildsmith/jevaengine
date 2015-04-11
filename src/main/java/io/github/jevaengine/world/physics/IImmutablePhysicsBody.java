@@ -35,6 +35,7 @@ public interface IImmutablePhysicsBody
 	
 	boolean isStatic();
 	boolean isCollidable();
+	boolean collidesWith(IImmutablePhysicsBody subject);
 	
 	Circle3F getBoundingCircle();
 	Rect3F getAABB();

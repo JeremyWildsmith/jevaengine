@@ -164,6 +164,12 @@ public final class NonparticipantPhysicsBody implements IPhysicsBody
 	{
 		return false;
 	}
+	
+	@Override
+	public boolean collidesWith(IImmutablePhysicsBody subject)
+	{
+		return false;
+	}
 
 	@Override
 	public Rect3F getAABB()

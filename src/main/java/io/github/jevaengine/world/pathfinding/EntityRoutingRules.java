@@ -54,7 +54,7 @@ public class EntityRoutingRules implements IRoutingRules
 		
 		for(EffectMap.TileEffects e : effects)
 		{
-			if(!e.ignore(m_subject).isTraversable())
+			if(!e.isTraversable(m_subject))
 				return false;
 		}
 		
@@ -65,7 +65,7 @@ public class EntityRoutingRules implements IRoutingRules
 	public Direction[] getMovements(World world, Vector2F origin)
 	{
 		List<Direction> m_directions = new ArrayList<>();
-		SearchNode currentNode = new SearchNode(world, null, Direction.Zero, origin.round());
+		SearchNode currentNode = new SearchNode(null, Direction.Zero, origin.round());
 		
 		for (Direction dir : m_allowedMovements)
 		{

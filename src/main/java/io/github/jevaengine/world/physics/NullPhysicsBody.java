@@ -133,6 +133,12 @@ public final class NullPhysicsBody implements IPhysicsBody
 	}
 	
 	@Override
+	public boolean collidesWith(IImmutablePhysicsBody subject)
+	{
+		return false;
+	}
+	
+	@Override
 	public Rect3F getAABB()
 	{
 		return new Rect3F();

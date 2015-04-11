@@ -25,9 +25,12 @@ import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.search.ISearchFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class EffectMap
 {
@@ -119,32 +122,25 @@ public final class EffectMap
 
 	public static class TileEffects
 	{
-		private final Map<IEntity, Boolean> traversable = new HashMap<>();
-		private final Map<IEntity, Float> sightEffect = new HashMap<>();
+		private final Set<IEntity> m_obstructions = new HashSet<>();
 		
 		public TileEffects() { }
 		
 		public TileEffects(TileEffects effects)
 		{
-			traversable.putAll(effects.traversable);
-			sightEffect.putAll(effects.sightEffect);
+			m_obstructions.addAll(effects.m_obstructions);
 		}
 
-		public TileEffects(IEntity cause, boolean _isTraversable)
+		public TileEffects(IEntity ... obstructions)
 		{
-			traversable.put(cause, _isTraversable);
+			m_obstructions.addAll(Arrays.asList(obstructions));
 		}
 
-		public TileEffects(IEntity cause, float _sightEffect)
+		public boolean isTraversable(IEntity subject)
 		{
-			sightEffect.put(cause, _sightEffect);
-		}
-
-		public boolean isTraversable()
-		{
-			for(Boolean b : traversable.values())
+			for(IEntity e : m_obstructions)
 			{
-				if(!b)
+				if(e != subject && e.getBody().collidesWith(subject.getBody()))
 					return false;
 			}
 			
@@ -154,18 +150,6 @@ public final class EffectMap
 		public float getSightEffect()
 		{
 			return 0;
-		}
-		
-		public TileEffects ignore(IEntity subject)
-		{
-			TileEffects newEffects = new TileEffects();
-			newEffects.traversable.putAll(traversable);
-			newEffects.traversable.remove(subject);
-			
-			newEffects.sightEffect.putAll(sightEffect);
-			newEffects.sightEffect.remove(subject);
-			
-			return newEffects;
 		}
 		
 		public static TileEffects merge(TileEffects[] tiles)
@@ -181,11 +165,8 @@ public final class EffectMap
 		public TileEffects overlay(TileEffects overlay)
 		{
 			TileEffects newEffects = new TileEffects();
-			newEffects.traversable.putAll(traversable);
-			newEffects.traversable.putAll(overlay.traversable);
-			
-			newEffects.sightEffect.putAll(sightEffect);
-			newEffects.sightEffect.putAll(overlay.sightEffect);
+			newEffects.m_obstructions.addAll(m_obstructions);
+			newEffects.m_obstructions.addAll(overlay.m_obstructions);
 			
 			return newEffects;
 		}
