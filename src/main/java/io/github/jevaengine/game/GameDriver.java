@@ -47,7 +47,7 @@ public final class GameDriver
 	
 	public void begin()
 	{
-		if(m_gameLoop != null && !m_gameLoop.isCancelled() && !m_gameLoop.isDone())
+		if(m_gameLoop != null && (!m_gameLoop.isCancelled() || !m_gameLoop.isDone()))
 			return;
 		
 		m_gameLoop = m_executor.scheduleAtFixedRate(new GameLoop(), 0, GAMELOOP_PERIOD, TimeUnit.MILLISECONDS);
@@ -63,13 +63,19 @@ public final class GameDriver
 	
 	private class GameLoop implements Runnable
 	{
-		private long lastTime = System.currentTimeMillis();
+		private long m_lastTime = 0;
+		
 		@Override
 		public void run()
-		{	
+		{
+			if(m_lastTime == 0)
+				m_lastTime = System.currentTimeMillis();
+		
+			long delta = System.currentTimeMillis() - m_lastTime;
+			m_lastTime = System.currentTimeMillis();
+			
+			m_game.update((int)delta);
 			m_game.render(m_renderer);
-			m_game.update((int)(System.currentTimeMillis() - lastTime));
-			lastTime = System.currentTimeMillis();
 		}
 	}
 }
