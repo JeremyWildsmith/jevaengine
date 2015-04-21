@@ -29,7 +29,7 @@ import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.MutableProcessList;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
-import io.github.jevaengine.world.EffectMap.TileEffects;
+import io.github.jevaengine.world.IEffectMap.TileEffects;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.entity.IEntity.IEntityBodyObserver;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;

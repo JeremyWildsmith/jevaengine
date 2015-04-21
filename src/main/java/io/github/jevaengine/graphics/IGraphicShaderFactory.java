@@ -48,4 +48,13 @@ public interface IGraphicShaderFactory
 			super("Unable to parse graphic shader arguments.", cause);
 		}
 	}
+	
+	public static final class NullGraphicShader implements IGraphicShader
+	{
+		@Override
+		public IImmutableGraphic shade(IImmutableGraphic source)
+		{
+			return source;
+		}
+	}
 }

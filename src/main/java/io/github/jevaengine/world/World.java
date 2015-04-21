@@ -43,7 +43,7 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.util.SynchronousExecutor;
 import io.github.jevaengine.util.SynchronousExecutor.ISynchronousTask;
-import io.github.jevaengine.world.EffectMap.TileEffects;
+import io.github.jevaengine.world.IEffectMap.TileEffects;
 import io.github.jevaengine.world.IWeatherFactory.IWeather;
 import io.github.jevaengine.world.SceneGraph.EntitySet;
 import io.github.jevaengine.world.SceneGraph.ISceneGraphObserver;

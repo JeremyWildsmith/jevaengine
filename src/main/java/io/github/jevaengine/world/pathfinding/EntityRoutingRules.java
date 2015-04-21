@@ -23,7 +23,7 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.EffectMap;
-import io.github.jevaengine.world.EffectMap.TileEffects;
+import io.github.jevaengine.world.IEffectMap.TileEffects;
 import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.search.RectangleSearchFilter;

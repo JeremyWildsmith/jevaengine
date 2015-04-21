@@ -21,18 +21,15 @@ package io.github.jevaengine.world;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
-import io.github.jevaengine.world.entity.IEntity;
+import io.github.jevaengine.world.IEffectMap.TileEffects;
 import io.github.jevaengine.world.search.ISearchFilter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public final class EffectMap
+public final class EffectMap implements IEffectMap
 {
 	private final HashMap<Vector2D, TileEffects> m_tileEffects = new HashMap<>();
 
@@ -44,11 +41,13 @@ public final class EffectMap
 			applyOverlayEffects(effects.getKey(), effects.getValue());
 	}
 
+	@Override
 	public void clear()
 	{
 		m_tileEffects.clear();
 	}
 
+	@Override
 	public TileEffects getTileEffects(Vector2D location)
 	{
 		if (!m_tileEffects.containsKey(location))
@@ -57,7 +56,8 @@ public final class EffectMap
 		return m_tileEffects.get(location);
 	}
 
-	public final TileEffects[] getTileEffects(ISearchFilter<TileEffects> filter)
+	@Override
+	public TileEffects[] getTileEffects(ISearchFilter<TileEffects> filter)
 	{
 		List<TileEffects> tileEffects = new ArrayList<>();
 
@@ -79,7 +79,8 @@ public final class EffectMap
 		return tileEffects.toArray(new TileEffects[tileEffects.size()]);
 	}
 
-	public final void applyOverlayEffects(ISearchFilter<TileEffects> filter, TileEffects overlay)
+	@Override
+	public void applyOverlayEffects(ISearchFilter<TileEffects> filter, TileEffects overlay)
 	{
 		Rect2D searchBounds = filter.getSearchBounds();
 
@@ -101,7 +102,8 @@ public final class EffectMap
 		}
 	}
 
-	public final void applyOverlayEffects(Vector2D location, TileEffects value)
+	@Override
+	public void applyOverlayEffects(Vector2D location, TileEffects value)
 	{
 		if (!m_tileEffects.containsKey(location))
 			m_tileEffects.put(location, value);
@@ -109,66 +111,16 @@ public final class EffectMap
 			m_tileEffects.put(location, m_tileEffects.get(location).overlay(value));
 	}
 
-	public final void overlay(EffectMap overlay, Vector2D offset)
+	@Override
+	public void overlay(EffectMap overlay, Vector2D offset)
 	{
 		for (Map.Entry<Vector2D, TileEffects> effects : overlay.m_tileEffects.entrySet())
 			applyOverlayEffects(effects.getKey().add(offset), effects.getValue());
 	}
 
-	public final void overlay(EffectMap overlay)
+	@Override
+	public void overlay(EffectMap overlay)
 	{
 		overlay(overlay, new Vector2D());
-	}
-
-	public static class TileEffects
-	{
-		private final Set<IEntity> m_obstructions = new HashSet<>();
-		
-		public TileEffects() { }
-		
-		public TileEffects(TileEffects effects)
-		{
-			m_obstructions.addAll(effects.m_obstructions);
-		}
-
-		public TileEffects(IEntity ... obstructions)
-		{
-			m_obstructions.addAll(Arrays.asList(obstructions));
-		}
-
-		public boolean isTraversable(IEntity subject)
-		{
-			for(IEntity e : m_obstructions)
-			{
-				if(e != subject && e.getBody().collidesWith(subject.getBody()))
-					return false;
-			}
-			
-			return true;
-		}
-		
-		public float getSightEffect()
-		{
-			return 0;
-		}
-		
-		public static TileEffects merge(TileEffects[] tiles)
-		{
-			TileEffects effect = new TileEffects();
-
-			for (TileEffects tile : tiles)
-				effect = effect.overlay(tile);
-
-			return effect;
-		}
-
-		public TileEffects overlay(TileEffects overlay)
-		{
-			TileEffects newEffects = new TileEffects();
-			newEffects.m_obstructions.addAll(m_obstructions);
-			newEffects.m_obstructions.addAll(overlay.m_obstructions);
-			
-			return newEffects;
-		}
 	}
 }
