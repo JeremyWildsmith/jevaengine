@@ -24,8 +24,11 @@ import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.ISerializable;
 import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
+import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.IGraphicShaderFactory.GraphicShaderConstructionException;
+import io.github.jevaengine.graphics.IGraphicShaderFactory.NullGraphicShader;
+import io.github.jevaengine.util.Nullable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.inject.Inject;
@@ -56,9 +59,12 @@ public final class ShadedGraphicFactory implements IGraphicFactory
 		try
 		{
 			ShadedGraphicDeclaration decl = m_configurationFactory.create(name).getValue(ShadedGraphicDeclaration.class);
-
+			
 			URI sourceName = name.resolve(new URI(decl.texture));
 			IImmutableGraphic source = m_baseGraphicFactory.create(sourceName);
+
+			if(decl.name == null)
+				return source;
 			
 			URI shaderName = name.resolve(new URI(decl.name));
 			source = m_shaderFactory.create(shaderName, decl.arguments).shade(source);
@@ -76,14 +82,18 @@ public final class ShadedGraphicFactory implements IGraphicFactory
 	
 	public static final class ShadedGraphicDeclaration implements ISerializable
 	{
+		@Nullable
 		public String name;
-		public IImmutableVariable arguments;
+		
+		public IImmutableVariable arguments = new NullVariable();
 		public String texture;
 
 		@Override
 		public void serialize(IVariable target) throws ValueSerializationException
 		{
-			target.addChild("name").setValue(name);
+			if(name != null)
+				target.addChild("name").setValue(name);
+			
 			target.addChild("arguments").setValue(arguments);
 			target.addChild("texture").setValue(texture);
 		}
@@ -93,8 +103,12 @@ public final class ShadedGraphicFactory implements IGraphicFactory
 		{
 			try
 			{
-				name = source.getChild("name").getValue(String.class);
-				arguments = source.getChild("arguments");
+				if(source.childExists("name"))
+					name = source.getChild("name").getValue(String.class);
+				
+				if(source.childExists("arguments"))
+					arguments = source.getChild("arguments");
+				
 				texture = source.getChild("texture").getValue(String.class);
 			} catch (NoSuchChildVariableException e)
 			{
