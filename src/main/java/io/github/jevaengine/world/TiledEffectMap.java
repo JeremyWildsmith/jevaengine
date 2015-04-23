@@ -21,7 +21,6 @@ package io.github.jevaengine.world;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
-import io.github.jevaengine.world.IEffectMap.TileEffects;
 import io.github.jevaengine.world.search.ISearchFilter;
 
 import java.util.ArrayList;
@@ -29,16 +28,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class EffectMap implements IEffectMap
+public final class TiledEffectMap implements IEffectMap
 {
-	private final HashMap<Vector2D, TileEffects> m_tileEffects = new HashMap<>();
+	private final HashMap<Vector2D, LogicEffects> m_tileEffects = new HashMap<>();
+	
+	public TiledEffectMap() { }
 
-	public EffectMap() { }
-
-	public EffectMap(EffectMap map)
+	public TiledEffectMap(TiledEffectMap map)
 	{
-		for (Map.Entry<Vector2D, TileEffects> effects : map.m_tileEffects.entrySet())
-			applyOverlayEffects(effects.getKey(), effects.getValue());
+		for (Map.Entry<Vector2D, LogicEffects> effects : map.m_tileEffects.entrySet())
+		{
+			if (!m_tileEffects.containsKey(effects.getKey()))
+				m_tileEffects.put(effects.getKey(), effects.getValue());
+			else
+				m_tileEffects.put(effects.getKey(), m_tileEffects.get(effects.getKey()).overlay(effects.getValue()));
+		}
 	}
 
 	@Override
@@ -48,18 +52,20 @@ public final class EffectMap implements IEffectMap
 	}
 
 	@Override
-	public TileEffects getTileEffects(Vector2D location)
+	public LogicEffects getTileEffects(Vector2F location)
 	{
-		if (!m_tileEffects.containsKey(location))
-			return new TileEffects();
+		Vector2D tileLocation = location.round();
+		
+		if (!m_tileEffects.containsKey(tileLocation))
+			return new LogicEffects();
 
-		return m_tileEffects.get(location);
+		return m_tileEffects.get(tileLocation);
 	}
 
 	@Override
-	public TileEffects[] getTileEffects(ISearchFilter<TileEffects> filter)
+	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter)
 	{
-		List<TileEffects> tileEffects = new ArrayList<>();
+		List<LogicEffects> tileEffects = new ArrayList<>();
 
 		Rect2D searchBounds = filter.getSearchBounds();
 
@@ -67,7 +73,7 @@ public final class EffectMap implements IEffectMap
 		{
 			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++)
 			{
-				TileEffects effects = getTileEffects(new Vector2D(x, y));
+				LogicEffects effects = getTileEffects(new Vector2F(x, y));
 
 				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && (effects = filter.filter(effects)) != null)
 				{
@@ -76,11 +82,11 @@ public final class EffectMap implements IEffectMap
 			}
 		}
 
-		return tileEffects.toArray(new TileEffects[tileEffects.size()]);
+		return tileEffects.toArray(new LogicEffects[tileEffects.size()]);
 	}
 
 	@Override
-	public void applyOverlayEffects(ISearchFilter<TileEffects> filter, TileEffects overlay)
+	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay)
 	{
 		Rect2D searchBounds = filter.getSearchBounds();
 
@@ -88,7 +94,7 @@ public final class EffectMap implements IEffectMap
 		{
 			for (int y = searchBounds.y; y <= searchBounds.height; y++)
 			{
-				TileEffects effects = getTileEffects(new Vector2D(x, y));
+				LogicEffects effects = getTileEffects(new Vector2F(x, y));
 
 				if (filter.shouldInclude(new Vector2F(x, y)) && effects == null)
 				{
@@ -100,27 +106,5 @@ public final class EffectMap implements IEffectMap
 					effects.overlay(overlay);
 			}
 		}
-	}
-
-	@Override
-	public void applyOverlayEffects(Vector2D location, TileEffects value)
-	{
-		if (!m_tileEffects.containsKey(location))
-			m_tileEffects.put(location, value);
-		else
-			m_tileEffects.put(location, m_tileEffects.get(location).overlay(value));
-	}
-
-	@Override
-	public void overlay(EffectMap overlay, Vector2D offset)
-	{
-		for (Map.Entry<Vector2D, TileEffects> effects : overlay.m_tileEffects.entrySet())
-			applyOverlayEffects(effects.getKey().add(offset), effects.getValue());
-	}
-
-	@Override
-	public void overlay(EffectMap overlay)
-	{
-		overlay(overlay, new Vector2D());
 	}
 }

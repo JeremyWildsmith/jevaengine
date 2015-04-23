@@ -18,10 +18,7 @@
  */
 package io.github.jevaengine.world;
 
-import io.github.jevaengine.world.search.ISearchFilter;
-
-public interface IEffectMap extends IImmutableEffectMap
+public interface IEffectMapFactory
 {
-	public void clear();
-	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay);
+	IEffectMap create();
 }

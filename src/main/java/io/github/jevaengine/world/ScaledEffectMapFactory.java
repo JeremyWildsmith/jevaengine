@@ -18,10 +18,20 @@
  */
 package io.github.jevaengine.world;
 
-import io.github.jevaengine.world.search.ISearchFilter;
-
-public interface IEffectMap extends IImmutableEffectMap
+public final class ScaledEffectMapFactory implements IEffectMapFactory
 {
-	public void clear();
-	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay);
+	private final IEffectMapFactory m_factory;
+	private final float m_scale;
+	
+	public ScaledEffectMapFactory(IEffectMapFactory factory, float scale)
+	{
+		m_factory = factory;
+		m_scale = scale;
+	}
+	
+	@Override
+	public IEffectMap create()
+	{
+		return new ScaledEffectMap(m_factory.create(), m_scale);
+	}
 }

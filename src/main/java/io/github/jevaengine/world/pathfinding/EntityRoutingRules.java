@@ -22,8 +22,8 @@ import io.github.jevaengine.math.Rect2F;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.Direction;
-import io.github.jevaengine.world.EffectMap;
-import io.github.jevaengine.world.IEffectMap.TileEffects;
+import io.github.jevaengine.world.TiledEffectMap;
+import io.github.jevaengine.world.IImmutableEffectMap.LogicEffects;
 import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.search.RectangleSearchFilter;
@@ -50,9 +50,9 @@ public class EntityRoutingRules implements IRoutingRules
 		bounds.width = (float)Math.ceil(bounds.width);
 		bounds.height = (float)Math.ceil(bounds.height);
 		
-		TileEffects[] effects = world.getTileEffects(new RectangleSearchFilter<EffectMap.TileEffects>(bounds));
+		LogicEffects[] effects = world.getEffectMap().getTileEffects(new RectangleSearchFilter<TiledEffectMap.LogicEffects>(bounds));
 		
-		for(EffectMap.TileEffects e : effects)
+		for(TiledEffectMap.LogicEffects e : effects)
 		{
 			if(!e.isTraversable(m_subject))
 				return false;

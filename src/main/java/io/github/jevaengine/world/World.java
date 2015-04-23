@@ -26,8 +26,6 @@ import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Rect2F;
 import io.github.jevaengine.math.Rect3F;
-import io.github.jevaengine.math.Vector2D;
-import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.script.IFunction;
 import io.github.jevaengine.script.IFunctionFactory;
@@ -43,7 +41,6 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.util.SynchronousExecutor;
 import io.github.jevaengine.util.SynchronousExecutor.ISynchronousTask;
-import io.github.jevaengine.world.IEffectMap.TileEffects;
 import io.github.jevaengine.world.IWeatherFactory.IWeather;
 import io.github.jevaengine.world.SceneGraph.EntitySet;
 import io.github.jevaengine.world.SceneGraph.ISceneGraphObserver;
@@ -55,11 +52,9 @@ import io.github.jevaengine.world.physics.IPhysicsWorld;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
 import io.github.jevaengine.world.physics.ScaledPhysicsWorld;
 import io.github.jevaengine.world.scene.ISceneBuffer;
-import io.github.jevaengine.world.search.ISearchFilter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,9 +70,10 @@ public final class World implements IDisposable
 	
 	private final Map<String, Rect3F> m_zones = new HashMap<>();
 	
-	private SceneGraph m_entityContainer;
+	private SceneGraph m_sceneGraph;
 	private Rect2D m_worldBounds;
 	private final float m_metersPerUnit;
+	private final float m_logicPerUnit;
 	
 	private WorldBridgeNotifier m_script;
 
@@ -88,16 +84,17 @@ public final class World implements IDisposable
 	
 	private IWeather m_weather;
 	
-	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, IWeather weather, IPhysicsWorldFactory physicsWorldFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
+	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, float logicPerUnit, IWeather weather, IPhysicsWorldFactory physicsWorldFactory, IEffectMapFactory effectMapFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory)
 	{
 		m_weather = weather;
 		m_physicsWorld = new ScaledPhysicsWorld(physicsWorldFactory.create(friction), metersPerUnit);
+		m_logicPerUnit = logicPerUnit;
 		m_metersPerUnit = metersPerUnit;
 		m_entityFactory = entityFactory;
 		m_worldBounds = new Rect2D(worldWidth, worldHeight);
 		
-		m_entityContainer = new SceneGraph(m_physicsWorld);
-		m_entityContainer.getObservers().add(new WorldEntityObserver());
+		m_sceneGraph = new SceneGraph(m_physicsWorld, new ScaledEffectMapFactory(effectMapFactory, m_logicPerUnit));
+		m_sceneGraph.getObservers().add(new WorldEntityObserver());
 		
 		if (scriptFactory != null)
 			m_script = new WorldBridgeNotifier(scriptFactory);
@@ -109,7 +106,7 @@ public final class World implements IDisposable
 	public void dispose()
 	{
 		m_weather.dispose();
-		m_entityContainer.dispose();
+		m_sceneGraph.dispose();
 	}
 
 	public IWeather getWeather()
@@ -140,38 +137,21 @@ public final class World implements IDisposable
 		return new Rect2D(m_worldBounds);
 	}
 	
+	public float getLogicTilePerUnit()
+	{
+		return m_logicPerUnit;
+	}
+	
 	public float getMetersPerUnit()
 	{
 		return m_metersPerUnit;
 	}
 
-	public TileEffects getTileEffects(Vector2D location)
+	public IImmutableEffectMap getEffectMap()
 	{
-		return m_entityContainer.getTileEffects(location);
+		return m_sceneGraph.getEffectMap();
 	}
-
-	public TileEffects[] getTileEffects(ISearchFilter<TileEffects> filter)
-	{
-		ArrayList<TileEffects> tileEffects = new ArrayList<>();
-
-		Rect2D searchBounds = filter.getSearchBounds();
-
-		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++)
-		{
-			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++)
-			{
-				TileEffects effects = getTileEffects(new Vector2D(x, y));
-
-				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && (effects = filter.filter(effects)) != null)
-				{
-					tileEffects.add(effects);
-				}
-			}
-		}
-
-		return tileEffects.toArray(new TileEffects[tileEffects.size()]);
-	}
-
+	
 	public void addZone(String name, Rect3F zone)
 	{
 		m_zones.put(name, zone);
@@ -197,7 +177,7 @@ public final class World implements IDisposable
 	public void addEntity(IEntity entity)
 	{
 		entity.associate(this);
-		m_entityContainer.add(entity);
+		m_sceneGraph.add(entity);
 	}
 
 	public void removeEntity(IEntity entity)
@@ -205,12 +185,12 @@ public final class World implements IDisposable
 		if(entity.getWorld() == this)
 			entity.disassociate();
 		
-		m_entityContainer.remove(entity);
+		m_sceneGraph.remove(entity);
 	}
 	
 	public EntitySet getEntities()
 	{
-		return m_entityContainer.getEntities();
+		return m_sceneGraph.getEntities();
 	}
 	
 	public WorldBridge getBridge()
@@ -221,7 +201,7 @@ public final class World implements IDisposable
 	public void update(int delta)
 	{
 		m_syncExecuter.execute();
-		m_entityContainer.update(delta);
+		m_sceneGraph.update(delta);
 		
 		//It is important that the physics world be updated after the entities have been updated.
 		//The forces to be applied this cycle may be relative to the delta time elapsed since last cycle.
@@ -231,7 +211,7 @@ public final class World implements IDisposable
 	
 	public void fillScene(ISceneBuffer sceneBuffer, Rect2F region)
 	{
-		m_entityContainer.enqueueRender(sceneBuffer, region);
+		m_sceneGraph.enqueueRender(sceneBuffer, region);
 		sceneBuffer.addEffect(m_weather);
 	}
 	

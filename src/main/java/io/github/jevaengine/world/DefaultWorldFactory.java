@@ -79,6 +79,7 @@ public class DefaultWorldFactory implements IWorldFactory
 	protected final IAudioClipFactory m_audioClipFactory;
 	protected final IPhysicsWorldFactory m_physicsWorldFactory;
 	protected final IAnimationSceneModelFactory m_animationSceneModelFactory;
+	protected final IEffectMapFactory m_effectMapFactory;
 	
 	private final IWeatherFactory m_weatherFactory;
 	
@@ -91,7 +92,8 @@ public class DefaultWorldFactory implements IWorldFactory
 								IAudioClipFactory audioClipFactory,
 								IPhysicsWorldFactory physicsWorldFactory,
 								IAnimationSceneModelFactory animationSceneModelFactory,
-								IWeatherFactory weatherFactory)
+								IWeatherFactory weatherFactory,
+								IEffectMapFactory effectMapFactory)
 	{
 		m_threadPool = threadPool;
 		m_entityFactory = entityFactory;
@@ -102,9 +104,10 @@ public class DefaultWorldFactory implements IWorldFactory
 		m_physicsWorldFactory = physicsWorldFactory;
 		m_animationSceneModelFactory = animationSceneModelFactory;
 		m_weatherFactory = weatherFactory;
+		m_effectMapFactory = effectMapFactory;
 	}
 	
-	protected World createBaseWorld(float friction, float metersPerUnit, int worldWidthTiles, int worldHeightTiles, IWeather weather, @Nullable URI worldScript)
+	protected World createBaseWorld(float friction, float metersPerUnit, float logicPerUnit, int worldWidthTiles, int worldHeightTiles, IWeather weather, @Nullable URI worldScript)
 	{
 		IScriptBuilder scriptBuilder = new NullScriptBuilder();
 		
@@ -119,13 +122,15 @@ public class DefaultWorldFactory implements IWorldFactory
 		}
 		
 		return new World(worldWidthTiles,
-											worldHeightTiles,
-											friction,
-											metersPerUnit,
-											weather,
-											m_physicsWorldFactory, 
-											new ThreadPooledEntityFactory(m_entityFactory, m_threadPool),
-											scriptBuilder);
+									worldHeightTiles,
+									friction,
+									metersPerUnit,
+									logicPerUnit,
+									weather,
+									m_physicsWorldFactory,
+									m_effectMapFactory, 
+									new ThreadPooledEntityFactory(m_entityFactory, m_threadPool),
+									scriptBuilder);
 	}
 	
 	protected IEntity createSceneArtifact(SceneArtifactDeclaration artifactDecl, URI context) throws EntityConstructionException
@@ -225,7 +230,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		{
 			final WorldConfiguration worldConfig = m_configurationFactory.create(name).getValue(WorldConfiguration.class);
 			
-			World world = createBaseWorld(worldConfig.friction, worldConfig.metersPerUnit,
+			World world = createBaseWorld(worldConfig.friction, worldConfig.metersPerUnit, worldConfig.logicPerUnit,
 											worldConfig.worldWidth, worldConfig.worldHeight,
 											createWeather(name, worldConfig),
 											worldConfig.script == null ? null : name.resolve(new URI(worldConfig.script)));
@@ -296,6 +301,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		public int worldHeight;
 		
 		public float metersPerUnit;
+		public float logicPerUnit;
 		public float friction;
 		
 		public SceneArtifactDeclaration[] artifacts = new SceneArtifactDeclaration[0];
@@ -317,6 +323,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			target.addChild("worldWidth").setValue(this.worldWidth);
 			target.addChild("worldHeight").setValue(this.worldHeight);
 
+			target.addChild("logicPerUnit").setValue(this.logicPerUnit);
 			target.addChild("metersPerUnit").setValue(this.metersPerUnit);
 			target.addChild("friction").setValue(this.friction);
 			
@@ -340,6 +347,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				this.worldWidth = source.getChild("worldWidth").getValue(Integer.class);
 				this.worldHeight = source.getChild("worldHeight").getValue(Integer.class);
 				
+				this.logicPerUnit = source.getChild("logicPerUnit").getValue(Double.class).floatValue();
 				this.metersPerUnit = source.getChild("metersPerUnit").getValue(Double.class).floatValue();
 				this.friction = source.getChild("friction").getValue(Double.class).floatValue();
 				
@@ -525,7 +533,6 @@ public class DefaultWorldFactory implements IWorldFactory
 					throw new ValueSerializationException(e);
 				}
 			}
-			
 		}
 	}
 }

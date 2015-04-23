@@ -29,7 +29,7 @@ import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.MutableProcessList;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
-import io.github.jevaengine.world.IEffectMap.TileEffects;
+import io.github.jevaengine.world.IImmutableEffectMap.LogicEffects;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.entity.IEntity.IEntityBodyObserver;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
@@ -42,6 +42,7 @@ import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyShap
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
 import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.search.ISearchFilter;
+import io.github.jevaengine.world.search.RectangleSearchFilter;
 import java.lang.reflect.Array;
 
 import java.util.ArrayList;
@@ -58,9 +59,14 @@ public final class SceneGraph implements IDisposable
 	
 	private final IPhysicsWorld m_hostWorld;
 	
-	public SceneGraph(IPhysicsWorld hostWorld)
+	private final OverlappedEffectMap m_globalEffectMap = new OverlappedEffectMap();
+	
+	private final IEffectMapFactory m_effectMapFactory;
+	
+	public SceneGraph(IPhysicsWorld hostWorld, IEffectMapFactory effectMapFactory)
 	{
 		m_hostWorld = hostWorld;
+		m_effectMapFactory = effectMapFactory;
 	}
 	
 	@Override
@@ -72,6 +78,7 @@ public final class SceneGraph implements IDisposable
 			e.dispose();
 			entity.dispose();
 		}
+		
 		for(EntitySector s : m_sectors)
 			s.dispose();
 		
@@ -146,16 +153,9 @@ public final class SceneGraph implements IDisposable
 		}
 	}
 
-	public TileEffects getTileEffects(Vector2D location)
+	public IImmutableEffectMap getEffectMap()
 	{
-		int index = m_sectors.indexOf(new LayerSectorCoordinate(location));
-
-		if (index < 0)
-			return new TileEffects();
-
-		EntitySector sector = m_sectors.get(m_sectors.indexOf(new LayerSectorCoordinate(location)));
-
-		return sector.getTileEffects(location);
+		return m_globalEffectMap;
 	}
 
 	public void update(int delta)
@@ -340,11 +340,11 @@ public final class SceneGraph implements IDisposable
 	{
 		protected static final int SECTOR_DIMENSIONS = 60;
 
-		private final ArrayList<IEntity> m_dynamic =  new ArrayList<>();
-		private final ArrayList<IEntity> m_static = new ArrayList<>();
+		private final List<IEntity> m_dynamic =  new ArrayList<>();
+		private final List<IEntity> m_static = new ArrayList<>();
 
-		private final EffectMap m_staticEffectMap = new EffectMap();
-		private final EffectMap m_dynamicEffectMap = new EffectMap();
+		private final IEffectMap m_staticEffectMap = m_effectMapFactory.create();
+		private final IEffectMap m_dynamicEffectMap = m_effectMapFactory.create();
 
 		private final Vector2D m_location;
 		private boolean m_isDirty = false;
@@ -354,9 +354,14 @@ public final class SceneGraph implements IDisposable
 		public EntitySector(Vector2F containingLocation)
 		{
 			m_location = containingLocation.divide(SECTOR_DIMENSIONS).floor();
+			Vector2D worldCoordinate = m_location.multiply(SECTOR_DIMENSIONS);
+			
 			m_regionSensorBody = m_hostWorld.createBody(new PhysicsBodyDescription(PhysicsBodyType.Static, PhysicsBodyShape.Box, new Rect3F(SECTOR_DIMENSIONS, SECTOR_DIMENSIONS, SECTOR_DIMENSIONS), 1.0F, true, true, 0.0F));
-			m_regionSensorBody.setLocation(new Vector3F(m_location.multiply(SECTOR_DIMENSIONS).add(new Vector2D(SECTOR_DIMENSIONS / 2, SECTOR_DIMENSIONS / 2)), 0));
+			m_regionSensorBody.setLocation(new Vector3F(worldCoordinate.add(new Vector2D(SECTOR_DIMENSIONS / 2, SECTOR_DIMENSIONS / 2)), 0));
 			m_regionSensorBody.getObservers().add(new RegionSensorObserver());
+			
+			m_globalEffectMap.add(new TranslatedEffectMap(m_staticEffectMap, new Vector2F(worldCoordinate)));
+			m_globalEffectMap.add(new TranslatedEffectMap(m_dynamicEffectMap, new Vector2F(worldCoordinate)));
 		}
 
 		@Override
@@ -396,13 +401,8 @@ public final class SceneGraph implements IDisposable
 			
 			return all;
 		}
-		
-		public TileEffects getTileEffects(Vector2D location)
-		{
-			return m_staticEffectMap.getTileEffects(location).overlay(m_dynamicEffectMap.getTileEffects(location));
-		}
 
-		private void blendEffectMap(EffectMap map, IEntity entity)
+		private void blendEffectMap(IEffectMap map, IEntity entity)
 		{
 			IPhysicsBody body = entity.getBody();
 			Rect2F bounds = body.getAABB().getXy();
@@ -411,14 +411,10 @@ public final class SceneGraph implements IDisposable
 			{
 				int x = (int)Math.floor(bounds.x);
 				int y = (int)Math.floor(bounds.y);
-				int right = x + (int)Math.ceil(bounds.width);
-				int bottom = y + (int)Math.ceil(bounds.height);
-				
-				for(int cx = x; cx < right; cx++)
-				{
-					for(int cy = y; cy < bottom; cy++)
-						map.applyOverlayEffects(new Vector2D(cx, cy), new TileEffects(entity));
-				}
+				int width = (int)Math.ceil(bounds.width);
+				int height = (int)Math.ceil(bounds.height);
+	
+				map.applyOverlayEffects(new RectangleSearchFilter<LogicEffects>(new Rect2F(x, y, width, height)), new LogicEffects(entity));
 			}
 		}
 		
