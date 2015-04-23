@@ -137,7 +137,7 @@ public final class World implements IDisposable
 		return new Rect2D(m_worldBounds);
 	}
 	
-	public float getLogicTilePerUnit()
+	public float getLogicPerUnit()
 	{
 		return m_logicPerUnit;
 	}
