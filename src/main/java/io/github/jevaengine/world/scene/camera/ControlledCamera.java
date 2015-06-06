@@ -44,7 +44,7 @@ public final class ControlledCamera implements ICamera
 	private final ISceneBufferFactory m_sceneBufferFactory;
 	private World m_world;
 	
-	private List<ISceneBufferEffect> m_effects = new ArrayList<>();
+	private final List<ISceneBufferEffect> m_effects = new ArrayList<>();
 	
 	public ControlledCamera(ISceneBufferFactory sceneBufferFactory)
 	{
@@ -78,14 +78,21 @@ public final class ControlledCamera implements ICamera
 		m_lookAtTile = new Vector3F(tileLocation);
 	}
 
+	public Vector3F boundLocation(Vector3F v)
+	{
+		return new Vector3F(Math.min(m_world.getBounds().width - 1, Math.max(0, v.x)),
+							Math.min(m_world.getBounds().height - 1, Math.max(0, v.y)),
+							v.z);
+	}
+	
 	public void move(Vector3F delta)
 	{
-		m_lookAtTile = m_lookAtTile.add(delta);
+		m_lookAtTile = boundLocation(m_lookAtTile.add(delta));
 	}
 	
 	public Vector3F getLookAt()
 	{
-		return new Vector3F(m_lookAtTile);
+		return boundLocation(m_lookAtTile);
 	}
 	
 	@Override
@@ -143,10 +150,7 @@ public final class ControlledCamera implements ICamera
 		for(ISceneBufferEffect e : m_effects)
 			sceneBuffer.addEffect(e);
 		
-		Vector3F lookat = m_lookAtTile;
-		lookat.x = Math.min(m_world.getBounds().width - 1, Math.max(0, lookat.x));
-		lookat.y = Math.min(m_world.getBounds().height - 1, Math.max(0, lookat.y));
-		
+		Vector3F lookat = boundLocation(m_lookAtTile);
 		
 		//We need to construct a new bounds, that is centered over out camera bounds.
 		Vector2D lookatScreen = sceneBuffer.translateWorldToScreen(getLookAt());
