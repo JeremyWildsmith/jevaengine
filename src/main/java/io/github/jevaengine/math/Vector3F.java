@@ -38,6 +38,13 @@ public final class Vector3F implements ISerializable
 		y = v.y;
 		z = v.z;
 	}
+
+	public Vector3F(Vector3D v)
+	{
+		x = v.x;
+		y = v.y;
+		z = v.z;	
+	}
 	
 	public Vector3F(float fX, float fY, float fZ)
 	{
