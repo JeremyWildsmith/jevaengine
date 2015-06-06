@@ -30,7 +30,6 @@ import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.ISpriteFactory;
-import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.script.IScriptBuilder;
@@ -39,9 +38,8 @@ import io.github.jevaengine.script.IScriptBuilderFactory.ScriptBuilderConstructi
 import io.github.jevaengine.script.NullScriptBuilder;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.ThreadSafe;
-import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.ArtifactPlane;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.EntityImportDeclaration;
-import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.SceneArtifactDeclaration;
+import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.SceneArtifactImportDeclaration;
 import io.github.jevaengine.world.DefaultWorldFactory.WorldConfiguration.ZoneDeclaration;
 import io.github.jevaengine.world.IWeatherFactory.IWeather;
 import io.github.jevaengine.world.IWeatherFactory.NullWeather;
@@ -133,7 +131,7 @@ public class DefaultWorldFactory implements IWorldFactory
 									scriptBuilder);
 	}
 	
-	protected IEntity createSceneArtifact(SceneArtifactDeclaration artifactDecl, URI context) throws EntityConstructionException
+	protected IEntity createSceneArtifact(SceneArtifactImportDeclaration artifactDecl, URI context) throws EntityConstructionException
 	{
 		try
 		{
@@ -142,7 +140,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			return new SceneArtifact(model, artifactDecl.isTraversable);
 		} catch (SceneModelConstructionException | URISyntaxException e)
 		{
-			throw new EntityConstructionException("World tile", e);
+			throw new EntityConstructionException("Scene Artifact", e);
 		}
 	}
 	
@@ -173,39 +171,6 @@ public class DefaultWorldFactory implements IWorldFactory
 		}
 	}
 	
-	private void createTiledPlane(World world, SceneArtifactDeclaration tiles[], ArtifactPlane plane, URI context, IInitializationProgressMonitor monitor) throws TileIndexOutOfBoundsException
-	{
-		Rect2D worldBounds = world.getBounds();
-		int locationOffset = 0;
-		
-		for(int i = 0; i < plane.artifactIndices.length; i++)
-		{
-			int tileIndex = plane.artifactIndices[i];
-	
-			if(tileIndex >= 0)
-			{
-				if(tileIndex >= tiles.length)
-					throw new TileIndexOutOfBoundsException();
-			
-				try
-				{
-					IEntity tile = createSceneArtifact(tiles[tileIndex], context);
-					world.addEntity(tile);
-
-					tile.getBody().setLocation(new Vector3F((locationOffset + i) % worldBounds.width, (float) Math.floor((locationOffset + i) / worldBounds.height), plane.planeZ));
-				} catch(EntityConstructionException e)
-				{
-					m_logger.error("Erro constructing tile, assuming tile does not exist", e);
-				}
-			}else
-				locationOffset += -tileIndex - 1;
-			
-			monitor.statusChanged((float)i / plane.artifactIndices.length, "Tile " + i);
-		}
-		
-		monitor.statusChanged(1.0F, "Completed");
-	}
-	
 	private IWeather createWeather(URI context, WorldConfiguration world)
 	{
 		try
@@ -228,46 +193,54 @@ public class DefaultWorldFactory implements IWorldFactory
 	{
 		try
 		{
+
 			final WorldConfiguration worldConfig = m_configurationFactory.create(name).getValue(WorldConfiguration.class);
+
+			final int totalArtifactsToLoad = worldConfig.entities.length + worldConfig.artifactImports.length;
 			
 			World world = createBaseWorld(worldConfig.friction, worldConfig.metersPerUnit, worldConfig.logicPerUnit,
 											worldConfig.worldWidth, worldConfig.worldHeight,
 											createWeather(name, worldConfig),
 											worldConfig.script == null ? null : name.resolve(new URI(worldConfig.script)));
 			
-			for (int i = 0; i < worldConfig.artifactPlanes.length; i++)
+			for (int i = 0; i < worldConfig.artifactImports.length; i++)
 			{
-				final int layer = i;
-				createTiledPlane(world, worldConfig.artifacts, worldConfig.artifactPlanes[i], name, new IInitializationProgressMonitor() {
-					@Override
-					public void statusChanged(float progress, String status)
+				SceneArtifactImportDeclaration artifactDeclaration = worldConfig.artifactImports[i];
+				
+				try
+				{
+					for(Vector3F location : artifactDeclaration.locations)
 					{
-						monitor.statusChanged(LOADING_PORTION_LAYERS * ((layer <= 0 ? 0 : (float)layer / (worldConfig.artifactPlanes.length)) + progress / (worldConfig.artifactPlanes.length)), 
-											  "World Layers, " + status);
+						IEntity tile = createSceneArtifact(artifactDeclaration, name);
+						world.addEntity(tile);
+
+						tile.getBody().setLocation(location);
 					}
-				});
+				} catch (EntityConstructionException e)
+				{
+					m_logger.error("Error constructing scene artifact. Default to exclusion of artifact.", e);
+				}
+				
+				monitor.statusChanged(i / (float)totalArtifactsToLoad, "Loading Scene Artifacts.");
 			}
 			
 			for (int i = 0; i < worldConfig.entities.length; i++)
 			{
+				EntityImportDeclaration entityConfig = worldConfig.entities[i];
+
 				try
-				{
-					EntityImportDeclaration entityConfig = worldConfig.entities[i];
-
-					monitor.statusChanged(LOADING_PORTION_LAYERS + ((float)i / worldConfig.entities.length) * (1.0F - LOADING_PORTION_LAYERS), "Entities, " + entityConfig.name);
-
+				{		
 					IEntity entity = createEntity(entityConfig, name);
 					world.addEntity(entity);
 
-					if(entityConfig.location != null)
-						entity.getBody().setLocation(entityConfig.location);
-
-					if(entityConfig.direction != null)
-						entity.getBody().setDirection(entityConfig.direction);
+					entity.getBody().setLocation(entityConfig.location);
+					entity.getBody().setDirection(entityConfig.direction);
 				} catch (EntityConstructionException e)
 				{
 					m_logger.error("Unable to construct entity, assuming it does not exist.", e);
-				}
+				}			
+
+				monitor.statusChanged((worldConfig.artifactImports.length + i) / (float)totalArtifactsToLoad, "Loading Scene Entities.");
 			}
 			
 			for(ZoneDeclaration z : worldConfig.zones)
@@ -276,18 +249,10 @@ public class DefaultWorldFactory implements IWorldFactory
 			monitor.statusChanged(1.0F, "Completed");
 		
 			return world;
-		}catch(ValueSerializationException | TileIndexOutOfBoundsException | ConfigurationConstructionException | URISyntaxException e)
+		}catch(ValueSerializationException | ConfigurationConstructionException | URISyntaxException e)
 		{
 			throw new WorldConstructionException(name, e);
 		}
-	}
-	
-	public static final class TileIndexOutOfBoundsException extends Exception
-	{
-		private static final long serialVersionUID = 1L;
-	
-		private TileIndexOutOfBoundsException() { }
-	
 	}
 	
 	public static final class WorldConfiguration implements ISerializable
@@ -304,8 +269,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		public float logicPerUnit;
 		public float friction;
 		
-		public SceneArtifactDeclaration[] artifacts = new SceneArtifactDeclaration[0];
-		public ArtifactPlane[] artifactPlanes = new ArtifactPlane[0];
+		public SceneArtifactImportDeclaration[] artifactImports = new SceneArtifactImportDeclaration[0];
 		public EntityImportDeclaration[] entities = new EntityImportDeclaration[0];
 		public ZoneDeclaration[] zones = new ZoneDeclaration[0];
 		
@@ -327,8 +291,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			target.addChild("metersPerUnit").setValue(this.metersPerUnit);
 			target.addChild("friction").setValue(this.friction);
 			
-			target.addChild("artifacts").setValue(this.artifacts);
-			target.addChild("artifactPlanes").setValue(this.artifactPlanes);
+			target.addChild("artifactImports").setValue(this.artifactImports);
 			target.addChild("entities").setValue(this.entities);
 			target.addChild("zones").setValue(this.zones);
 		}
@@ -351,8 +314,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				this.metersPerUnit = source.getChild("metersPerUnit").getValue(Double.class).floatValue();
 				this.friction = source.getChild("friction").getValue(Double.class).floatValue();
 				
-				this.artifacts = source.getChild("artifacts").getValues(SceneArtifactDeclaration[].class);
-				this.artifactPlanes = source.getChild("artifactPlanes").getValues(ArtifactPlane[].class);
+				this.artifactImports = source.getChild("artifactImports").getValues(SceneArtifactImportDeclaration[].class);
 				this.entities = source.getChild("entities").getValues(EntityImportDeclaration[].class);
 				this.zones = source.getChild("zones").getValues(ZoneDeclaration[].class);
 			} catch(NoSuchChildVariableException e)
@@ -361,39 +323,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			}
 		}
 		
-		public static final class ArtifactPlane implements ISerializable
-		{
-			public float planeZ = 0.0F;
-			public int artifactIndices[] = new int[0];
-			
-			@Override
-			public void serialize(IVariable target) throws ValueSerializationException
-			{
-				target.addChild("planeZ").setValue(this.planeZ);
-				target.addChild("artifactIndices").setValue(this.artifactIndices);
-			}
-
-			@Override
-			public void deserialize(IImmutableVariable source) throws ValueSerializationException
-			{
-				try
-				{
-					this.planeZ = source.getChild("planeZ").getValue(Double.class).floatValue();
-					
-					Integer indicesBuffer[] = source.getChild("artifactIndices").getValues(Integer[].class);
-					
-					artifactIndices = new int[indicesBuffer.length];
-					
-					for(int i = 0; i < artifactIndices.length; i++)
-						artifactIndices[i] = indicesBuffer[i];
-				} catch(NoSuchChildVariableException e)
-				{
-					throw new ValueSerializationException(e);
-				}
-			}
-		}
-		
-		public static final class SceneArtifactDeclaration implements ISerializable
+		public static final class SceneArtifactImportDeclaration implements ISerializable
 		{
 			@Nullable
 			public String model;
@@ -401,8 +331,10 @@ public class DefaultWorldFactory implements IWorldFactory
 			public boolean isTraversable;
 			
 			public Direction direction;
+		
+			public Vector3F[] locations;
 			
-			public SceneArtifactDeclaration() { }
+			public SceneArtifactImportDeclaration() { }
 			
 			@Override
 			public void serialize(IVariable target) throws ValueSerializationException
@@ -410,6 +342,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				target.addChild("model").setValue(model);
 				target.addChild("isTraversable").setValue(this.isTraversable);
 				target.addChild("direction").setValue(direction.ordinal());
+				target.addChild("locations").setValue(locations);
 			}
 
 			@Override
@@ -419,6 +352,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				{
 					this.model = source.getChild("model").getValue(String.class);
 					this.isTraversable = source.getChild("isTraversable").getValue(Boolean.class);
+					this.locations = source.getChild("locations").getValues(Vector3F[].class);
 					
 					Integer dirBuffer = source.getChild("direction").getValue(Integer.class);
 					
