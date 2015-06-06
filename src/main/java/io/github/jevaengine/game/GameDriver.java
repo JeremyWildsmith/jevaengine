@@ -25,6 +25,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class GameDriver
 {
@@ -64,18 +66,26 @@ public final class GameDriver
 	private class GameLoop implements Runnable
 	{
 		private long m_lastTime = 0;
+		private final Logger m_logger = LoggerFactory.getLogger(GameLoop.class);
 		
 		@Override
 		public void run()
 		{
-			if(m_lastTime == 0)
+			try
+			{
+				if(m_lastTime == 0)
+					m_lastTime = System.currentTimeMillis();
+
+				long delta = System.currentTimeMillis() - m_lastTime;
 				m_lastTime = System.currentTimeMillis();
-		
-			long delta = System.currentTimeMillis() - m_lastTime;
-			m_lastTime = System.currentTimeMillis();
-			
-			m_game.update((int)delta);
-			m_game.render(m_renderer);
+
+				m_game.update((int)delta);
+				m_game.render(m_renderer);
+			} catch (Exception e)
+			{
+				m_logger.error("Game loop execution error, terminating game loop.", e);
+				stop();
+			}
 		}
 	}
 }
