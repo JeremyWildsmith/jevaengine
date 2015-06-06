@@ -81,7 +81,7 @@ public final class GameDriver
 
 				m_game.update((int)delta);
 				m_game.render(m_renderer);
-			} catch (Exception e)
+			} catch (Throwable e)
 			{
 				m_logger.error("Game loop execution error, terminating game loop.", e);
 				stop();
