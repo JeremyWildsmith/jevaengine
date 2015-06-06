@@ -32,8 +32,7 @@ public final class Observers implements IObserverRegistry
 	private final Collection<Object> m_observers = new MutableProcessList<>();
 
 	private final Map<Class<?>, Object> m_broadcasters = new HashMap<>();
-	
-	
+
 	private static void getInterfaces(Set<Class<?>> list, Class<?> clazz)
 	{
 		for(Class<?> c : clazz.getInterfaces())
