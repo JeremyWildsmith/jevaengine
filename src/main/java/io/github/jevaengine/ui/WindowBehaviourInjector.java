@@ -51,6 +51,11 @@ public abstract class WindowBehaviourInjector
 		m_host.removeControl(control);
 	}
 	
+	protected final boolean isVisible()
+	{
+		return m_host.isVisible();
+	}
+	
 	protected final <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException
 	{
 		return m_host.getControl(controlClass, name);
