@@ -18,12 +18,11 @@
  */
 package io.github.jevaengine.graphics;
 
-import io.github.jevaengine.config.IImmutableVariable;
 import java.net.URI;
 
 public interface IGraphicShaderFactory
 {
-	IGraphicShader create(URI name, IImmutableVariable arguments) throws GraphicShaderConstructionException;
+	IGraphicShader create(URI name) throws GraphicShaderConstructionException;
 	
 	public static final class GraphicShaderConstructionException extends Exception
 	{

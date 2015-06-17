@@ -18,30 +18,51 @@
  */
 package io.github.jevaengine.graphics;
 
+import io.github.jevaengine.IAssetStreamFactory;
+import io.github.jevaengine.config.IConfigurationFactory;
+import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
 import io.github.jevaengine.config.IImmutableVariable;
+import io.github.jevaengine.config.ISerializable;
+import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
+import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.math.Vector3D;
+import io.github.jevaengine.util.Nullable;
 import java.awt.Color;
 import java.awt.image.RGBImageFilter;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.inject.Inject;
 
 public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
 {
-	public final Map<URI, IShaderConstructor> m_shaders = new HashMap<>();
+	public final Map<String, IShaderConstructor> m_shaderTypes = new HashMap<>();
+	private final IConfigurationFactory m_configurationFactory;
 	
-	public DefaultGraphicShaderFactory()
+	@Inject
+	public DefaultGraphicShaderFactory(IConfigurationFactory configurationFactory)
 	{
-		m_shaders.put(URI.create("shader:/default/blackAndWhite"), new IShaderConstructor() {
+		m_configurationFactory =configurationFactory;
+		
+		m_shaderTypes.put("null", new IShaderConstructor() {
+			@Override
+			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
+				return new NullGraphicShader();
+			}
+		});
+		
+		m_shaderTypes.put("blackAndWhite", new IShaderConstructor() {
 			@Override
 			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				return new BlackAndWhiteShader();
 			}
 		});
 		
-		m_shaders.put(URI.create("shader:/default/redGreenFilterToneBlueReplace"), new IShaderConstructor() {
+		m_shaderTypes.put("redGreenFilterToneBlueReplace", new IShaderConstructor() {
 			@Override
 			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				try
@@ -63,14 +84,22 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
 	}
 	
 	@Override
-	public IGraphicShader create(URI name, IImmutableVariable arguments) throws GraphicShaderConstructionException
-	{
-		IShaderConstructor shader = m_shaders.get(name);
-		
-		if(shader == null)
-			throw new GraphicShaderConstructionException(new UnrecognizedGraphicShaderException(name));
-		
-		return shader.create(arguments);
+	public IGraphicShader create(URI name) throws GraphicShaderConstructionException
+	{	
+		try
+		{
+			DefaultGraphicShaderDeclaration decl = m_configurationFactory.create(name).getValue(DefaultGraphicShaderDeclaration.class);
+
+			IShaderConstructor shader = m_shaderTypes.get(decl.type);
+
+			if(shader == null)
+				throw new GraphicShaderConstructionException(new UnrecognizedGraphicShaderException(name));
+
+			return shader.create(decl.arguments);
+		} catch (ConfigurationConstructionException | ValueSerializationException e)
+		{
+			throw new GraphicShaderConstructionException(e);
+		}
 	}
 
 	private interface IShaderConstructor
@@ -139,4 +168,33 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
 			});
 		}
 	}
+	
+	public static final class DefaultGraphicShaderDeclaration implements ISerializable
+	{
+		public String type;
+		public IImmutableVariable arguments = new NullVariable();
+
+		@Override
+		public void serialize(IVariable target) throws ValueSerializationException
+		{
+			target.addChild("type").setValue(type);
+			target.addChild("arguments").setValue(arguments);
+		}
+
+		@Override
+		public void deserialize(IImmutableVariable source) throws ValueSerializationException
+		{
+			try
+			{
+				type = source.getChild("type").getValue(String.class);
+				
+				if(source.childExists("arguments"))
+					arguments = source.getChild("arguments");
+			} catch (NoSuchChildVariableException e)
+			{
+				throw new ValueSerializationException(e);
+			}
+		}
+	}
+	
 }

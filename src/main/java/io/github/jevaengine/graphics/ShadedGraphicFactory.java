@@ -27,7 +27,6 @@ import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.IGraphicShaderFactory.GraphicShaderConstructionException;
-import io.github.jevaengine.graphics.IGraphicShaderFactory.NullGraphicShader;
 import io.github.jevaengine.util.Nullable;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,11 +62,8 @@ public final class ShadedGraphicFactory implements IGraphicFactory
 			URI sourceName = name.resolve(new URI(decl.texture));
 			IImmutableGraphic source = m_baseGraphicFactory.create(sourceName);
 
-			if(decl.name == null)
-				return source;
-			
-			URI shaderName = name.resolve(new URI(decl.name));
-			source = m_shaderFactory.create(shaderName, decl.arguments).shade(source);
+			URI shaderName = name.resolve(new URI(decl.shader));
+			source = m_shaderFactory.create(shaderName).shade(source);
 			
 			return source;
 		} catch (ConfigurationConstructionException | 
@@ -82,19 +78,13 @@ public final class ShadedGraphicFactory implements IGraphicFactory
 	
 	public static final class ShadedGraphicDeclaration implements ISerializable
 	{
-		@Nullable
-		public String name;
-		
-		public IImmutableVariable arguments = new NullVariable();
+		public String shader;
 		public String texture;
 
 		@Override
 		public void serialize(IVariable target) throws ValueSerializationException
 		{
-			if(name != null)
-				target.addChild("name").setValue(name);
-			
-			target.addChild("arguments").setValue(arguments);
+			target.addChild("shader").setValue(shader);
 			target.addChild("texture").setValue(texture);
 		}
 
@@ -103,12 +93,7 @@ public final class ShadedGraphicFactory implements IGraphicFactory
 		{
 			try
 			{
-				if(source.childExists("name"))
-					name = source.getChild("name").getValue(String.class);
-				
-				if(source.childExists("arguments"))
-					arguments = source.getChild("arguments");
-				
+				shader = source.getChild("shader").getValue(String.class);
 				texture = source.getChild("texture").getValue(String.class);
 			} catch (NoSuchChildVariableException e)
 			{
