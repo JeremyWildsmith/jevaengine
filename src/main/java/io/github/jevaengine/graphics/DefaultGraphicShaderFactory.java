@@ -27,12 +27,15 @@ import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
+import io.github.jevaengine.graphics.DefaultGraphicShaderFactory.DefaultGraphicShaderDeclaration.DefaultGraphicShaderPassDeclaration;
 import io.github.jevaengine.math.Vector3D;
 import io.github.jevaengine.util.Nullable;
 import java.awt.Color;
 import java.awt.image.RGBImageFilter;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,12 +93,19 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
 		{
 			DefaultGraphicShaderDeclaration decl = m_configurationFactory.create(name).getValue(DefaultGraphicShaderDeclaration.class);
 
-			IShaderConstructor shader = m_shaderTypes.get(decl.type);
+			List<IGraphicShader> shaderPasses = new ArrayList<>();
+			for(DefaultGraphicShaderPassDeclaration p : decl.passes)
+			{
+				IShaderConstructor shader = m_shaderTypes.get(p.type);
 
-			if(shader == null)
-				throw new GraphicShaderConstructionException(new UnrecognizedGraphicShaderException(name));
+				if(shader == null)
+					throw new GraphicShaderConstructionException(new UnrecognizedGraphicShaderException(name));
 
-			return shader.create(decl.arguments);
+				shaderPasses.add(shader.create(p.arguments));
+			}
+			
+			return new MultiPassGraphicShader(shaderPasses.toArray(new IGraphicShader[shaderPasses.size()]));
+			
 		} catch (ConfigurationConstructionException | ValueSerializationException e)
 		{
 			throw new GraphicShaderConstructionException(e);
@@ -171,14 +181,12 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
 	
 	public static final class DefaultGraphicShaderDeclaration implements ISerializable
 	{
-		public String type;
-		public IImmutableVariable arguments = new NullVariable();
-
+		public DefaultGraphicShaderPassDeclaration[] passes;
+		
 		@Override
 		public void serialize(IVariable target) throws ValueSerializationException
 		{
-			target.addChild("type").setValue(type);
-			target.addChild("arguments").setValue(arguments);
+			target.addChild("passes").setValue(passes);
 		}
 
 		@Override
@@ -186,13 +194,38 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
 		{
 			try
 			{
-				type = source.getChild("type").getValue(String.class);
-				
-				if(source.childExists("arguments"))
-					arguments = source.getChild("arguments");
+				passes = source.getChild("passes").getValues(DefaultGraphicShaderPassDeclaration[].class);
 			} catch (NoSuchChildVariableException e)
 			{
 				throw new ValueSerializationException(e);
+			}
+		}
+			
+		public static final class DefaultGraphicShaderPassDeclaration implements ISerializable
+		{
+			public String type;
+			public IImmutableVariable arguments = new NullVariable();
+
+			@Override
+			public void serialize(IVariable target) throws ValueSerializationException
+			{
+				target.addChild("type").setValue(type);
+				target.addChild("arguments").setValue(arguments);
+			}
+
+			@Override
+			public void deserialize(IImmutableVariable source) throws ValueSerializationException
+			{
+				try
+				{
+					type = source.getChild("type").getValue(String.class);
+
+					if(source.childExists("arguments"))
+						arguments = source.getChild("arguments");
+				} catch (NoSuchChildVariableException e)
+				{
+					throw new ValueSerializationException(e);
+				}
 			}
 		}
 	}
