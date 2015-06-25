@@ -24,6 +24,7 @@ import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.scene.model.IActionSceneModel;
 import io.github.jevaengine.world.scene.model.ISceneModel;
 
@@ -91,6 +92,12 @@ public final class DefaultActionModel implements IActionSceneModel
 		return m_sceneModel.getAABB();
 	}
 
+	@Override
+	public PhysicsBodyShape getBodyShape()
+	{
+		return m_sceneModel.getBodyShape();
+	}
+	
 	@Override
 	public IActionSceneModelAction getAction(String name)
 	{

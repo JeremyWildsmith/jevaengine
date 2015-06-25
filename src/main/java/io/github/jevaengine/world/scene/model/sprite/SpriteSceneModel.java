@@ -27,6 +27,8 @@ import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelComponent.IDefaultSceneModelComponentObserver;
 
@@ -39,6 +41,7 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tritonus.share.TDebug;
 
 public final class SpriteSceneModel implements IAnimationSceneModel
 {
@@ -47,8 +50,15 @@ public final class SpriteSceneModel implements IAnimationSceneModel
 	private SpriteSceneModelAnimation m_currentAnimation = null;
 	private Direction m_direction = Direction.XYPlus;
 	
-	SpriteSceneModel() { }
+	private PhysicsBodyShape m_bodyShape;
+	
+	SpriteSceneModel(PhysicsBodyShape bodyShape)
+	{
+		m_bodyShape = new PhysicsBodyShape(bodyShape);
+	}
 
+	SpriteSceneModel() { }
+	
 	SpriteSceneModel(SpriteSceneModel source)
 	{
 		for(Map.Entry<String, SpriteSceneModelAnimation> a : source.m_animations.entrySet())
@@ -61,6 +71,9 @@ public final class SpriteSceneModel implements IAnimationSceneModel
 		}
 		
 		m_direction = source.m_direction;
+		
+		if(source.m_bodyShape != null)
+			m_bodyShape = new PhysicsBodyShape(source.m_bodyShape);
 	}
 	
 	@Override
@@ -96,12 +109,41 @@ public final class SpriteSceneModel implements IAnimationSceneModel
 	@Override
 	public Rect3F getAABB()
 	{
-		if(m_currentAnimation == null)
+		if(m_animations.size() == 0)
 			return new Rect3F();
 		
-		return m_currentAnimation.getAABB();
+		float minX = Float.MAX_VALUE;
+		float minY = Float.MAX_VALUE;
+		float minZ = Float.MAX_VALUE;
+		
+		float maxX = Float.MIN_VALUE;
+		float maxY = Float.MIN_VALUE;
+		float maxZ = Float.MIN_VALUE;
+		
+		for(SpriteSceneModelAnimation a : m_animations.values())
+		{
+			Rect3F aabb = a.getAABB();
+			minX = Math.min(minX, aabb.x);
+			minY = Math.min(minY, aabb.y);
+			minZ = Math.min(minZ, aabb.z);
+			
+			maxX = Math.max(maxX, aabb.x + aabb.width);
+			maxY = Math.max(maxY, aabb.y + aabb.height);
+			maxZ = Math.max(maxZ, aabb.z + aabb.depth);
+		}
+		
+		return new Rect3F(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
 	}
+	
+	@Override
+	public PhysicsBodyShape getBodyShape()
+	{
+		if(m_bodyShape == null)
+			m_bodyShape = new PhysicsBodyShape(PhysicsBodyShapeType.Box, getAABB());
 
+		return new PhysicsBodyShape(m_bodyShape);
+	}
+	
 	@Override
 	public IAnimationSceneModelAnimation getAnimation(String name)
 	{

@@ -38,8 +38,9 @@ import io.github.jevaengine.world.physics.IPhysicsBodyContactObserver;
 import io.github.jevaengine.world.physics.IPhysicsBodyOrientationObserver;
 import io.github.jevaengine.world.physics.IPhysicsWorld;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription;
-import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
 import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.search.ISearchFilter;
 import io.github.jevaengine.world.search.RectangleSearchFilter;
@@ -356,7 +357,7 @@ public final class SceneGraph implements IDisposable
 			m_location = containingLocation.divide(SECTOR_DIMENSIONS).floor();
 			Vector2D worldCoordinate = m_location.multiply(SECTOR_DIMENSIONS);
 			
-			m_regionSensorBody = m_hostWorld.createBody(new PhysicsBodyDescription(PhysicsBodyType.Static, PhysicsBodyShape.Box, new Rect3F(SECTOR_DIMENSIONS, SECTOR_DIMENSIONS, SECTOR_DIMENSIONS), 1.0F, true, true, 0.0F));
+			m_regionSensorBody = m_hostWorld.createBody(new PhysicsBodyDescription(PhysicsBodyType.Static, new PhysicsBodyShape(PhysicsBodyShapeType.Box, new Rect3F(SECTOR_DIMENSIONS, SECTOR_DIMENSIONS, SECTOR_DIMENSIONS)), 1.0F, true, true, 0.0F));
 			m_regionSensorBody.setLocation(new Vector3F(worldCoordinate.add(new Vector2D(SECTOR_DIMENSIONS / 2, SECTOR_DIMENSIONS / 2)), 0));
 			m_regionSensorBody.getObservers().add(new RegionSensorObserver());
 			

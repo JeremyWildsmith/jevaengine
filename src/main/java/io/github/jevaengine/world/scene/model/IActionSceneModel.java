@@ -23,6 +23,7 @@ import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.NullObservers;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,13 @@ public interface IActionSceneModel extends ISceneModel
 		{
 			return Direction.Zero;
 		}
-
+		
+		@Override
+		public PhysicsBodyShape getBodyShape()
+		{
+			return new PhysicsBodyShape();
+		}
+		
 		@Override
 		public void setDirection(Direction direction) { }
 

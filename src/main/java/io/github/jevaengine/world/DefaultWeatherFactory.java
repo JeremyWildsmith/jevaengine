@@ -33,9 +33,8 @@ import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.IGraphicFactory;
 import io.github.jevaengine.graphics.IGraphicFactory.GraphicConstructionException;
 import io.github.jevaengine.graphics.IImmutableGraphic;
-import io.github.jevaengine.graphics.IParticleEmitter;
-import io.github.jevaengine.graphics.IParticleEmitterFactory;
-import io.github.jevaengine.graphics.IParticleEmitterFactory.ParticleEmitterConstructionException;
+import io.github.jevaengine.world.scene.model.particle.IParticleEmitter;
+import io.github.jevaengine.world.scene.model.particle.IParticleEmitterFactory;
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.math.Matrix3X3;
@@ -89,11 +88,11 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 				phases.add(new DefaultWeatherPhase(clip, overlay, p.period, p.length));
 			}
 			
-			if(decl.shower != null)
+			/*if(decl.shower != null)
 			{
 				for(int i = 0; i < NUM_EMITTERS; i++)
 					emitters.add(m_particleEmitterFactory.create(name.resolve(new URI(decl.shower))));
-			}
+			}*/
 			
 			if(decl.ambientAudio != null)
 				ambientAudioClip = m_audioClipFactory.create(name.resolve(new URI(decl.ambientAudio)));
@@ -105,7 +104,7 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 																showerDeltaPlacement, ambientAudioClip);
 		} catch (ConfigurationConstructionException |
 							ValueSerializationException |
-							ParticleEmitterConstructionException |
+//							ParticleEmitterConstructionException |
 							AudioClipConstructionException |
 							URISyntaxException |
 							GraphicConstructionException e)
@@ -185,7 +184,8 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 						Vector2D end = new Vector2D(bounds.width, bounds.height);
 						for(int i = 0; current.x < end.x && current.y < end.y; i++)
 						{
-							m_shower[i % m_shower.length].render(g, x + current.x, y + current.y, scale);
+							//REFACTOR
+							//m_shower[i % m_shower.length].render(g, x + current.x, y + current.y, scale);
 							current = current.add(m_showerDeltaPlacement);
 						}
 					}

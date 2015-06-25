@@ -18,6 +18,7 @@
  */
 package io.github.jevaengine.world.entity;
 
+import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
@@ -26,7 +27,6 @@ import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.NonparticipantPhysicsBody;
 import io.github.jevaengine.world.physics.NullPhysicsBody;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription;
-import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 import io.github.jevaengine.world.scene.model.ISceneModel;
@@ -59,7 +59,7 @@ public final class SceneArtifact implements IEntity
 
 	private final boolean m_isStatic;
 	
-	public SceneArtifact(ISceneModel model, boolean isTraversable, boolean isStatic)
+	public SceneArtifact(ISceneModel model, boolean isStatic, boolean isTraversable)
 	{
 		m_name = this.getClass().getName() + m_unnamedCount.getAndIncrement();
 		
@@ -67,8 +67,11 @@ public final class SceneArtifact implements IEntity
 		
 		m_model = model;
 
-		m_physicsBodyDescription = isTraversable ? null : new PhysicsBodyDescription(PhysicsBodyType.Static, PhysicsBodyShape.Box, model.getAABB(), 0.0F, true, false, 0.0F);
-	
+		if(!isTraversable)
+			m_physicsBodyDescription = new PhysicsBodyDescription(PhysicsBodyType.Static, model.getBodyShape(), 1.0F, true, false, 1.0F);
+		else
+			m_physicsBodyDescription = null;
+		
 		m_bridge = new EntityBridge(this);
 	}
 	

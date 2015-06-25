@@ -57,12 +57,12 @@ public final class ScaledPhysicsWorld extends ImmutableScaledPhysicsWorld implem
 	public IPhysicsBody createBody(IEntity owner, PhysicsBodyDescription bodyDescription)
 	{
 		PhysicsBodyDescription d = new PhysicsBodyDescription(bodyDescription);
-		d.aabb.x *= m_scale;
-		d.aabb.y *= m_scale;
-		d.aabb.z *= m_scale;
-		d.aabb.width *= m_scale;
-		d.aabb.height *= m_scale;
-		d.aabb.depth *= m_scale;
+		d.shape.aabb.x *= m_scale;
+		d.shape.aabb.y *= m_scale;
+		d.shape.aabb.z *= m_scale;
+		d.shape.aabb.width *= m_scale;
+		d.shape.aabb.height *= m_scale;
+		d.shape.aabb.depth *= m_scale;
 		
 		d.density *= m_scale;
 		d.friction *= m_scale;
@@ -74,12 +74,12 @@ public final class ScaledPhysicsWorld extends ImmutableScaledPhysicsWorld implem
 	public IPhysicsBody createBody(PhysicsBodyDescription bodyDescription)
 	{
 		PhysicsBodyDescription d = new PhysicsBodyDescription(bodyDescription);
-		d.aabb.x *= m_scale;
-		d.aabb.y *= m_scale;
-		d.aabb.z *= m_scale;
-		d.aabb.width *= m_scale;
-		d.aabb.height *= m_scale;
-		d.aabb.depth *= m_scale;
+		d.shape.aabb.x *= m_scale;
+		d.shape.aabb.y *= m_scale;
+		d.shape.aabb.z *= m_scale;
+		d.shape.aabb.width *= m_scale;
+		d.shape.aabb.height *= m_scale;
+		d.shape.aabb.depth *= m_scale;
 		
 		d.density *= m_scale;
 		d.friction *= m_scale;

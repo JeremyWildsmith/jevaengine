@@ -51,8 +51,11 @@ import io.github.jevaengine.world.entity.IEntityFactory.UnsupportedEntityTypeExc
 import io.github.jevaengine.world.entity.SceneArtifact;
 import io.github.jevaengine.world.entity.ThreadPooledEntityFactory;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
+import io.github.jevaengine.world.physics.PhysicsBodyDescription;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModelFactory;
+import io.github.jevaengine.world.scene.model.ISceneModel;
+import io.github.jevaengine.world.scene.model.ISceneModelFactory;
 import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
 
 import java.net.URI;
@@ -76,7 +79,7 @@ public class DefaultWorldFactory implements IWorldFactory
 	protected final ISpriteFactory m_spriteFactory;
 	protected final IAudioClipFactory m_audioClipFactory;
 	protected final IPhysicsWorldFactory m_physicsWorldFactory;
-	protected final IAnimationSceneModelFactory m_animationSceneModelFactory;
+	protected final ISceneModelFactory m_sceneModelFactory;
 	protected final IEffectMapFactory m_effectMapFactory;
 	
 	private final IWeatherFactory m_weatherFactory;
@@ -89,7 +92,7 @@ public class DefaultWorldFactory implements IWorldFactory
 								ISpriteFactory spriteFactory,
 								IAudioClipFactory audioClipFactory,
 								IPhysicsWorldFactory physicsWorldFactory,
-								IAnimationSceneModelFactory animationSceneModelFactory,
+								ISceneModelFactory sceneModelFactory,
 								IWeatherFactory weatherFactory,
 								IEffectMapFactory effectMapFactory)
 	{
@@ -100,7 +103,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		m_spriteFactory = spriteFactory;
 		m_audioClipFactory = audioClipFactory;
 		m_physicsWorldFactory = physicsWorldFactory;
-		m_animationSceneModelFactory = animationSceneModelFactory;
+		m_sceneModelFactory = sceneModelFactory;
 		m_weatherFactory = weatherFactory;
 		m_effectMapFactory = effectMapFactory;
 	}
@@ -135,9 +138,11 @@ public class DefaultWorldFactory implements IWorldFactory
 	{
 		try
 		{
-			IAnimationSceneModel model = m_animationSceneModelFactory.create(context.resolve(new URI(artifactDecl.model)));
+			ISceneModel model = m_sceneModelFactory.create(context.resolve(new URI(artifactDecl.model)));
 			model.setDirection(artifactDecl.direction);
-			return new SceneArtifact(model, artifactDecl.isTraversable, artifactDecl.isStatic);
+			
+			return new SceneArtifact(model, artifactDecl.isStatic, artifactDecl.isTraversable);
+			
 		} catch (SceneModelConstructionException | URISyntaxException e)
 		{
 			throw new EntityConstructionException("Scene Artifact", e);
@@ -329,10 +334,12 @@ public class DefaultWorldFactory implements IWorldFactory
 			public String model;
 			
 			public boolean isStatic;
-			public boolean isTraversable;
 			
 			public Direction direction;
-		
+
+			@Nullable
+			public boolean isTraversable;
+					
 			public Vector3F[] locations;
 			
 			public SceneArtifactImportDeclaration() { }
@@ -342,9 +349,9 @@ public class DefaultWorldFactory implements IWorldFactory
 			{
 				target.addChild("model").setValue(model);
 				target.addChild("isStatic").setValue(this.isStatic);
-				target.addChild("isTraversable").setValue(this.isTraversable);
 				target.addChild("direction").setValue(direction.ordinal());
 				target.addChild("locations").setValue(locations);
+				target.addChild("isTraversable").setValue(this.isTraversable);
 			}
 
 			@Override
@@ -354,7 +361,6 @@ public class DefaultWorldFactory implements IWorldFactory
 				{
 					this.model = source.getChild("model").getValue(String.class);
 					this.isStatic = source.getChild("isStatic").getValue(Boolean.class);
-					this.isTraversable = source.getChild("isTraversable").getValue(Boolean.class);
 					this.locations = source.getChild("locations").getValues(Vector3F[].class);
 					
 					Integer dirBuffer = source.getChild("direction").getValue(Integer.class);
@@ -364,6 +370,7 @@ public class DefaultWorldFactory implements IWorldFactory
 
 					direction = Direction.values()[dirBuffer];
 					
+					this.isTraversable = source.getChild("isTraversable").getValue(Boolean.class);
 				} catch(NoSuchChildVariableException e)
 				{
 					throw new ValueSerializationException(e);
@@ -389,7 +396,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			
 			@Nullable
 			public IImmutableVariable auxConfig;
-			
+
 			public EntityImportDeclaration() {}
 
 			@Override

@@ -31,7 +31,9 @@ import io.github.jevaengine.graphics.ISpriteFactory;
 import io.github.jevaengine.graphics.ISpriteFactory.SpriteConstructionException;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel.AnimationSceneModelAnimationState;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModelFactory;
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModel.SpriteSceneModelAnimation;
@@ -72,8 +74,8 @@ public final class SpriteSceneModelFactory implements IAnimationSceneModelFactor
 		{
 			DefaultSceneModelDeclaration modelDecl = m_configurationFactory.create(name).getValue(DefaultSceneModelDeclaration.class);
 		
-			SpriteSceneModel model = new SpriteSceneModel();
-			
+			SpriteSceneModel model = modelDecl.bodyShape == null ? new SpriteSceneModel() : new SpriteSceneModel(modelDecl.bodyShape);
+
 			for(DefaultSceneModelAnimationDeclaration a : modelDecl.animations)
 			{
 				SpriteSceneModelAnimation animation = model.new SpriteSceneModelAnimation();
@@ -133,11 +135,17 @@ public final class SpriteSceneModelFactory implements IAnimationSceneModelFactor
 		public DefaultSceneModelAnimationDeclaration[] animations;
 		public String defaultAnimation;
 		
+		@Nullable
+		public PhysicsBodyShape bodyShape;
+		
 		@Override
 		public void serialize(IVariable target) throws ValueSerializationException
 		{
 			target.addChild("animations").setValue(animations);
 			target.addChild("defaultAnimation").setValue(defaultAnimation);
+		
+			if(bodyShape != null)
+				target.addChild("bodyShape").setValue(bodyShape);
 		}
 
 		@Override
@@ -146,6 +154,9 @@ public final class SpriteSceneModelFactory implements IAnimationSceneModelFactor
 			try {
 				animations = source.getChild("animations").getValues(DefaultSceneModelAnimationDeclaration[].class);
 				defaultAnimation = source.getChild("defaultAnimation").getValue(String.class);
+
+				if(source.childExists("bodyShape"))
+					bodyShape = source.getChild("bodyShape").getValue(PhysicsBodyShape.class);
 			} catch (NoSuchChildVariableException e) {
 				throw new ValueSerializationException(e);
 			}

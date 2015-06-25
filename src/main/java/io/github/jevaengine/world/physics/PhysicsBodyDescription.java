@@ -23,13 +23,11 @@ import io.github.jevaengine.config.ISerializable;
 import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.ValueSerializationException;
-import io.github.jevaengine.math.Rect3F;
 
 public final class PhysicsBodyDescription implements ISerializable
 {
 	public PhysicsBodyType type = PhysicsBodyType.Static;
-	public PhysicsBodyShape shape = PhysicsBodyShape.Box;
-	public Rect3F aabb = new Rect3F();
+	public PhysicsBodyShape shape = new PhysicsBodyShape();
 	public float density;
 	public boolean isFixedRotation;
 	public boolean isSensor;
@@ -41,8 +39,7 @@ public final class PhysicsBodyDescription implements ISerializable
 	public PhysicsBodyDescription(PhysicsBodyDescription d)
 	{
 		type = d.type;
-		shape = d.shape;
-		aabb = new Rect3F(d.aabb);
+		shape = new PhysicsBodyShape(d.shape);
 		density = d.density;
 		isFixedRotation = d.isFixedRotation;
 		isSensor = d.isSensor;
@@ -50,22 +47,15 @@ public final class PhysicsBodyDescription implements ISerializable
 		collisionExceptions = d.collisionExceptions;
 	}
 	
-	public PhysicsBodyDescription(PhysicsBodyType _type, PhysicsBodyShape _shape, Rect3F _aabb, float _density, boolean _isFixedRotation, boolean _isSensor, float _friction, Class<?> ... _collisionExceptions)
+	public PhysicsBodyDescription(PhysicsBodyType _type, PhysicsBodyShape _shape, float _density, boolean _isFixedRotation, boolean _isSensor, float _friction, Class<?> ... _collisionExceptions)
 	{
 		type = _type;
 		shape = _shape;
-		aabb = _aabb;
 		density = _density;
 		isFixedRotation = _isFixedRotation;
 		isSensor = _isSensor;
 		friction = _friction;
 		collisionExceptions = _collisionExceptions;
-	}
-	
-	public enum PhysicsBodyShape
-	{
-		Circle,
-		Box,
 	}
 	
 	public enum PhysicsBodyType
@@ -79,8 +69,7 @@ public final class PhysicsBodyDescription implements ISerializable
 	public void serialize(IVariable target) throws ValueSerializationException
 	{
 		target.addChild("type").setValue(type.ordinal());
-		target.addChild("shape").setValue(shape.ordinal());
-		target.addChild("aabb").setValue(aabb);
+		target.addChild("shape").setValue(shape);
 		target.addChild("density").setValue(density);
 		target.addChild("isFixedRotation").setValue(isFixedRotation);
 		target.addChild("isSensor").setValue(isSensor);
@@ -92,21 +81,7 @@ public final class PhysicsBodyDescription implements ISerializable
 	{
 		try
 		{
-			Integer typeIndex = source.getChild("type").getValue(Integer.class);
-			
-			if(typeIndex < 0 || typeIndex > PhysicsBodyType.values().length)
-				throw new ValueSerializationException(new IndexOutOfBoundsException("type index is outside of bounds."));
-			
-			type = PhysicsBodyType.values()[typeIndex];
-			
-			Integer shapeIndex = source.getChild("shape").getValue(Integer.class);
-			
-			if(shapeIndex < 0 || shapeIndex > PhysicsBodyShape.values().length)
-				throw new ValueSerializationException(new IndexOutOfBoundsException("type index is outside of bounds."));
-			
-			shape = PhysicsBodyShape.values()[shapeIndex];
-			
-			aabb = source.getChild("aabb").getValue(Rect3F.class);
+			shape = source.getChild("shape").getValue(PhysicsBodyShape.class);
 			density = source.getChild("density").getValue(Double.class).floatValue();
 			
 			if(source.childExists("isFixedRotation"))

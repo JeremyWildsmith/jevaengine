@@ -18,51 +18,35 @@
  */
 package io.github.jevaengine.world.scene.model;
 
-import io.github.jevaengine.math.Matrix3X3;
-import io.github.jevaengine.math.Rect3F;
-import io.github.jevaengine.world.Direction;
-import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public final class NullSceneModel implements ISceneModel
+public final class ExtentionMuxedSceneModelFactory implements ISceneModelFactory
 {
-	@Override
-	public void dispose() { }
+	private final Map<String, ISceneModelFactory> m_factories = new HashMap<>();
+	private final ISceneModelFactory m_defaultFactory;
 	
-	public NullSceneModel clone()
+	public ExtentionMuxedSceneModelFactory(ISceneModelFactory defaultFactory)
 	{
-		return new NullSceneModel();
+		m_defaultFactory = defaultFactory;
 	}
 	
-	@Override
-	public List<ISceneModelComponent> getComponents(Matrix3X3 projection)
+	public void put(String extention, ISceneModelFactory factory)
 	{
-		return new ArrayList<>();
-	}
-	
-	@Override
-	public Rect3F getAABB()
-	{
-		return new Rect3F();
+		String ext = extention.startsWith(".") ? extention : "." + extention;
+		m_factories.put(ext, factory);
 	}
 
 	@Override
-	public PhysicsBodyShape getBodyShape()
+	public ISceneModel create(URI name) throws SceneModelConstructionException
 	{
-		return new PhysicsBodyShape();
+		for(Map.Entry<String, ISceneModelFactory> e : m_factories.entrySet())
+		{
+			if(name.getPath().endsWith(e.getKey()))
+				return e.getValue().create(name);
+		}
+		
+		return m_defaultFactory.create(name);
 	}
-	
-	@Override
-	public void update(int deltaTime) { }
-
-	@Override
-	public Direction getDirection()
-	{
-		return Direction.Zero;
-	}
-
-	@Override
-	public void setDirection(Direction direction) { }
 }

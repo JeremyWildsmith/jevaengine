@@ -21,6 +21,8 @@ package io.github.jevaengine.world.scene.model;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,7 +109,13 @@ public final class MergeSceneModel implements ISceneModel
 		
 		return new Rect3F(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
 	}
-
+	
+	@Override
+	public PhysicsBodyShape getBodyShape()
+	{
+		return new PhysicsBodyShape(PhysicsBodyShapeType.Box, getAABB());
+	}
+	
 	@Override
 	public void update(int deltaTime)
 	{

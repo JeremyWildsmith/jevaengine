@@ -16,17 +16,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.world.scene.model;
+package io.github.jevaengine.world.scene.model.particle;
 
-import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory;
-
+import io.github.jevaengine.world.scene.model.ISceneModelFactory;
+import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
 import java.net.URI;
 
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(SpriteSceneModelFactory.class)
-public interface IAnimationSceneModelFactory extends ISceneModelFactory
+public interface IParticleEmitterFactory extends ISceneModelFactory
 {
 	@Override
-	IAnimationSceneModel create(URI name) throws SceneModelConstructionException;
+	IParticleEmitter create(URI name) throws SceneModelConstructionException;
 }

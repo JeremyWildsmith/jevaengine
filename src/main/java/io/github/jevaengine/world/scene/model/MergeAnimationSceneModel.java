@@ -23,6 +23,8 @@ import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -128,6 +130,13 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel
 		return Rect3F.getAABB(aabbs);
 	}
 
+	
+	@Override
+	public PhysicsBodyShape getBodyShape()
+	{
+		return new PhysicsBodyShape(PhysicsBodyShapeType.Box, getAABB());
+	}
+	
 	@Override
 	public void update(int deltaTime)
 	{

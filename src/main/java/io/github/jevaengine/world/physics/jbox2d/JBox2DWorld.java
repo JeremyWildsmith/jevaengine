@@ -24,9 +24,12 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsWorld;
+import io.github.jevaengine.world.physics.NonparticipantPhysicsBody;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription;
-import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import static io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType.Box;
+import static io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType.Circle;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -72,15 +75,16 @@ public final class JBox2DWorld implements IPhysicsWorld
 		m_physicsWorld.setContactListener(m_contactListener);
 	}
 	
-	private Shape constructShape(PhysicsBodyShape shapeType, Rect3F aabb)
+	private Shape constructShape(PhysicsBodyShape shape)
 	{
-		switch(shapeType)
+		Rect3F aabb = shape.aabb;
+		
+		switch(shape.type)
 		{
 		default:
 			assert false: "Unrecognized shape type.";
 		case Box:
 			PolygonShape polyShape = new PolygonShape();
-			//polyShape.setAsBox(aabb.width / 2.0F, aabb.height / 2.0F, new Vec2(), 0);
 			polyShape.setAsBox(aabb.width / 2, aabb.height / 2, new Vec2(aabb.x + aabb.width / 2.0F, aabb.y + aabb.height / 2.0F), 0);
 			return polyShape;
 		case Circle:
@@ -132,7 +136,7 @@ public final class JBox2DWorld implements IPhysicsWorld
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.isSensor = bodyDescription.isSensor;
 		fixtureDef.density = bodyDescription.density;
-		fixtureDef.shape = constructShape(bodyDescription.shape, bodyDescription.aabb);
+		fixtureDef.shape = constructShape(bodyDescription.shape);
 		fixtureDef.friction = bodyDescription.friction;
 		Fixture fixture = body.createFixture(fixtureDef);
 
@@ -146,7 +150,7 @@ public final class JBox2DWorld implements IPhysicsWorld
 			m_physicsWorld.createJoint(frictionJointDef);
 		}
 		
-		return new JBox2DBody(this, body, fixture, bodyDescription.aabb.getXy(), owner, bodyDescription.collisionExceptions);
+		return new JBox2DBody(this, body, fixture, bodyDescription.shape.aabb.getXy(), owner, bodyDescription.collisionExceptions);
 	}
 	
 	@Override

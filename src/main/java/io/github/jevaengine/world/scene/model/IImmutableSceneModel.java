@@ -23,6 +23,7 @@ import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
 
 import java.util.Collection;
 
@@ -32,6 +33,8 @@ public interface IImmutableSceneModel extends Cloneable
 	Collection<ISceneModelComponent> getComponents(Matrix3X3 projection);
 	Rect3F getAABB();
 	Direction getDirection();
+	
+	PhysicsBodyShape getBodyShape();
 
 	public interface ISceneModelComponent extends IRenderable
 	{

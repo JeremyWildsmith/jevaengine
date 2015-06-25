@@ -21,6 +21,7 @@ package io.github.jevaengine.world.scene.model;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.world.Direction;
+import io.github.jevaengine.world.physics.PhysicsBodyShape;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,6 +59,12 @@ public final class DecoratedSceneModel implements ISceneModel
 	public DecoratedSceneModel clone()
 	{
 		return new DecoratedSceneModel(m_model, m_additionalComponents);
+	}
+	
+	@Override
+	public PhysicsBodyShape getBodyShape()
+	{
+		return m_model.getBodyShape();
 	}
 	
 	@Override
