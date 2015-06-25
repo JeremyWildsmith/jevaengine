@@ -46,7 +46,7 @@ public final class Animation implements IImmutableAnimation
 		m_curIndex = 0;
 		m_elapsedTime = 0;
 		m_frames = src.m_frames;
-		m_state = AnimationState.Stop;
+		m_state = src.m_state;
 		m_name = src.m_name;
 	}
 
