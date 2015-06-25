@@ -56,10 +56,14 @@ public final class SceneArtifact implements IEntity
 	private final Observers m_observers = new Observers();
 	
 	private final EntityBridge m_bridge;
+
+	private final boolean m_isStatic;
 	
-	public SceneArtifact(ISceneModel model, boolean isTraversable)
+	public SceneArtifact(ISceneModel model, boolean isTraversable, boolean isStatic)
 	{
 		m_name = this.getClass().getName() + m_unnamedCount.getAndIncrement();
+		
+		m_isStatic = isStatic;
 		
 		m_model = model;
 
@@ -135,7 +139,7 @@ public final class SceneArtifact implements IEntity
 	@Override
 	public boolean isStatic()
 	{
-		return true;
+		return m_isStatic;
 	}
 	
 	@Override

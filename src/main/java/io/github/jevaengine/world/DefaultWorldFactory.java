@@ -137,7 +137,7 @@ public class DefaultWorldFactory implements IWorldFactory
 		{
 			IAnimationSceneModel model = m_animationSceneModelFactory.create(context.resolve(new URI(artifactDecl.model)));
 			model.setDirection(artifactDecl.direction);
-			return new SceneArtifact(model, artifactDecl.isTraversable);
+			return new SceneArtifact(model, artifactDecl.isTraversable, artifactDecl.isStatic);
 		} catch (SceneModelConstructionException | URISyntaxException e)
 		{
 			throw new EntityConstructionException("Scene Artifact", e);
@@ -328,6 +328,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			@Nullable
 			public String model;
 			
+			public boolean isStatic;
 			public boolean isTraversable;
 			
 			public Direction direction;
@@ -340,6 +341,7 @@ public class DefaultWorldFactory implements IWorldFactory
 			public void serialize(IVariable target) throws ValueSerializationException
 			{
 				target.addChild("model").setValue(model);
+				target.addChild("isStatic").setValue(this.isStatic);
 				target.addChild("isTraversable").setValue(this.isTraversable);
 				target.addChild("direction").setValue(direction.ordinal());
 				target.addChild("locations").setValue(locations);
@@ -351,6 +353,7 @@ public class DefaultWorldFactory implements IWorldFactory
 				try
 				{
 					this.model = source.getChild("model").getValue(String.class);
+					this.isStatic = source.getChild("isStatic").getValue(Boolean.class);
 					this.isTraversable = source.getChild("isTraversable").getValue(Boolean.class);
 					this.locations = source.getChild("locations").getValues(Vector3F[].class);
 					
