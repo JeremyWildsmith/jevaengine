@@ -81,7 +81,28 @@ public final class Matrix3X3 implements ISerializable
 	{
 		return this.adjoint().scale(1 / determinant());
 	}
+	
+	public static Matrix3X3 createRotationX(float angle)
+	{
+		return new Matrix3X3(1, 0, 0, 
+							0, (float)Math.cos(angle), (float)-Math.sin(angle),
+							0, (float)Math.sin(angle), (float)Math.cos(angle));
+	}
+	
+	public static Matrix3X3 createRotationY(float angle)
+	{
+		return new Matrix3X3((float)Math.cos(angle), 0, (float)Math.sin(angle), 
+							0, 1, 0,
+							(float)-Math.sin(angle), 0, (float)Math.cos(angle));
+	}
 
+	public static Matrix3X3 createRotationZ(float angle)
+	{
+		return new Matrix3X3((float)Math.cos(angle), (float)-Math.sin(angle), 0, 
+							(float)Math.sin(angle), (float)Math.cos(angle), 0,
+							0, 0, 1);
+	}
+	
 	@Override
 	public void serialize(IVariable target) throws ValueSerializationException
 	{

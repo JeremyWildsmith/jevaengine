@@ -79,6 +79,17 @@ public final class Vector3F implements ISerializable
 		return new Vector3F(x + v.x, y + v.y, z + v.z);
 	}
 	
+	public Vector3F rotate(float x, float y, float z)
+	{
+		return Matrix3X3.createRotationZ(z).dot(Matrix3X3.createRotationY(y).dot(Matrix3X3.createRotationX(x).dot(this)));
+	}
+	
+	public Vector3F rotate(Vector3F origin, float x, float y, float z)
+	{
+		Vector3F buffer = this.difference(origin);
+		return buffer.rotate(x, y, z).add(origin);
+	}
+	
 	public Vector3D round()
 	{
 		return new Vector3D((int) (Math.round(Math.abs(x)) * Math.signum(x)), (int) (Math.round(Math.abs(y)) * Math.signum(y)), (int) (Math.round(Math.abs(z)) * Math.signum(z)));
