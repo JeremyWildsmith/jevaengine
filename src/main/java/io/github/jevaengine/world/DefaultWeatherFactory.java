@@ -197,9 +197,9 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 		}
 		
 		@Override
-		public ISceneBuffer.ISceneComponentEffect getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBuffer.ISceneBufferEntry subject, Collection<ISceneBuffer.ISceneBufferEntry> beneath)
+		public ISceneBuffer.ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBuffer.ISceneBufferEntry subject, Collection<ISceneBuffer.ISceneBufferEntry> beneath)
 		{
-			return new ISceneBuffer.NullComponentEffect();
+			return new ISceneBuffer.ISceneComponentEffect[0];
 		}
 	}
 

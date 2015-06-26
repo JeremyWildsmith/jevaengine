@@ -33,6 +33,8 @@ import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelCo
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -185,16 +187,16 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		return translateWorldToScreen(location, 1.0F);
 	}
 
-	private List<ISceneComponentEffect> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, Vertex subject)
+	private List<Queue<ISceneComponentEffect>> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, Vertex subject)
 	{
 		List<ISceneBufferEntry> beneath = new ArrayList<>();
 		
 		for(Vertex v : subject.getPersistentIns())
 			beneath.add(v.m_entry);
 	
-		List<ISceneComponentEffect> effects = new ArrayList<>();
+		List<Queue<ISceneComponentEffect>> effects = new ArrayList<>();
 		for(ISceneBufferEffect e : m_effects)
-			effects.add(e.getComponentEffect(g, offsetX, offsetY, scale, new Matrix3X3(m_worldToScreenMatrix), subject.m_entry, beneath));
+			effects.add(new LinkedList<>(Arrays.asList(e.getComponentEffect(g, offsetX, offsetY, scale, new Matrix3X3(m_worldToScreenMatrix), subject.m_entry, beneath))));
 
 		return effects;
 	}
@@ -210,15 +212,34 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		{
 			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
 			
-			List<ISceneComponentEffect> effects = createComponentRenderEffects(g, offsetX + renderLocation.x, offsetY + renderLocation.y, scale, v);			
+			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX, offsetY, scale, v);			
 			
-			for(ISceneComponentEffect e : effects)
-				e.prerender();
-			
-			v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
-			
-			for(ISceneComponentEffect e : effects)
-				e.postrender();
+			while(!effects.isEmpty())
+			{
+				List<ISceneComponentEffect> passEffects = new ArrayList<>();
+				
+				Iterator<Queue<ISceneComponentEffect>> it = effects.iterator();
+				
+				while(it.hasNext())
+				{
+					Queue<ISceneComponentEffect> c = it.next();
+					ISceneComponentEffect effect = c.poll();
+					
+					if(c.isEmpty())
+						it.remove();
+					
+					if(effect != null)
+						passEffects.add(effect);
+				}
+				
+				for(ISceneComponentEffect e : passEffects)
+					e.prerender();
+				
+				v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
+
+				for(ISceneComponentEffect e : passEffects)
+					e.postrender();
+			}
 		}
 		
 		for(ISceneBufferEffect e : m_effects)
@@ -297,7 +318,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		}
 	}
 	
-	private static final class SceneGraphicEntry implements ISceneBufferEntry
+	private final class SceneGraphicEntry implements ISceneBufferEntry
 	{
 		private ISceneModelComponent component;
 		
@@ -314,12 +335,12 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			component = _graphic;
 			dispatcher = _dispatcher;
 			bounds = new Rect3F(_graphic.getBounds()).add(_location);
-			projectedAABB = calculateProjectedAABB(bounds, projectionMatrix);
+			projectedAABB = calculateProjectedAABB(bounds, projectionMatrix).add(m_translation);
 			
 			location = new Vector3F(_location);
 		}
 		
-		private static Rect2D calculateProjectedAABB(Rect3F a, Matrix3X3 projectionMatrix)
+		private Rect2D calculateProjectedAABB(Rect3F a, Matrix3X3 projectionMatrix)
 		{
 			Rect2D aAABB = new Rect2D();
 			

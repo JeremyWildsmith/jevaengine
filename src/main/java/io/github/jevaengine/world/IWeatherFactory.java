@@ -65,9 +65,9 @@ public interface IWeatherFactory
 		}
 
 		@Override
-		public ISceneComponentEffect getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath)
+		public ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath)
 		{
-			return new NullComponentEffect();
+			return new ISceneComponentEffect[0];
 		}
 
 	}

@@ -29,6 +29,7 @@ import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
+import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.Collection;
@@ -109,20 +110,22 @@ public final class DebugDrawComponent implements ISceneBufferEffect
 	}
 
 	
-		@Override
-	public ISceneBuffer.ISceneComponentEffect getComponentEffect(final Graphics2D g, final int offsetX, final int offsetY, final float scale, final Matrix3X3 projection, final ISceneBufferEntry subject, final Collection<ISceneBufferEntry> beneath)
+	@Override
+	public ISceneComponentEffect[] getComponentEffect(final Graphics2D g, final int offsetX, final int offsetY, final float scale, final Matrix3X3 projection, final ISceneBufferEntry subject, final Collection<ISceneBufferEntry> beneath)
 	{
-		return new ISceneBuffer.ISceneComponentEffect() {
-			@Override
-			public void prerender()
-			{
-				debugDrawBack(g, offsetX, offsetY, scale, subject.getComponent().getBounds(), projection);
-			}
+		return new ISceneComponentEffect[] {
+			new ISceneComponentEffect() {
+				@Override
+				public void prerender()
+				{
+					debugDrawBack(g, offsetX, offsetY, scale, subject.getComponent().getBounds(), projection);
+				}
 
-			@Override
-			public void postrender()
-			{
-				debugDrawFront(g, offsetX, offsetY, scale, subject.getComponent().getBounds(), projection);
+				@Override
+				public void postrender()
+				{
+					debugDrawFront(g, offsetX, offsetY, scale, subject.getComponent().getBounds(), projection);
+				}
 			}
 		};
 	}
