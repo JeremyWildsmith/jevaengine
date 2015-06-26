@@ -28,9 +28,7 @@ import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel.AnimationSceneModelAnimationState;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelComponent;
-
 import java.awt.Graphics2D;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

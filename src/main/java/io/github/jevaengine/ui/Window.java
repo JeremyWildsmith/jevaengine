@@ -26,7 +26,6 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
-
 import java.awt.Graphics2D;
 
 public final class Window extends Control implements IDisposable

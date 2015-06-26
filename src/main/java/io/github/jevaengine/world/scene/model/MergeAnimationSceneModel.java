@@ -25,7 +25,6 @@ import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

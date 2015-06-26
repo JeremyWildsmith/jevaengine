@@ -24,7 +24,6 @@ import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector3D;
 import io.github.jevaengine.util.Nullable;
-
 import java.awt.Color;
 
 public class DefaultControlFactory implements IControlFactory

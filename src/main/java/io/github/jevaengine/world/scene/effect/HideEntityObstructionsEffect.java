@@ -30,11 +30,11 @@ import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
-import java.util.Collection;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Collection;
 
 public final class HideEntityObstructionsEffect implements ISceneBufferEffect
 {

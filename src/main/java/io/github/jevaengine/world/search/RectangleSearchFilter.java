@@ -20,7 +20,6 @@ package io.github.jevaengine.world.search;
 
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Rect2F;
-
 import io.github.jevaengine.math.Vector2F;
 
 public class RectangleSearchFilter<T> implements ISearchFilter<T>

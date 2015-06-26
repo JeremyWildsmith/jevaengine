@@ -19,7 +19,6 @@
 package io.github.jevaengine;
 
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.io.InputStream;
 import java.net.URI;
 

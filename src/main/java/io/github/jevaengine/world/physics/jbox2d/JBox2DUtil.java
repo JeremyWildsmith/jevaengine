@@ -20,9 +20,7 @@ package io.github.jevaengine.world.physics.jbox2d;
 
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
-
 import java.util.NoSuchElementException;
-
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyType;
 

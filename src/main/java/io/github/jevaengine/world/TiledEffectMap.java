@@ -22,7 +22,6 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.search.ISearchFilter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

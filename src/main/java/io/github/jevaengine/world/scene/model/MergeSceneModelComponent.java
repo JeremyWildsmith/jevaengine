@@ -21,7 +21,6 @@ package io.github.jevaengine.world.scene.model;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelComponent;
-
 import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.Collection;

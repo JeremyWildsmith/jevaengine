@@ -20,7 +20,6 @@ package io.github.jevaengine.graphics;
 
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.util.Nullable;
-
 import java.awt.Graphics2D;
 import java.util.Collection;
 import java.util.HashMap;

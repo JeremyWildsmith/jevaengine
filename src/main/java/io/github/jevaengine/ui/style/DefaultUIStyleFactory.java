@@ -39,13 +39,11 @@ import io.github.jevaengine.graphics.NullFont;
 import io.github.jevaengine.math.Vector3D;
 import io.github.jevaengine.ui.style.DefaultUIStyleFactory.UIStyleDeclaration.UIComponentStateStyleDeclaration;
 import io.github.jevaengine.ui.style.DefaultUIStyleFactory.UIStyleDeclaration.UIComponentStyleDeclaration;
-
 import java.awt.Color;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.inject.Inject;
 
 public final class DefaultUIStyleFactory implements IUIStyleFactory

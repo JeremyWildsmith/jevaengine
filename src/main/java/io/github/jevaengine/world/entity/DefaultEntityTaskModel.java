@@ -19,7 +19,6 @@
 package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.world.entity.tasks.ITask;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;

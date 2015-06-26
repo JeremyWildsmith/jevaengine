@@ -41,13 +41,10 @@ import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory.Def
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory.DefaultSceneModelDeclaration.DefaultSceneModelAnimationDeclaration.DefaultSceneModelAnimationAudioDeclaration;
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory.DefaultSceneModelDeclaration.DefaultSceneModelAnimationDeclaration.DefaultSceneModelAnimationDirectionDeclaration;
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory.DefaultSceneModelDeclaration.DefaultSceneModelAnimationDeclaration.DefaultSceneModelAnimationDirectionDeclaration.DefaultSceneModelAnimationComponentDeclaration;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

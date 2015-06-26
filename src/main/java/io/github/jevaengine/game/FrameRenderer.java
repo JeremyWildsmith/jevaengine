@@ -20,7 +20,6 @@ package io.github.jevaengine.game;
 
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.math.Vector2D;
-
 import java.awt.BufferCapabilities;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -35,9 +34,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
-
 import javax.swing.JFrame;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

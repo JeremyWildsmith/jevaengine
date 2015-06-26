@@ -18,9 +18,6 @@
  */
 package io.github.jevaengine.world.entity;
 
-import io.github.jevaengine.world.scene.model.particle.IParticleEmitter;
-import io.github.jevaengine.script.IFunctionFactory;
-import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.NullFunctionFactory;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Observers;
@@ -29,7 +26,7 @@ import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.NonparticipantPhysicsBody;
 import io.github.jevaengine.world.physics.NullPhysicsBody;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
-import io.github.jevaengine.world.scene.model.NullSceneModel;
+import io.github.jevaengine.world.scene.model.particle.IParticleEmitter;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;

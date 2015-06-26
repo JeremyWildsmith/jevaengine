@@ -20,7 +20,6 @@ package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.util.Nullable;
-
 import java.net.URI;
 
 public interface IEntityFactory

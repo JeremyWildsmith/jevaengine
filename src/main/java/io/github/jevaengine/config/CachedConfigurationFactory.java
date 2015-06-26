@@ -20,13 +20,11 @@ package io.github.jevaengine.config;
 
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.inject.Inject;
 
 public final class CachedConfigurationFactory implements IConfigurationFactory

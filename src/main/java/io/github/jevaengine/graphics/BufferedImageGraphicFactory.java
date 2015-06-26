@@ -24,7 +24,6 @@ import io.github.jevaengine.game.IRenderer;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -37,7 +36,6 @@ import java.awt.image.RGBImageFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 

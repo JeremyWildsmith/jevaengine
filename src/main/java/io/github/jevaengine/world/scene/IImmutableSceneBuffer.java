@@ -18,7 +18,6 @@
  */
 package io.github.jevaengine.world.scene;
 
-import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;

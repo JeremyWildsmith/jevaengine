@@ -18,10 +18,9 @@
  */
 package io.github.jevaengine.ui.style;
 
-import java.util.NoSuchElementException;
-
 import io.github.jevaengine.IDisposable;
 import io.github.jevaengine.ui.ComponentState;
+import java.util.NoSuchElementException;
 
 public final class ComponentStyle implements IDisposable
 {

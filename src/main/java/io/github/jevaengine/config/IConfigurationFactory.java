@@ -19,7 +19,6 @@
 package io.github.jevaengine.config;
 
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.net.URI;
 
 public interface IConfigurationFactory

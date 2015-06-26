@@ -25,10 +25,8 @@ import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.io.IOException;
 import java.net.URI;
-
 import javax.inject.Inject;
 
 public final class JsonConfigurationFactory implements IConfigurationFactory

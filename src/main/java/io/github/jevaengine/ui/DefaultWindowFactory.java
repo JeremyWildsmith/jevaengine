@@ -32,10 +32,8 @@ import io.github.jevaengine.ui.DefaultWindowFactory.WindowLayoutDeclaration.Cont
 import io.github.jevaengine.ui.IControlFactory.ControlConstructionException;
 import io.github.jevaengine.ui.style.IUIStyleFactory;
 import io.github.jevaengine.ui.style.IUIStyleFactory.UIStyleConstructionException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.inject.Inject;
 
 public final class DefaultWindowFactory implements IWindowFactory

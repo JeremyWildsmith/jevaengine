@@ -35,7 +35,6 @@ import io.github.jevaengine.world.physics.RayCastResults;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.jbox2d.collision.AABB;
 import org.jbox2d.collision.shapes.ShapeType;
 import org.jbox2d.dynamics.Body;

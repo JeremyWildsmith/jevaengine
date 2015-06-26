@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.script;
 
-import io.github.jevaengine.script.rhino.RhinoScriptBuilderFactory;
-
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import io.github.jevaengine.script.rhino.RhinoScriptBuilderFactory;
+import java.net.URI;
 
 @ImplementedBy(RhinoScriptBuilderFactory.class)
 public interface IScriptBuilderFactory

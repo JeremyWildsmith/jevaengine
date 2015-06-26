@@ -1,12 +1,3 @@
-package io.github.jevaengine.world.physics;
-
-import io.github.jevaengine.config.IImmutableVariable;
-import io.github.jevaengine.config.ISerializable;
-import io.github.jevaengine.config.IVariable;
-import io.github.jevaengine.config.NoSuchChildVariableException;
-import io.github.jevaengine.config.ValueSerializationException;
-import io.github.jevaengine.math.Rect3F;
-
 /* 
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
@@ -25,6 +16,15 @@ import io.github.jevaengine.math.Rect3F;
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+package io.github.jevaengine.world.physics;
+
+import io.github.jevaengine.config.IImmutableVariable;
+import io.github.jevaengine.config.ISerializable;
+import io.github.jevaengine.config.IVariable;
+import io.github.jevaengine.config.NoSuchChildVariableException;
+import io.github.jevaengine.config.ValueSerializationException;
+import io.github.jevaengine.math.Rect3F;
+
 public class PhysicsBodyShape implements ISerializable
 {
 	public PhysicsBodyShapeType type = PhysicsBodyShapeType.Box;

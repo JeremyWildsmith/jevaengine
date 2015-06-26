@@ -26,7 +26,6 @@ import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector3D;
 import io.github.jevaengine.math.Vector3F;
-import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;

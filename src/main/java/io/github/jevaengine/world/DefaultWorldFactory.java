@@ -51,18 +51,12 @@ import io.github.jevaengine.world.entity.IEntityFactory.UnsupportedEntityTypeExc
 import io.github.jevaengine.world.entity.SceneArtifact;
 import io.github.jevaengine.world.entity.ThreadPooledEntityFactory;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
-import io.github.jevaengine.world.physics.PhysicsBodyDescription;
-import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
-import io.github.jevaengine.world.scene.model.IAnimationSceneModelFactory;
 import io.github.jevaengine.world.scene.model.ISceneModel;
 import io.github.jevaengine.world.scene.model.ISceneModelFactory;
 import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

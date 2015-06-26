@@ -29,7 +29,6 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.ui.style.ComponentStateStyle;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Observers;
-
 import java.awt.Graphics2D;
 
 public final class Button extends Control

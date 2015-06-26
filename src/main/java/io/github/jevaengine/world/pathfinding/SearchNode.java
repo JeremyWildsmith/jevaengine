@@ -22,7 +22,6 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
-
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 

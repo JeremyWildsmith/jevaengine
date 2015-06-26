@@ -23,7 +23,6 @@ import io.github.jevaengine.IEngineThreadPool;
 import io.github.jevaengine.IEngineThreadPool.Purpose;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.world.IWorldFactory.WorldConstructionException;
-
 import java.net.URI;
 
 public final class ThreadPooledWorldFactory implements IParallelWorldFactory

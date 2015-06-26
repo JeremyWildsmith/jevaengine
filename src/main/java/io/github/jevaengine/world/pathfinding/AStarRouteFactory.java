@@ -21,7 +21,6 @@ package io.github.jevaengine.world.pathfinding;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.World;
-
 import java.util.ArrayList;
 import java.util.Random;
 

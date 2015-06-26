@@ -18,10 +18,9 @@
  */
 package io.github.jevaengine.graphics;
 
+import com.google.inject.ImplementedBy;
 import java.awt.Color;
 import java.net.URI;
-
-import com.google.inject.ImplementedBy;
 
 @ImplementedBy(DefaultFontFactory.class)
 public interface IFontFactory

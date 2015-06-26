@@ -24,7 +24,6 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
-
 import java.awt.Graphics2D;
 
 public final class NullSceneBuffer implements ISceneBuffer

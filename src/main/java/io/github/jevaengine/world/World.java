@@ -52,14 +52,12 @@ import io.github.jevaengine.world.physics.IPhysicsWorld;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
 import io.github.jevaengine.world.physics.ScaledPhysicsWorld;
 import io.github.jevaengine.world.scene.ISceneBuffer;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

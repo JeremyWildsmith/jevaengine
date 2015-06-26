@@ -18,9 +18,8 @@
  */
 package io.github.jevaengine.ui;
 
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import java.net.URI;
 
 @ImplementedBy(DefaultWindowFactory.class)
 public interface IWindowFactory

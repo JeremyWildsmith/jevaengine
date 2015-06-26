@@ -24,7 +24,6 @@ import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.ScriptExecuteException;
 import io.github.jevaengine.util.Nullable;
 import java.net.URI;
-
 import javax.inject.Inject;
 
 public final class RhinoScriptBuilder implements IScriptBuilder

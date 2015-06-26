@@ -23,7 +23,6 @@ import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.IPhysicsBody;
-
 import java.util.List;
 
 public final class VelocityLimitSteeringDriver implements ISteeringDriver

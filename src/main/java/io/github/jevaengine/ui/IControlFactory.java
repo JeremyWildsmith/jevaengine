@@ -18,10 +18,9 @@
  */
 package io.github.jevaengine.ui;
 
+import com.google.inject.ImplementedBy;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.util.Nullable;
-
-import com.google.inject.ImplementedBy;
 
 @ImplementedBy(DefaultControlFactory.class)
 public interface IControlFactory

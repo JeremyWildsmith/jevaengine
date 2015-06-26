@@ -19,7 +19,6 @@
 package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.world.physics.IPhysicsBody;
-
 import java.util.List;
 
 public interface ISteeringDriver

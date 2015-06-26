@@ -18,7 +18,6 @@
  */
 package io.github.jevaengine.graphics;
 
-import io.github.jevaengine.IAssetStreamFactory;
 import io.github.jevaengine.config.IConfigurationFactory;
 import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
 import io.github.jevaengine.config.IImmutableVariable;
@@ -29,7 +28,6 @@ import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.DefaultGraphicShaderFactory.DefaultGraphicShaderDeclaration.DefaultGraphicShaderPassDeclaration;
 import io.github.jevaengine.math.Vector3D;
-import io.github.jevaengine.util.Nullable;
 import java.awt.Color;
 import java.awt.image.RGBImageFilter;
 import java.net.URI;
@@ -37,8 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 
 public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory

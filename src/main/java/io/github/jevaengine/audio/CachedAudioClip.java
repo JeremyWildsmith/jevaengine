@@ -22,7 +22,6 @@ import io.github.jevaengine.audio.IAudioClipFactory.AudioClipConstructionExcepti
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Observers;
 import java.io.IOException;
-
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;

@@ -22,7 +22,6 @@ import io.github.jevaengine.FutureResult;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.util.Nullable;
-
 import java.net.URI;
 
 public final class NullEntityFactory implements IEntityFactory, IParallelEntityFactory

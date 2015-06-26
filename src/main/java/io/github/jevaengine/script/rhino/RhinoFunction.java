@@ -20,7 +20,6 @@ package io.github.jevaengine.script.rhino;
 
 import io.github.jevaengine.script.IFunction;
 import io.github.jevaengine.script.ScriptExecuteException;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextAction;
 import org.mozilla.javascript.ContextFactory;

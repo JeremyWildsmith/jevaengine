@@ -21,7 +21,6 @@ package io.github.jevaengine.world.entity.tasks;
 import io.github.jevaengine.script.IFunction;
 import io.github.jevaengine.script.ScriptExecuteException;
 import io.github.jevaengine.world.entity.IEntity;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

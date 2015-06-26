@@ -22,7 +22,6 @@ import io.github.jevaengine.graphics.IGraphic;
 import io.github.jevaengine.graphics.IGraphicFactory;
 import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.graphics.Sprite;
-
 import java.awt.Graphics2D;
 
 public final class TiledFrameFactory implements IFrameFactory

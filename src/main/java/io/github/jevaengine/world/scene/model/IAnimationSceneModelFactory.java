@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.world.scene.model;
 
-import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory;
-
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory;
+import java.net.URI;
 
 @ImplementedBy(SpriteSceneModelFactory.class)
 public interface IAnimationSceneModelFactory extends ISceneModelFactory

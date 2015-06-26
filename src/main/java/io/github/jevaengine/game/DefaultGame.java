@@ -25,9 +25,7 @@ import io.github.jevaengine.joystick.InputKeyEvent;
 import io.github.jevaengine.joystick.InputMouseEvent;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.ui.WindowManager;
-
 import java.awt.Graphics2D;
-
 import javax.inject.Inject;
 
 public abstract class DefaultGame implements IGame

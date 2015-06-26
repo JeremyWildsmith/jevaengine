@@ -19,7 +19,6 @@
 package io.github.jevaengine.graphics;
 
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.net.URI;
 
 public interface IGraphicFactory

@@ -23,7 +23,6 @@ import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

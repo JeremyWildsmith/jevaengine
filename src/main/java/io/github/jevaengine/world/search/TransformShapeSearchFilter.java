@@ -18,12 +18,11 @@
  */
 package io.github.jevaengine.world.search;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
-
 import io.github.jevaengine.math.Matrix2X2;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2F;
+import java.awt.Rectangle;
+import java.awt.Shape;
 
 public class TransformShapeSearchFilter<T> implements ISearchFilter<T>
 {

@@ -22,10 +22,6 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.physics.RayCastResults;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
 import org.jbox2d.callbacks.RayCastCallback;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;

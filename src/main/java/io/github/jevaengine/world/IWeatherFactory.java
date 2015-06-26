@@ -26,7 +26,6 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
-import io.github.jevaengine.world.scene.ISceneBuffer.NullComponentEffect;
 import java.awt.Graphics2D;
 import java.net.URI;
 import java.util.Collection;

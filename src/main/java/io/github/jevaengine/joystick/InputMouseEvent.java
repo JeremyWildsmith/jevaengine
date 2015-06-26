@@ -19,7 +19,6 @@
 package io.github.jevaengine.joystick;
 
 import io.github.jevaengine.math.Vector2D;
-
 import java.awt.event.MouseEvent;
 
 public class InputMouseEvent implements IInputEvent

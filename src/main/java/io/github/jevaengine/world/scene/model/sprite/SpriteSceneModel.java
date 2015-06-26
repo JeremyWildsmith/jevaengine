@@ -31,7 +31,6 @@ import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelComponent.IDefaultSceneModelComponentObserver;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +40,6 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tritonus.share.TDebug;
 
 public final class SpriteSceneModel implements IAnimationSceneModel
 {

@@ -24,7 +24,6 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.util.Nullable;
-
 import java.awt.Graphics2D;
 import java.util.HashMap;
 import java.util.Map;

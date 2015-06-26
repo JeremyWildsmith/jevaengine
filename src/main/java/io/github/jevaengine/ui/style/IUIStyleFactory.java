@@ -18,9 +18,8 @@
  */
 package io.github.jevaengine.ui.style;
 
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import java.net.URI;
 
 @ImplementedBy(DefaultUIStyleFactory.class)
 public interface IUIStyleFactory

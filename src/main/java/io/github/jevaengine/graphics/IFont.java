@@ -19,7 +19,6 @@
 package io.github.jevaengine.graphics;
 
 import io.github.jevaengine.math.Rect2D;
-
 import java.awt.Graphics2D;
 
 public interface IFont

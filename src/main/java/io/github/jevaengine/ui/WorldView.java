@@ -18,8 +18,6 @@
  */
 package io.github.jevaengine.ui;
 
-import io.github.jevaengine.world.scene.camera.ICamera;
-import io.github.jevaengine.world.scene.camera.NullCamera;
 import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.joystick.InputKeyEvent;
@@ -33,7 +31,8 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.NullSceneBuffer;
-
+import io.github.jevaengine.world.scene.camera.ICamera;
+import io.github.jevaengine.world.scene.camera.NullCamera;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;

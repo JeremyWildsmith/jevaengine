@@ -22,7 +22,6 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.World;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

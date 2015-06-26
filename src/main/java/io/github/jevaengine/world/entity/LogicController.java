@@ -18,7 +18,6 @@
  */
 package io.github.jevaengine.world.entity;
 
-import io.github.jevaengine.audio.IAudioClipFactory;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.IScriptBuilder.ScriptConstructionException;

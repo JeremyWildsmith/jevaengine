@@ -22,13 +22,10 @@ import io.github.jevaengine.IAssetStreamFactory;
 import io.github.jevaengine.IAssetStreamFactory.AssetStreamConstructionException;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.IScriptBuilderFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-
 import javax.inject.Inject;
-
 import org.apache.commons.io.IOUtils;
 
 public final class RhinoScriptBuilderFactory implements IScriptBuilderFactory

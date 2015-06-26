@@ -25,7 +25,6 @@ import io.github.jevaengine.config.IncompatibleValueTypeException;
 import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
-import io.github.jevaengine.config.json.JsonVariable;
 import io.github.jevaengine.script.ScriptableImmutableVariable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;

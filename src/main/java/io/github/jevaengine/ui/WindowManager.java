@@ -23,7 +23,6 @@ import io.github.jevaengine.joystick.InputMouseEvent;
 import io.github.jevaengine.joystick.InputMouseEvent.MouseEventType;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.MutableProcessList;
-
 import java.awt.Graphics2D;
 import java.util.List;
 

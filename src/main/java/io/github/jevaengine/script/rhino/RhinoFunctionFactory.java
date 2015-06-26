@@ -18,11 +18,10 @@
  */
 package io.github.jevaengine.script.rhino;
 
-import org.mozilla.javascript.Function;
-
 import io.github.jevaengine.script.IFunction;
 import io.github.jevaengine.script.IFunctionFactory;
 import io.github.jevaengine.script.UnrecognizedFunctionException;
+import org.mozilla.javascript.Function;
 
 public class RhinoFunctionFactory implements IFunctionFactory
 {

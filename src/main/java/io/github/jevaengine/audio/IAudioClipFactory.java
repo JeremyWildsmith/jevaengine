@@ -18,9 +18,8 @@
  */
 package io.github.jevaengine.audio;
 
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import java.net.URI;
 
 @ImplementedBy(CachedAudioClipFactory.class)
 public interface IAudioClipFactory

@@ -18,9 +18,8 @@
  */
 package io.github.jevaengine.world.physics;
 
-import io.github.jevaengine.world.physics.jbox2d.JBox2DWorldFactory;
-
 import com.google.inject.ImplementedBy;
+import io.github.jevaengine.world.physics.jbox2d.JBox2DWorldFactory;
 
 @ImplementedBy(JBox2DWorldFactory.class)
 public interface IPhysicsWorldFactory

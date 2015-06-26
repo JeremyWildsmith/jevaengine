@@ -19,7 +19,6 @@
 package io.github.jevaengine.world.search;
 
 import io.github.jevaengine.math.Rect2D;
-
 import io.github.jevaengine.math.Vector2F;
 
 public class NotSearchFilter<T> implements ISearchFilter<T>

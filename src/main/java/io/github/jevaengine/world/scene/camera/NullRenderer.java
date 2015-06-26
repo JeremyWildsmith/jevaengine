@@ -21,7 +21,6 @@ package io.github.jevaengine.world.scene.camera;
 import io.github.jevaengine.game.IRenderer;
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.math.Vector2D;
-
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 

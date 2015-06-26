@@ -19,9 +19,8 @@
 package io.github.jevaengine.world.search;
 
 import io.github.jevaengine.math.Rect2D;
-import java.util.NoSuchElementException;
-
 import io.github.jevaengine.math.Vector2F;
+import java.util.NoSuchElementException;
 
 public class BinarySearchFilter<T> implements ISearchFilter<T>
 {

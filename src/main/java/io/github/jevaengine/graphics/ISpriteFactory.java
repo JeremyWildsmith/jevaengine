@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.graphics;
 
-import io.github.jevaengine.util.ThreadSafe;
-
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import io.github.jevaengine.util.ThreadSafe;
+import java.net.URI;
 
 @ImplementedBy(DefaultSpriteFactory.class)
 public interface ISpriteFactory

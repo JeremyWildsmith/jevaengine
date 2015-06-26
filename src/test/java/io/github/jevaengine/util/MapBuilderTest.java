@@ -1,9 +1,7 @@
 package io.github.jevaengine.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Map;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 public class MapBuilderTest

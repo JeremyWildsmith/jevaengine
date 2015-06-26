@@ -19,7 +19,6 @@
 package io.github.jevaengine.script.rhino;
 
 import java.util.LinkedList;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptableObject;

@@ -20,7 +20,6 @@ package io.github.jevaengine.audio;
 
 import io.github.jevaengine.IAssetStreamFactory;
 import io.github.jevaengine.IAssetStreamFactory.AssetStreamConstructionException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.ReferenceQueue;
 import java.net.URI;
 import java.util.ArrayList;
-
 import javax.inject.Inject;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;

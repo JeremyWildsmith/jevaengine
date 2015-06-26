@@ -22,7 +22,6 @@ import io.github.jevaengine.graphics.IFont;
 import io.github.jevaengine.joystick.InputKeyEvent;
 import io.github.jevaengine.joystick.InputMouseEvent;
 import io.github.jevaengine.math.Rect2D;
-
 import java.awt.Graphics2D;
 
 public final class Label extends Control

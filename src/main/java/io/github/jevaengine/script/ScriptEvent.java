@@ -19,9 +19,7 @@
 package io.github.jevaengine.script;
 
 import io.github.jevaengine.util.MutableProcessList;
-
 import java.util.Collection;
-
 import javax.inject.Inject;
 
 

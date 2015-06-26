@@ -28,13 +28,11 @@ import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.DefaultFontFactory.FontDeclaration.GlyphDeclaration;
 import io.github.jevaengine.graphics.IGraphicFactory.GraphicConstructionException;
 import io.github.jevaengine.math.Rect2D;
-
 import java.awt.Color;
 import java.awt.image.RGBImageFilter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-
 import javax.inject.Inject;
 
 public final class DefaultFontFactory implements IFontFactory

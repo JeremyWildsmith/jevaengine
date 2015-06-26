@@ -32,10 +32,8 @@ import io.github.jevaengine.graphics.Sprite.NoSuchSpriteAnimation;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.ThreadSafe;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

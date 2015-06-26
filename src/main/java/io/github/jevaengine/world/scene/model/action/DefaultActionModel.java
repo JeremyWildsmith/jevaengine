@@ -27,7 +27,6 @@ import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.scene.model.IActionSceneModel;
 import io.github.jevaengine.world.scene.model.ISceneModel;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;

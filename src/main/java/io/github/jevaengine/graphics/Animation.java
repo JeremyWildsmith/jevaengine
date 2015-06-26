@@ -19,7 +19,6 @@
 package io.github.jevaengine.graphics;
 
 import io.github.jevaengine.util.Nullable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

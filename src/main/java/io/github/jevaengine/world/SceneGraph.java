@@ -45,7 +45,6 @@ import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.search.ISearchFilter;
 import io.github.jevaengine.world.search.RectangleSearchFilter;
 import java.lang.reflect.Array;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

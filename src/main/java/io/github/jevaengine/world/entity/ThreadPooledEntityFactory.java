@@ -24,7 +24,6 @@ import io.github.jevaengine.IEngineThreadPool.Purpose;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.util.Nullable;
-
 import java.net.URI;
 
 public final class ThreadPooledEntityFactory implements IParallelEntityFactory

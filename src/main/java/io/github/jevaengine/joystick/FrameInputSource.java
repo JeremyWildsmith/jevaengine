@@ -20,7 +20,6 @@ package io.github.jevaengine.joystick;
 
 import io.github.jevaengine.joystick.InputMouseEvent.MouseButton;
 import io.github.jevaengine.math.Vector2D;
-
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -31,7 +30,6 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.swing.SwingUtilities;
 
 public class FrameInputSource implements IInputSource, MouseMotionListener, MouseListener, KeyListener, MouseWheelListener

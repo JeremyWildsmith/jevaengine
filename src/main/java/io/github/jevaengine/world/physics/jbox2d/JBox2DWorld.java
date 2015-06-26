@@ -24,16 +24,13 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsWorld;
-import io.github.jevaengine.world.physics.NonparticipantPhysicsBody;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import static io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType.Box;
 import static io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType.Circle;
-
 import java.util.LinkedList;
 import java.util.Queue;
-
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;

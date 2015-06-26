@@ -19,7 +19,6 @@
 package io.github.jevaengine.script.rhino;
 
 import io.github.jevaengine.script.IScriptArray;
-
 import org.mozilla.javascript.NativeArray;
 
 public final class RhinoArray implements IScriptArray

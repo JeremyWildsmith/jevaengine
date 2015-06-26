@@ -25,10 +25,8 @@ import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.entity.IEntity.IEntityWorldObserver;
 import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
-import io.github.jevaengine.world.scene.ISceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBufferFactory;
-
 import java.lang.ref.WeakReference;
 
 public final class FollowCamera implements ICamera

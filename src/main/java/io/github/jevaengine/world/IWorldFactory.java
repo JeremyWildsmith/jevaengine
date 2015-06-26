@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.world;
 
-import io.github.jevaengine.IInitializationProgressMonitor;
-
-import java.net.URI;
-
 import com.google.inject.ImplementedBy;
+import io.github.jevaengine.IInitializationProgressMonitor;
+import java.net.URI;
 
 @ImplementedBy(DefaultWorldFactory.class)
 public interface IWorldFactory

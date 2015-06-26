@@ -23,17 +23,13 @@ import io.github.jevaengine.script.IScript;
 import io.github.jevaengine.script.ScriptExecuteException;
 import io.github.jevaengine.script.ScriptHiddenMember;
 import io.github.jevaengine.util.Nullable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
-import org.mozilla.javascript.EcmaError;
-import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.RhinoException;
 import org.mozilla.javascript.Scriptable;
