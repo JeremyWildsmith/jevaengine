@@ -22,7 +22,7 @@ import io.github.jevaengine.math.Circle2F;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
-import io.github.jevaengine.world.physics.RayCastResults;
+import io.github.jevaengine.world.physics.RayCastIntersection;
 
 public final class AvoidanceBehavior implements ISteeringBehavior
 {
@@ -51,9 +51,9 @@ public final class AvoidanceBehavior implements ISteeringBehavior
 			Vector2F rayDirectionLeft = travelDirection.rotate(-angle);
 			Vector2F rayDirectionRight = travelDirection.rotate(angle);
 			
-			RayCastResults resultsLeft = subject.castRay(new Vector3F(rayDirectionLeft, 0), reactionDistance);
-			RayCastResults resultsRight = subject.castRay(new Vector3F(rayDirectionRight, 0), reactionDistance);
-			RayCastResults resultsStraight = subject.castRay(new Vector3F(travelDirection, 0), reactionDistance);
+			RayCastIntersection resultsLeft = subject.castRay(new Vector3F(rayDirectionLeft, 0), reactionDistance);
+			RayCastIntersection resultsRight = subject.castRay(new Vector3F(rayDirectionRight, 0), reactionDistance);
+			RayCastIntersection resultsStraight = subject.castRay(new Vector3F(travelDirection, 0), reactionDistance);
 			
 			if(resultsLeft != null && resultsRight != null && resultsStraight != null)
 				return new Vector2F();

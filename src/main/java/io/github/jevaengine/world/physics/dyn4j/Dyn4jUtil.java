@@ -16,36 +16,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.world.physics.jbox2d;
+package io.github.jevaengine.world.physics.dyn4j;
 
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
 import java.util.NoSuchElementException;
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.BodyType;
+import org.dyn4j.geometry.Mass;
+import org.dyn4j.geometry.Vector2;
 
-final class JBox2DUtil
+final class Dyn4jUtil
 {
-	public static Vector2F wrap(Vec2 vec)
+	public static Vector2F wrap(Vector2 vec)
 	{
-		return new Vector2F(vec.x, vec.y);
+		return new Vector2F((float)vec.x, (float)vec.y);
 	}
 	
-	public static Vec2 unwrap(Vector2F vec)
+	public static Vector2 unwrap(Vector2F vec)
 	{
-		return new Vec2(vec.x, vec.y);
+		return new Vector2(vec.x, vec.y);
 	}
 	
-	public static BodyType unwrap(PhysicsBodyType bodyType)
+	public static Mass.Type unwrap(PhysicsBodyType bodyType)
 	{
 		switch(bodyType)
 		{
 		case Dynamic:
-			return BodyType.DYNAMIC;
-		case Kinematic:
-			return BodyType.KINEMATIC;
+			return Mass.Type.NORMAL;
 		case Static:
-			return BodyType.STATIC;
+			return Mass.Type.INFINITE;
 		default:
 			throw new NoSuchElementException();
 		}

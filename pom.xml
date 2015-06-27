@@ -50,11 +50,12 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-		<dependency>
-			<groupId>org.jbox2d</groupId>
-			<artifactId>jbox2d-library</artifactId>
-			<version>2.2.1.1</version>
-		</dependency>
+
+                <dependency>
+                    <groupId>org.dyn4j</groupId>
+                    <artifactId>dyn4j</artifactId>
+                    <version>3.1.11</version>
+                </dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>

@@ -23,12 +23,13 @@ import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
 public final class SeekBehavior implements ISteeringBehavior
 {
-	private final float ARRIVAL_TOLORANCE = 0.1F;
+	private final float m_arrivalTolorance;
 	private final float m_influence;
 	private final ISteeringSubject m_target;
 	
-	public SeekBehavior(float influence, ISteeringSubject target)
+	public SeekBehavior(float influence, float arrivalTolorance, ISteeringSubject target)
 	{
+		m_arrivalTolorance = arrivalTolorance;
 		m_influence = influence;
 		m_target = target;
 	}
@@ -38,7 +39,7 @@ public final class SeekBehavior implements ISteeringBehavior
 	{
 		Vector2F deltaFromDestination = m_target.getLocation().difference(subject.getLocation().getXy());
 		
-		if(deltaFromDestination.getLength() < ARRIVAL_TOLORANCE)
+		if(deltaFromDestination.getLength() < m_arrivalTolorance)
 			return currentDirection;
 		
 		return currentDirection.add(deltaFromDestination.normalize().multiply(m_influence));

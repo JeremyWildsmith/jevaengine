@@ -19,6 +19,7 @@
 package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.math.Vector2F;
+import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.pathfinding.Route;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
@@ -27,15 +28,11 @@ public class TraverseRouteBehavior implements ISteeringBehavior
 	private final SeekBehavior m_seekBehavior;
 	private final PointSubject m_seekTarget = new PointSubject(new Vector2F());
 	private final Route m_route;
-	private final float m_arrivalTolorance;
-	private final float m_waypointTolorance;
 	
-	public TraverseRouteBehavior(float influence, Route route, float arrivaleTolorance, float waypointTolorance)
+	public TraverseRouteBehavior(float influence, Route route, float arrivaleTolorance)
 	{
-		m_seekBehavior = new SeekBehavior(influence, m_seekTarget);
+		m_seekBehavior = new SeekBehavior(influence, arrivaleTolorance, m_seekTarget);
 		m_route = new Route(route);
-		m_arrivalTolorance = arrivaleTolorance;
-		m_waypointTolorance = waypointTolorance;
 	}
 	
 	@Override
@@ -47,21 +44,21 @@ public class TraverseRouteBehavior implements ISteeringBehavior
 			if(m_route.validate(subject.getLocation().getXy(), subject.getOwner().getWorld(), 1) == 0)
 				return currentDirection;
 		}
-		
+
 		Vector2F currentTarget = m_route.getCurrentTarget();
 		
 		if(currentTarget == null)
-			return currentDirection;
+			return new Vector2F();
 		
-		float tolorance = m_route.hasNext() ? m_waypointTolorance : m_arrivalTolorance;
-		if(currentTarget.difference(subject.getLocation().getXy()).getLength() < tolorance)
+		m_seekTarget.setLocation(currentTarget);
+		
+		Vector2F direction = m_seekBehavior.direct(subject, currentDirection);
+		
+		if(direction.isZero())
 		{
 			m_route.nextTarget();
 			return direct(subject, currentDirection);
 		}else
-		{
-			m_seekTarget.setLocation(currentTarget);
-			return m_seekBehavior.direct(subject, currentDirection);
-		}
+			return direction;
 	}
 }

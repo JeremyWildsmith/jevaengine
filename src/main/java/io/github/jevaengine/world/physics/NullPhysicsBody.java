@@ -52,12 +52,6 @@ public final class NullPhysicsBody implements IPhysicsBody
 	{
 		return 1;
 	}
-	
-	@Override
-	public float getFriction()
-	{
-		return 0;
-	}
 
 	@Override
 	public Vector3F getLocation()
@@ -85,7 +79,7 @@ public final class NullPhysicsBody implements IPhysicsBody
 
 	@Override
 	@Nullable
-	public RayCastResults castRay(Vector3F direction, float maxCast)
+	public RayCastIntersection castRay(Vector3F direction, float maxCast)
 	{
 		return null;
 	}

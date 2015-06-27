@@ -16,13 +16,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.world.physics;
+package io.github.jevaengine.world.physics.dyn4j;
 
-import com.google.inject.ImplementedBy;
-import io.github.jevaengine.world.physics.dyn4j.Dyn4jWorldFactory;
+import io.github.jevaengine.world.physics.IPhysicsWorld;
+import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
 
-@ImplementedBy(Dyn4jWorldFactory.class)
-public interface IPhysicsWorldFactory
+public final class Dyn4jWorldFactory implements IPhysicsWorldFactory
 {
-	IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters);
+	@Override
+	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters)
+	{
+		return new Dyn4jWorld(maxSurfaceFrictionForceNewtonMeters);
+	}
 }

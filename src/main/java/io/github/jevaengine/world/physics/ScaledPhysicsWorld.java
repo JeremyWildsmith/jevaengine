@@ -205,13 +205,7 @@ public final class ScaledPhysicsWorld extends ImmutableScaledPhysicsWorld implem
 		}
 
 		@Override
-		public float getFriction()
-		{
-			return m_body.getFriction() / m_scale;
-		}
-
-		@Override
-		public RayCastResults castRay(Vector3F direction, float maxCast)
+		public RayCastIntersection castRay(Vector3F direction, float maxCast)
 		{
 			return m_body.castRay(direction, maxCast * m_scale);
 		}

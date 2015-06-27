@@ -60,7 +60,6 @@ public final class PhysicsBodyDescription implements ISerializable
 	
 	public enum PhysicsBodyType
 	{
-		Kinematic,
 		Static,
 		Dynamic,
 	}

@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package io.github.jevaengine.world.physics.jbox2d;
+package io.github.jevaengine.world.physics.dyn4j;
 
 import io.github.jevaengine.math.Circle3F;
 import io.github.jevaengine.math.Rect2F;
@@ -31,19 +31,19 @@ import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsBody;
 import io.github.jevaengine.world.physics.IPhysicsBodyContactObserver;
 import io.github.jevaengine.world.physics.IPhysicsBodyOrientationObserver;
-import io.github.jevaengine.world.physics.RayCastResults;
+import io.github.jevaengine.world.physics.RayCastIntersection;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.jbox2d.collision.AABB;
-import org.jbox2d.collision.shapes.ShapeType;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.Fixture;
+import org.dyn4j.collision.Fixture;
+import org.dyn4j.dynamics.Body;
+import org.dyn4j.geometry.AABB;
+import org.dyn4j.geometry.Transform;
+import org.dyn4j.geometry.Vector2;
 
-public final class JBox2DBody implements IPhysicsBody
+public final class Dyn4jBody implements IPhysicsBody
 {
-	private JBox2DWorld m_world;
+	private Dyn4jWorld m_world;
 	private final Body m_body;
 	private final Fixture m_fixture;
 	
@@ -54,22 +54,22 @@ public final class JBox2DBody implements IPhysicsBody
 	
 	private final Set<Class<?>> m_collisionExceptions = new HashSet<>();
 	
-	public JBox2DBody(JBox2DWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?> ... collisionExceptions)
+	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?> ... collisionExceptions)
 	{
 		m_body = body;
 		m_fixture = fixture;
 		m_owner = owner;
-		m_body.m_userData = this;
+		m_body.setUserData(this);
 		m_world = world;
 		m_collisionExceptions.addAll(Arrays.asList(collisionExceptions));
 	}
 	
-	void beginContact(JBox2DBody other)
+	void beginContact(Dyn4jBody other)
 	{
 		m_observers.raise(IPhysicsBodyContactObserver.class).onBeginContact(other);
 	}
 	
-	void endContact(JBox2DBody other)
+	void endContact(Dyn4jBody other)
 	{
 		m_observers.raise(IPhysicsBodyContactObserver.class).onEndContact(other);		
 	}
@@ -78,27 +78,27 @@ public final class JBox2DBody implements IPhysicsBody
 	public void destory()
 	{
 		m_observers.clear();
-		m_body.getWorld().destroyBody(m_body);
+		m_body.getWorld().removeBody(m_body);
 		m_world = null;
 	}
 	
 	@Override
-	public JBox2DWorld getWorld()
+	public Dyn4jWorld getWorld()
 	{
 		return m_world;
 	}
 	
 	@Override
 	@Nullable
-	public RayCastResults castRay(Vector3F direction, float maxCast)
+	public RayCastIntersection castRay(Vector3F direction, float maxCast)
 	{
 		if(direction.isZero() || m_world == null)
 			return null;
 		
-		Vector3F startPoint = getLocation().add(direction.normalize().multiply(m_fixture.getShape().getRadius()));
+		Vector3F startPoint = getLocation().add(direction.normalize().multiply((float)m_fixture.getShape().getRadius()));
 		Vector3F endPoint = startPoint.add(direction.normalize().multiply(maxCast));
 		
-		return new JBox2DRaycaster().cast(m_world, startPoint.getXy(), endPoint.getXy(), m_fixture);
+		return new Dyn4jRaycaster().cast(m_world, startPoint.getXy(), endPoint.getXy(), m_body);
 	}
 	
 	@Override
@@ -122,7 +122,7 @@ public final class JBox2DBody implements IPhysicsBody
 	@Override
 	public boolean isStatic()
 	{
-		return m_body.getType() == BodyType.STATIC;
+		return m_body.getMass().isInfinite();
 	}
 	
 	@Override
@@ -143,79 +143,73 @@ public final class JBox2DBody implements IPhysicsBody
 	@Override
 	public Circle3F getBoundingCircle()
 	{
-		if(m_fixture.getShape().getType() == ShapeType.CIRCLE)
-			return new Circle3F(0, 0, 0, m_fixture.getShape().getRadius());
-		else
-			return getAABB().getBoundingCircle();
+		return new Circle3F(0, 0, 0, (float)m_fixture.getShape().getRadius());
 	}
 	
 	@Override
 	public Rect3F getAABB()
 	{
 		Rect3F aabb = new Rect3F();
-		AABB b2aabb = m_fixture.getAABB(0);
+		AABB b2aabb = m_fixture.getShape().createAABB();
 
-		aabb.x = b2aabb.lowerBound.x;
-		aabb.y = b2aabb.lowerBound.y;
-		aabb.width = b2aabb.upperBound.x - b2aabb.lowerBound.x;
-		aabb.height = b2aabb.upperBound.y - b2aabb.lowerBound.y;
-		
-		return aabb;
+		aabb.x = (float)b2aabb.getMinX();
+		aabb.y = (float)b2aabb.getMinY();
+		aabb.width = (float)(b2aabb.getMaxX() - b2aabb.getMinX());
+		aabb.height = (float)(b2aabb.getMaxY() - b2aabb.getMinY());
+		return aabb.add(new Vector3F(Dyn4jUtil.wrap(m_body.getWorldCenter()), 0));
 	}
 	
 	@Override
 	public float getMass()
 	{
-		return m_body.getMass();
-	}
-	
-	@Override
-	public float getFriction()
-	{
-		return m_fixture.getFriction();
+		return (float)m_body.getMass().getMass();
 	}
 	
 	@Override
 	public Vector3F getLocation()
 	{
-		return new Vector3F(JBox2DUtil.wrap(m_body.getWorldCenter()), m_depth);
+		return new Vector3F(Dyn4jUtil.wrap(m_body.getWorldCenter()), m_depth);
 	}
 
 	@Override
 	public Direction getDirection()
 	{
-		return Direction.fromAngle(m_body.getAngle());
+		return Direction.fromAngle((float)m_body.getTransform().getRotation());
 	}
 
 	@Override
 	public Vector3F getLinearVelocity()
 	{
-		return new Vector3F(JBox2DUtil.wrap(m_body.getLinearVelocity()), 0);
+		return new Vector3F(Dyn4jUtil.wrap(m_body.getLinearVelocity()), 0);
 	}
 	
 	@Override
 	public void setLinearVelocity(Vector3F velocity)
 	{
-		m_body.setLinearVelocity(JBox2DUtil.unwrap(velocity.getXy()));
+		m_body.setLinearVelocity(Dyn4jUtil.unwrap(velocity.getXy()));
 	}
 
 	@Override
 	public float getAngularVelocity()
 	{
-		return m_body.getAngularVelocity();
+		return (float)m_body.getAngularVelocity();
 	}
 
 	@Override
 	public void setDirection(Direction direction)
 	{
-		m_body.setTransform(m_body.getWorldCenter(), direction.getAngle());	
+		Transform t = m_body.getTransform();
+		t.setRotation(direction.getAngle());
+		m_body.setTransform(t);	
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
 	}
 
 	@Override
 	public void setLocation(Vector3F location)
 	{
-		m_body.setTransform(JBox2DUtil.unwrap(location.getXy()), m_body.getAngle());
+		Transform t = m_body.getTransform();
+		t.translate(new Vector2(location.x, location.y));
+		m_body.setTransform(t);
 		m_depth = location.z;
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).locationSet();
 	}
@@ -223,19 +217,19 @@ public final class JBox2DBody implements IPhysicsBody
 	@Override
 	public void applyLinearImpulse(Vector3F impulse)
 	{
-		m_body.applyLinearImpulse(JBox2DUtil.unwrap(impulse.getXy()), m_body.getWorldCenter());
+		m_body.applyImpulse(Dyn4jUtil.unwrap(impulse.getXy()));
 	}
 	
 	@Override
 	public void applyAngularImpulse(float impulse)
 	{
-		m_body.applyAngularImpulse(impulse);
+		m_body.applyImpulse(impulse);
 	}
 	
 	@Override
 	public void applyForceToCenter(Vector3F force)
 	{
-		m_body.applyForceToCenter(JBox2DUtil.unwrap(force.getXy()));
+		m_body.applyForce(Dyn4jUtil.unwrap(force.getXy()));
 	}
 	
 	@Override

@@ -18,34 +18,26 @@
  */
 package io.github.jevaengine.world.physics;
 
-import io.github.jevaengine.math.Circle3F;
-import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
-import io.github.jevaengine.util.IObserverRegistry;
-import io.github.jevaengine.world.Direction;
-import io.github.jevaengine.world.entity.IEntity;
 
-
-public interface IImmutablePhysicsBody
+public class RayCastIntersection
 {
-	IImmutablePhysicsWorld getWorld();
+	private final Vector3F m_normal;
+	private final float m_distance;
 	
-	boolean hasOwner();
-	IEntity getOwner();
+	public RayCastIntersection(Vector3F normal, float distance)
+	{
+		m_normal = new Vector3F(normal);
+		m_distance = distance;
+	}
 	
-	boolean isStatic();
-	boolean isCollidable();
-	boolean collidesWith(IImmutablePhysicsBody subject);
+	public Vector3F getNormal()
+	{
+		return new Vector3F(m_normal);
+	}
 	
-	Circle3F getBoundingCircle();
-	Rect3F getAABB();
-	float getMass();
-	Vector3F getLocation();
-	Direction getDirection();
-	Vector3F getLinearVelocity();	
-	float getAngularVelocity();
-	
-	RayCastIntersection castRay(Vector3F direction, float maxCast);
-
-	IObserverRegistry getObservers();
+	public float getDistance()
+	{
+		return m_distance;
+	}
 }
