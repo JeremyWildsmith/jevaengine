@@ -37,10 +37,17 @@ import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect2D;
+import io.github.jevaengine.math.Rect2F;
 import io.github.jevaengine.math.Vector2D;
+import io.github.jevaengine.math.Vector2F;
+import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.DefaultWeatherFactory.DefaultWeatherDeclaration.DefaultWeatherPhaseDeclaration;
 import io.github.jevaengine.world.scene.ISceneBuffer;
+import io.github.jevaengine.world.scene.ISceneBufferFactory;
+import io.github.jevaengine.world.scene.TopologicalOrthographicProjectionSceneBuffer;
+import io.github.jevaengine.world.scene.UnsortedOrthographicProjectionSceneBuffer;
+import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
 import io.github.jevaengine.world.scene.model.particle.IParticleEmitter;
 import io.github.jevaengine.world.scene.model.particle.IParticleEmitterFactory;
 import java.awt.Graphics2D;
@@ -54,6 +61,7 @@ import javax.inject.Inject;
 public final class DefaultWeatherFactory implements IWeatherFactory
 {
 	private static final int NUM_EMITTERS = 5;
+	private static final int NUM_SHOWERS = 70;
 	
 	private final IConfigurationFactory m_configurationFactory;
 	private final IAudioClipFactory m_audioClipFactory;
@@ -81,6 +89,8 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 		{
 			DefaultWeatherDeclaration decl = m_configurationFactory.create(name).getValue(DefaultWeatherDeclaration.class);
 			
+			Vector3F placement[] = new Vector3F[0];
+			
 			for(DefaultWeatherPhaseDeclaration p : decl.phases)
 			{
 				IAudioClip clip = p.audio == null ? new NullAudioClip() : m_audioClipFactory.create(name.resolve(new URI(p.audio)));
@@ -88,23 +98,28 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 				phases.add(new DefaultWeatherPhase(clip, overlay, p.period, p.length));
 			}
 			
-			/*if(decl.shower != null)
+			if(decl.shower != null)
 			{
 				for(int i = 0; i < NUM_EMITTERS; i++)
 					emitters.add(m_particleEmitterFactory.create(name.resolve(new URI(decl.shower))));
-			}*/
+			
+				placement = new Vector3F[NUM_SHOWERS];
+				
+				for(int i = 0; i < placement.length; i++)
+					placement[i] = new Vector3F(decl.showerBounds.getPoint((float)Math.random(), (float)Math.random()), decl.showerDepth);
+			}
 			
 			if(decl.ambientAudio != null)
 				ambientAudioClip = m_audioClipFactory.create(name.resolve(new URI(decl.ambientAudio)));
+		
 			
-			Vector2D showerDeltaPlacement = decl.showerDeltaPlacement == null ? new Vector2D() : decl.showerDeltaPlacement;
 			
 			return new DefaultWeather(phases.toArray(new DefaultWeatherPhase[phases.size()]),
 																emitters.toArray(new IParticleEmitter[emitters.size()]),
-																showerDeltaPlacement, ambientAudioClip);
+																placement, ambientAudioClip);
 		} catch (ConfigurationConstructionException |
 							ValueSerializationException |
-//							ParticleEmitterConstructionException |
+							SceneModelConstructionException |
 							AudioClipConstructionException |
 							URISyntaxException |
 							GraphicConstructionException e)
@@ -123,15 +138,14 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 	{
 		private final IParticleEmitter m_shower[];
 		private final DefaultWeatherPhase m_phases[];
-		private final Vector2D m_showerDeltaPlacement;
-		
+		private final Vector3F[] m_showerPlacement;
 		private final IAudioClip m_ambientAudio;
 		
-		public DefaultWeather(DefaultWeatherPhase phases[], IParticleEmitter shower[], Vector2D showerDeltaPlacement, IAudioClip ambientAudio)
+		public DefaultWeather(DefaultWeatherPhase phases[], IParticleEmitter shower[], Vector3F[] showerPlacement, IAudioClip ambientAudio)
 		{
 			m_phases = phases;
 			m_shower = shower;
-			m_showerDeltaPlacement = showerDeltaPlacement;
+			m_showerPlacement = showerPlacement;
 			m_ambientAudio = ambientAudio;
 			
 			for(IParticleEmitter e : m_shower)
@@ -174,24 +188,22 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 		@Override
 		public IRenderable getOverlay(final Rect2D bounds, final Matrix3X3 projection)
 		{
+			final ISceneBuffer sceneBuffer = new UnsortedOrthographicProjectionSceneBuffer(projection);
 			return new IRenderable() {
 				@Override
 				public void render(Graphics2D g, int x, int y, float scale)
 				{
 					if(m_shower.length > 0)
 					{
-						Vector2D current = new Vector2D();
-						Vector2D end = new Vector2D(bounds.width, bounds.height);
-						for(int i = 0; current.x < end.x && current.y < end.y; i++)
-						{
-							//REFACTOR
-							//m_shower[i % m_shower.length].render(g, x + current.x, y + current.y, scale);
-							current = current.add(m_showerDeltaPlacement);
-						}
+						for(int i = 0; i < m_showerPlacement.length; i++)
+							sceneBuffer.addModel(m_shower[i % m_shower.length], m_showerPlacement[i]);
 					}
-					
+	
 					for(DefaultWeatherPhase p : m_phases)
 						p.render(g, x, y, scale, bounds);
+					
+					sceneBuffer.render(g, x, y, scale, bounds);
+					sceneBuffer.reset();
 				}
 			};
 		}
@@ -279,8 +291,9 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 		@Nullable
 		public String shower;
 		
-		@Nullable
-		public Vector2D showerDeltaPlacement;
+		public float showerDepth = 0;
+		
+		public Rect2F showerBounds = new Rect2F();
 		
 		public DefaultWeatherPhaseDeclaration[] phases;
 		
@@ -293,8 +306,10 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 			if(shower != null)
 				target.addChild("shower").setValue(shower);
 			
-			if(showerDeltaPlacement != null)
-				target.addChild("showerDeltaPlacement").setValue(showerDeltaPlacement);
+			target.addChild("showerDepth").setValue(showerDepth);
+			
+			if(showerBounds != null)
+				target.addChild("showerBounds").setValue(showerBounds);
 			
 			target.addChild("phases").setValue(phases);
 		}
@@ -310,8 +325,11 @@ public final class DefaultWeatherFactory implements IWeatherFactory
 				if(source.childExists("shower"))
 					shower = source.getChild("shower").getValue(String.class);
 				
-				if(source.childExists("showerDeltaPlacement"))
-					showerDeltaPlacement = source.getChild("showerDeltaPlacement").getValue(Vector2D.class);
+				if(source.childExists("showerDepth"))
+					showerDepth = source.getChild("showerDepth").getValue(Double.class).floatValue();
+				
+				if(source.childExists("showerBounds"))
+					showerBounds = source.getChild("showerBounds").getValue(Rect2F.class);
 				
 				phases = source.getChild("phases").getValues(DefaultWeatherPhaseDeclaration[].class);
 			} catch (NoSuchChildVariableException e)
