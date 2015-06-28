@@ -118,6 +118,11 @@ public final class Rect2F implements ISerializable
 				location.y - y <= height);
 	}
 	
+	public Vector2F getPoint(float widthRatio, float heightRatio)
+	{
+		return new Vector2F(x + width * widthRatio, y + height * heightRatio);
+	}
+	
 	@Override
 	public void serialize(IVariable target) throws ValueSerializationException
 	{
