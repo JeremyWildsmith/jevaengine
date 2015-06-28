@@ -212,7 +212,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			
 			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX, offsetY, scale, v);			
 			
-			while(!effects.isEmpty())
+			do
 			{
 				List<ISceneComponentEffect> passEffects = new ArrayList<>();
 				
@@ -237,7 +237,8 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 
 				for(ISceneComponentEffect e : passEffects)
 					e.postrender();
-			}
+				
+			}while(!effects.isEmpty());
 		}
 		
 		for(ISceneBufferEffect e : m_effects)
