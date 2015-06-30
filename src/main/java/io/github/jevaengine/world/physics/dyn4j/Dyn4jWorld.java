@@ -117,6 +117,7 @@ public final class Dyn4jWorld implements IPhysicsWorld
 			return new NonparticipantPhysicsBody(owner);
 		
 		Body body = new Body();
+		body.setLinearDamping(m_maxSurfaceFrictionForceNewtonMeters);
 		
 		if(bodyDescription.type == PhysicsBodyDescription.PhysicsBodyType.Static || bodyDescription.isSensor)
 			body.setMass(Mass.Type.INFINITE);
