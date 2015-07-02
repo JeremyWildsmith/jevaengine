@@ -46,12 +46,12 @@ public final class OverlappedEffectMap implements IImmutableEffectMap
 	@Override
 	public LogicEffects getTileEffects(Vector2F location)
 	{
-		LogicEffects e = new LogicEffects();
+		List<LogicEffects> effects = new ArrayList<>();
 		
 		for(IImmutableEffectMap m : m_maps)
-			e = e.overlay(m.getTileEffects(location));
+			effects.add(new LogicEffects(m.getTileEffects(location)));
 		
-		return e;
+		return LogicEffects.merge(effects.toArray(new LogicEffects[effects.size()]));
 	}
 
 	@Override

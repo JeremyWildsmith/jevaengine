@@ -360,8 +360,8 @@ public final class SceneGraph implements IDisposable
 			m_regionSensorBody.setLocation(new Vector3F(worldCoordinate.add(new Vector2D(SECTOR_DIMENSIONS / 2, SECTOR_DIMENSIONS / 2)), 0));
 			m_regionSensorBody.getObservers().add(new RegionSensorObserver());
 			
-			m_globalEffectMap.add(new TranslatedEffectMap(m_staticEffectMap, new Vector2F(worldCoordinate)));
-			m_globalEffectMap.add(new TranslatedEffectMap(m_dynamicEffectMap, new Vector2F(worldCoordinate)));
+			m_globalEffectMap.add(m_staticEffectMap);
+			m_globalEffectMap.add(m_dynamicEffectMap);
 		}
 
 		@Override

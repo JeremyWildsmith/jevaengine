@@ -50,7 +50,7 @@ public final class TranslatedSearchFilter <T> implements ISearchFilter<T>
 	}
 
 	@Override
-	public T filter(T item)
+	public boolean filter(T item)
 	{
 		return m_searchFilter.filter(item);
 	}

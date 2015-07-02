@@ -29,6 +29,5 @@ public interface ISearchFilter<T>
 
 	boolean shouldInclude(Vector2F location);
 
-	@Nullable
-	T filter(T item);
+	boolean filter(T item);
 }

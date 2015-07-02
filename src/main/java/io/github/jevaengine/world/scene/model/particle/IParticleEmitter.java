@@ -9,6 +9,9 @@ import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
+import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelComponent;
+import io.github.jevaengine.world.scene.model.IImmutableSceneModel.SceneModelNotCloneableException;
 import io.github.jevaengine.world.scene.model.ISceneModel;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +20,7 @@ import java.util.Collection;
  *
  * @author Jeremy
  */
-public interface IParticleEmitter extends ISceneModel
+public interface IParticleEmitter extends IAnimationSceneModel
 {
 	void setEmit(boolean emit);
 	
@@ -39,7 +42,7 @@ public interface IParticleEmitter extends ISceneModel
 		}
 
 		@Override
-		public ISceneModel clone() throws SceneModelNotCloneableException
+		public IAnimationSceneModel clone() throws SceneModelNotCloneableException
 		{
 			return new NullParticleEmitter();
 		}
@@ -64,5 +67,15 @@ public interface IParticleEmitter extends ISceneModel
 
 		@Override
 		public void dispose() { }
+
+		@Override
+		public IAnimationSceneModelAnimation getAnimation(String name) {
+			return new NullAnimationSceneModelAnimation();
+		}
+
+		@Override
+		public boolean hasAnimation(String name) {
+			return false;
+		}
 	}
 }

@@ -156,7 +156,7 @@ public final class Dyn4jBody implements IPhysicsBody
 		aabb.y = (float)b2aabb.getMinY();
 		aabb.width = (float)(b2aabb.getMaxX() - b2aabb.getMinX());
 		aabb.height = (float)(b2aabb.getMaxY() - b2aabb.getMinY());
-		return aabb.add(new Vector3F(Dyn4jUtil.wrap(m_body.getWorldCenter()), 0));
+		return aabb.add(getLocation());
 	}
 	
 	@Override
@@ -168,7 +168,7 @@ public final class Dyn4jBody implements IPhysicsBody
 	@Override
 	public Vector3F getLocation()
 	{
-		return new Vector3F(Dyn4jUtil.wrap(m_body.getWorldCenter()), m_depth);
+		return new Vector3F(Dyn4jUtil.wrap(m_body.getTransform().getTranslation()), m_depth);
 	}
 
 	@Override

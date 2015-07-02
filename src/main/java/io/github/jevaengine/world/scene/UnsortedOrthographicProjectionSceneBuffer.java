@@ -115,11 +115,11 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 		return translateWorldToScreen(location, 1.0F);
 	}
 
-	private List<Queue<ISceneComponentEffect>> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, SceneGraphicEntry subject)
+	private List<Queue<ISceneComponentEffect>> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, Vector2D renderLocation, SceneGraphicEntry subject)
 	{
 		List<Queue<ISceneComponentEffect>> effects = new ArrayList<>();
 		for(ISceneBufferEffect e : m_effects)
-			effects.add(new LinkedList<>(Arrays.asList(e.getComponentEffect(g, offsetX, offsetY, scale, new Matrix3X3(m_worldToScreenMatrix), subject, new ArrayList<ISceneBufferEntry>()))));
+			effects.add(new LinkedList<>(Arrays.asList(e.getComponentEffect(g, offsetX, offsetY, scale, renderLocation, new Matrix3X3(m_worldToScreenMatrix), subject, new ArrayList<ISceneBufferEntry>()))));
 
 		return effects;
 	}
@@ -134,7 +134,7 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 		{
 			Vector2D renderLocation = translateWorldToScreen(entry.location, scale);
 			
-			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX, offsetY, scale, entry);			
+			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX, offsetY, scale, renderLocation, entry);			
 			
 			do
 			{

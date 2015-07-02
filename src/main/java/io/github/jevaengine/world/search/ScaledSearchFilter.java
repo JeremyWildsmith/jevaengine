@@ -37,22 +37,22 @@ public final class ScaledSearchFilter<T> implements ISearchFilter<T>
 	{
 		Rect2D bounds = m_searchFilter.getSearchBounds();
 		
-		return new Rect2D((int)Math.round(m_scale * bounds.x),
-							(int)Math.round(m_scale * bounds.y),
-							(int)Math.round(m_scale * bounds.width),
-							(int)Math.round(m_scale * bounds.height));
+		return new Rect2D((int)Math.floor(m_scale * bounds.x),
+							(int)Math.floor(m_scale * bounds.y),
+							(int)Math.ceil(m_scale * bounds.width),
+							(int)Math.ceil(m_scale * bounds.height));
 	}
 
 	@Override
 	public boolean shouldInclude(Vector2F location)
 	{
-		Vector2F scaled = new Vector2F(location.x * m_scale, location.y * m_scale);
+		Vector2F scaled = new Vector2F(location.x / m_scale, location.y / m_scale);
 		
 		return m_searchFilter.shouldInclude(scaled);
 	}
 
 	@Override
-	public T filter(T item)
+	public boolean filter(T item)
 	{
 		return m_searchFilter.filter(item);
 	}

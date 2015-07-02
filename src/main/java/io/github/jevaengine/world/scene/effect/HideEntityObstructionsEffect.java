@@ -60,7 +60,7 @@ public final class HideEntityObstructionsEffect implements ISceneBufferEffect
 	}
 	
 	@Override
-	public ISceneComponentEffect[] getComponentEffect(final Graphics2D g, final int offsetX, final int offsetY, final float scale, final Matrix3X3 projection, final ISceneBufferEntry subject, final Collection<ISceneBufferEntry> beneath)
+	public ISceneComponentEffect[] getComponentEffect(final Graphics2D g, final int offsetX, final int offsetY, final float scale, final Vector2D renderLocation, final Matrix3X3 projection, final ISceneBufferEntry subject, final Collection<ISceneBufferEntry> beneath)
 	{
 		return new ISceneComponentEffect[] {
 			new ISceneComponentEffect() {

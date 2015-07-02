@@ -36,12 +36,7 @@ public final class TiledEffectMap implements IEffectMap
 	public TiledEffectMap(TiledEffectMap map)
 	{
 		for (Map.Entry<Vector2D, LogicEffects> effects : map.m_tileEffects.entrySet())
-		{
-			if (!m_tileEffects.containsKey(effects.getKey()))
-				m_tileEffects.put(effects.getKey(), effects.getValue());
-			else
-				m_tileEffects.put(effects.getKey(), m_tileEffects.get(effects.getKey()).overlay(effects.getValue()));
-		}
+			m_tileEffects.put(new Vector2D(effects.getKey()), new LogicEffects(effects.getValue()));	
 	}
 
 	@Override
@@ -72,12 +67,10 @@ public final class TiledEffectMap implements IEffectMap
 		{
 			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++)
 			{
-				LogicEffects effects = getTileEffects(new Vector2F(x, y));
+				LogicEffects effects = m_tileEffects.get(new Vector2D(x, y));
 
-				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && (effects = filter.filter(effects)) != null)
-				{
+				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && filter.filter(effects))
 					tileEffects.add(effects);
-				}
 			}
 		}
 
@@ -89,19 +82,19 @@ public final class TiledEffectMap implements IEffectMap
 	{
 		Rect2D searchBounds = filter.getSearchBounds();
 
-		for (int x = searchBounds.x; x <= searchBounds.width; x++)
+		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++)
 		{
-			for (int y = searchBounds.y; y <= searchBounds.height; y++)
+			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++)
 			{
-				LogicEffects effects = getTileEffects(new Vector2F(x, y));
-
-				if (filter.shouldInclude(new Vector2F(x, y)) && effects == null)
-				{
-					m_tileEffects.put(new Vector2D(x, y), overlay);
-					effects = overlay;
-				}
-
-				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && (effects = filter.filter(effects)) != null)
+				if(!filter.shouldInclude(new Vector2F(x, y)))
+					continue;
+				
+				if (!m_tileEffects.containsKey(new Vector2D(x, y)))
+					m_tileEffects.put(new Vector2D(x, y), new LogicEffects());
+				
+				LogicEffects effects = m_tileEffects.get(new Vector2D(x, y));
+	
+				if (filter.filter(effects))
 					effects.overlay(overlay);
 			}
 		}

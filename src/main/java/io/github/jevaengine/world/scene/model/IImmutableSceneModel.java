@@ -47,6 +47,8 @@ public interface IImmutableSceneModel extends Cloneable
 	{
 		private static final long serialVersionUID = 1L;
 		
+		public SceneModelNotCloneableException() { }
+		
 		public SceneModelNotCloneableException(Exception cause)
 		{
 			super(cause);

@@ -63,7 +63,7 @@ public class EntityRoutingRules implements IRoutingRules
 	@Override
 	public Direction[] getMovements(World world, Vector2F origin)
 	{
-		List<Direction> m_directions = new ArrayList<>();
+		List<Direction> directions = new ArrayList<>();
 		SearchNode currentNode = new SearchNode(null, Direction.Zero, origin.round());
 		
 		for (Direction dir : m_allowedMovements)
@@ -72,14 +72,14 @@ public class EntityRoutingRules implements IRoutingRules
 			{
 				// So sorry for these if statements...
 				if (!dir.isDiagonal())
-					m_directions.add(dir);
+					directions.add(dir);
 				else if (hasClearance(world, currentNode.getLocation(Direction.fromVector(new Vector2F(dir.getDirectionVector().x, 0)))) &&
 									hasClearance(world, currentNode.getLocation(Direction.fromVector(new Vector2F(0, dir.getDirectionVector().y)))))
-					m_directions.add(dir);
+					directions.add(dir);
 			}
 		}
 
-		return m_directions.toArray(new Direction[m_directions.size()]);
+		return directions.toArray(new Direction[directions.size()]);
 	}
 
 }

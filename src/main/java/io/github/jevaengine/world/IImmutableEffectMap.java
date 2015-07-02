@@ -62,23 +62,19 @@ public interface IImmutableEffectMap
 			return 0;
 		}
 		
-		public static LogicEffects merge(LogicEffects[] tiles)
+		public static LogicEffects merge(LogicEffects ... tiles)
 		{
 			LogicEffects effect = new LogicEffects();
-
+			
 			for (LogicEffects tile : tiles)
-				effect = effect.overlay(tile);
+				effect.overlay(tile);
 
 			return effect;
 		}
 
-		public LogicEffects overlay(LogicEffects overlay)
+		public void overlay(LogicEffects overlay)
 		{
-			LogicEffects newEffects = new LogicEffects();
-			newEffects.m_obstructions.addAll(m_obstructions);
-			newEffects.m_obstructions.addAll(overlay.m_obstructions);
-			
-			return newEffects;
+			this.m_obstructions.addAll(overlay.m_obstructions);
 		}
 	}
 }

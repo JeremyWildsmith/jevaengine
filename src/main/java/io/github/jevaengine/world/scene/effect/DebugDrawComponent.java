@@ -53,7 +53,7 @@ public final class DebugDrawComponent implements ISceneBufferEffect
 		return new Vector2D(translation.x, translation.y);
 	}
 
-	private void debugDrawFront(Graphics2D g, float scale, Rect3F aabb, Matrix3X3 projection)
+	private void debugDrawFront(Graphics2D g, int offsetX, int offsetY, float scale, Rect3F aabb, Matrix3X3 projection)
 	{
 		if(!aabb.hasVolume())
 			return;
@@ -69,19 +69,19 @@ public final class DebugDrawComponent implements ISceneBufferEffect
 		Vector2D tfC = translateWorldToScreen(projection, aabb.getPoint(1.0F, 0, 1.0F), scale);
 		
 		g.setColor(Color.blue);
-		g.drawLine(bfA.x, bfA.y, bfB.x, bfB.y);
-		g.drawLine(bfB.x, bfB.y, bfC.x, bfC.y);
+		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + bfB.x, offsetY + bfB.y);
+		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + bfC.x, offsetY + bfC.y);
 		
-		g.drawLine(tfA.x, tfA.y, tfB.x, tfB.y);
-		g.drawLine(tfB.x, tfB.y, tfC.x, tfC.y);
+		g.drawLine(offsetX + tfA.x, offsetY + tfA.y, offsetX + tfB.x, offsetY + tfB.y);
+		g.drawLine(offsetX + tfB.x, offsetY + tfB.y, offsetX + tfC.x, offsetY + tfC.y);
 
-		g.drawLine(bfA.x, bfA.y, tfA.x, tfA.y);
-		g.drawLine(bfB.x, bfB.y, tfB.x, tfB.y);
-		g.drawLine(bfC.x, bfC.y, tfC.x, tfC.y);
+		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + tfA.x, offsetY + tfA.y);
+		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + tfB.x, offsetY + tfB.y);
+		g.drawLine(offsetX + bfC.x, offsetY + bfC.y, offsetX + tfC.x, offsetY + tfC.y);
 	}
 
 
-	private void debugDrawBack(Graphics2D g, float scale, Rect3F aabb, Matrix3X3 projection)
+	private void debugDrawBack(Graphics2D g, int offsetX, int offsetY, float scale, Rect3F aabb, Matrix3X3 projection)
 	{
 		if(!aabb.hasVolume())
 			return;
@@ -97,33 +97,33 @@ public final class DebugDrawComponent implements ISceneBufferEffect
 		Vector2D tfC = translateWorldToScreen(projection, aabb.getPoint(1.0F, 0, 1), scale);
 		
 		g.setColor(Color.green);
-		g.drawLine(bfA.x, bfA.y, bfB.x, bfB.y);
-		g.drawLine(bfB.x, bfB.y, bfC.x, bfC.y);
+		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + bfB.x, offsetY + bfB.y);
+		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + bfC.x, offsetY + bfC.y);
 		
-		g.drawLine(tfA.x, tfA.y, tfB.x, tfB.y);
-		g.drawLine(tfB.x, tfB.y, tfC.x, tfC.y);
+		g.drawLine(offsetX + tfA.x, offsetY + tfA.y, offsetX + tfB.x, offsetY + tfB.y);
+		g.drawLine(offsetX + tfB.x, offsetY + tfB.y, offsetX + tfC.x, offsetY + tfC.y);
 
-		g.drawLine(bfA.x, bfA.y, tfA.x, tfA.y);
-		g.drawLine(bfB.x, bfB.y, tfB.x, tfB.y);
-		g.drawLine(bfC.x, bfC.y, tfC.x, tfC.y);
+		g.drawLine(offsetX + bfA.x, offsetY + bfA.y, offsetX + tfA.x, offsetY + tfA.y);
+		g.drawLine(offsetX + bfB.x, offsetY + bfB.y, offsetX + tfB.x, offsetY + tfB.y);
+		g.drawLine(offsetX + bfC.x, offsetY + bfC.y, offsetX + tfC.x, offsetY + tfC.y);
 	}
 
 	
 	@Override
-	public ISceneComponentEffect[] getComponentEffect(final Graphics2D g, final int offsetX, final int offsetY, final float scale, final Matrix3X3 projection, final ISceneBufferEntry subject, final Collection<ISceneBufferEntry> beneath)
+	public ISceneComponentEffect[] getComponentEffect(final Graphics2D g, final int offsetX, final int offsetY, final float scale, final Vector2D renderLocation, final Matrix3X3 projection, final ISceneBufferEntry subject, final Collection<ISceneBufferEntry> beneath)
 	{
 		return new ISceneComponentEffect[] {
 			new ISceneComponentEffect() {
 				@Override
 				public void prerender()
 				{
-					debugDrawBack(g, scale, subject.getComponent().getBounds(), projection);
+					debugDrawBack(g, renderLocation.x, renderLocation.y, scale, subject.getComponent().getBounds(), projection);
 				}
 
 				@Override
 				public void postrender()
 				{
-					debugDrawFront(g, scale, subject.getComponent().getBounds(), projection);
+					debugDrawFront(g, renderLocation.x, renderLocation.y, scale, subject.getComponent().getBounds(), projection);
 				}
 			}
 		};

@@ -23,6 +23,7 @@ import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect2D;
+import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
@@ -64,7 +65,7 @@ public interface IWeatherFactory
 		}
 
 		@Override
-		public ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath)
+		public ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, final Vector2D renderlocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath)
 		{
 			return new ISceneComponentEffect[0];
 		}

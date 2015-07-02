@@ -76,8 +76,8 @@ public class TriangleSearchFilter<T> implements ISearchFilter<T>
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#filter(java.lang.Object)
 	 */
 	@Override
-	public T filter(T o)
+	public boolean filter(T o)
 	{
-		return o;
+		return true;
 	}
 }

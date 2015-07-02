@@ -98,9 +98,9 @@ public class BinarySearchFilter<T> implements ISearchFilter<T>
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#filter(java.lang.Object)
 	 */
 	@Override
-	public T filter(T item)
+	public boolean filter(T item)
 	{
-		return item;
+		return true;
 	}
 
 }

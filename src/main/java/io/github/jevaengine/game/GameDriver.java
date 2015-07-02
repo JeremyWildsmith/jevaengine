@@ -66,8 +66,9 @@ public final class GameDriver
 	private class GameLoop implements Runnable
 	{
 		private long m_lastTime = 0;
+		private long m_timeSinceLastUpdate = 0;
 		private final Logger m_logger = LoggerFactory.getLogger(GameLoop.class);
-		
+	
 		@Override
 		public void run()
 		{
@@ -79,7 +80,11 @@ public final class GameDriver
 				long delta = System.currentTimeMillis() - m_lastTime;
 				m_lastTime = System.currentTimeMillis();
 
-				m_game.update((int)delta);
+				m_timeSinceLastUpdate += delta;
+				
+				for(; m_timeSinceLastUpdate > GAMELOOP_PERIOD; m_timeSinceLastUpdate -= GAMELOOP_PERIOD)
+					m_game.update(GAMELOOP_PERIOD);
+				
 				m_game.render(m_renderer);
 			} catch (Throwable e)
 			{

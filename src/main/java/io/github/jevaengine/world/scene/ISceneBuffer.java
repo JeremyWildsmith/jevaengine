@@ -44,7 +44,7 @@ public interface ISceneBuffer extends IImmutableSceneBuffer
 		IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection);
 		IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection);
 		
-		ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
+		ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Vector2D renderLocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
 	}
 	
 	public interface ISceneComponentEffect

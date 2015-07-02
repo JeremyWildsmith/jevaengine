@@ -48,9 +48,9 @@ public class RadialSearchFilter <T> implements ISearchFilter<T>
 	}
 
 	@Override
-	public T filter(T item)
+	public boolean filter(T item)
 	{
-		return item;
+		return true;
 	}
 
 }

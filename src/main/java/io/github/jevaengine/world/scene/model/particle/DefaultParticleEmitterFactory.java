@@ -35,8 +35,8 @@ import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
+import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelComponent;
-import io.github.jevaengine.world.scene.model.ISceneModel;
 import io.github.jevaengine.world.scene.model.particle.DefaultParticleEmitterFactory.DefaultParticleEmitterDeclaration.DefaultParticleEmitterComponentDeclaration;
 import java.awt.Graphics2D;
 import java.net.URI;
@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 
 public final class DefaultParticleEmitterFactory implements IParticleEmitterFactory
@@ -154,7 +155,7 @@ public final class DefaultParticleEmitterFactory implements IParticleEmitterFact
 		}
 		
 		@Override
-		public ISceneModel clone() throws SceneModelNotCloneableException
+		public IAnimationSceneModel clone() throws SceneModelNotCloneableException
 		{
 			DefaultParticleEmitterComponent[] clonedComponents = new DefaultParticleEmitterComponent[m_components.length];
 			
@@ -184,10 +185,24 @@ public final class DefaultParticleEmitterFactory implements IParticleEmitterFact
 
 		@Override
 		public void dispose() { }
+
+		@Override
+		public IAnimationSceneModelAnimation getAnimation(String name)
+		{
+			return new NullAnimationSceneModelAnimation();
+		}
+
+		@Override
+		public boolean hasAnimation(String name)
+		{
+			return false;
+		}
 	}
 	
 	private static class DefaultParticleEmitterComponent implements ISceneModelComponent
 	{
+		private static final AtomicInteger COUNT = new AtomicInteger();
+		
 		private final Sprite m_sprite;
 		private final Rect3F m_bounds;
 		private final boolean m_loop;
@@ -197,9 +212,11 @@ public final class DefaultParticleEmitterFactory implements IParticleEmitterFact
 		private Vector3F m_location;
 		
 		private int m_life;
+		private final String m_name;
 		
 		public DefaultParticleEmitterComponent(Sprite sprite, Rect3F bounds, int life, Vector3F acceleration, Vector3F velocity, Vector3F location, boolean loop)
 		{
+			m_name = COUNT.getAndIncrement() + this.getClass().getName();
 			m_sprite = sprite;
 			m_bounds = bounds;
 			m_loop = loop;
@@ -219,7 +236,7 @@ public final class DefaultParticleEmitterFactory implements IParticleEmitterFact
 		@Override
 		public String getName()
 		{
-			return this.getClass().getName();
+			return m_name;
 		}
 
 		public void reset(int life, Vector3F acceleration, Vector3F velocity, Vector3F location)

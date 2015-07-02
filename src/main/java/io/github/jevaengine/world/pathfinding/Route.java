@@ -116,18 +116,18 @@ public final class Route
 		
 		List<Direction> directions = new ArrayList<>();
 		
-		for(int i = 0; i < Math.min(maxSteps, m_path.size() - 1); i++)
+		for(int i = 0; i < Math.min(maxSteps, path.size() - 1); i++)
 		{
-			Vector2F a = m_path.get(i);
-			Vector2F b = m_path.get(i + 1);
+			Vector2F a = path.get(i);
+			Vector2F b = path.get(i + 1);
 			
 			directions.add(Direction.fromVector(b.difference(a)));
 		}
 		
 		int validSteps = 0;
-		for(; validSteps < Math.min(maxSteps, m_path.size() - 1); validSteps++)
+		for(; validSteps < Math.min(maxSteps, path.size() - 1); validSteps++)
 		{
-			Vector2F origin = m_path.get(validSteps);
+			Vector2F origin = path.get(validSteps);
 			
 			Direction movements[] = m_rules.getMovements(world, origin);
 			
