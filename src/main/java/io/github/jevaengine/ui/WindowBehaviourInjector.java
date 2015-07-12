@@ -61,5 +61,10 @@ public abstract class WindowBehaviourInjector
 		return m_host.getControl(controlClass, name);
 	}
 	
+	protected final <T extends Control> boolean hasControl(Class<T> controlClass, String name)
+	{
+		return m_host.hasControl(controlClass, name);
+	}
+	
 	protected abstract void doInject() throws NoSuchControlException;
 }

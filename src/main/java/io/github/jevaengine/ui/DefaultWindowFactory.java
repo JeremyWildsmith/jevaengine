@@ -79,13 +79,11 @@ public final class DefaultWindowFactory implements IWindowFactory
 			{
 				
 				Control control = m_controlFactory.create(ctrlDecl.type, ctrlDecl.name, ctrlDecl.config == null ? new NullVariable() : ctrlDecl.config);
+				control.setLocation(ctrlDecl.location);	
+				window.addControl(control);
 				
 				if(ctrlDecl.style != null)
 					control.setStyle(m_styleFactory.create(name.resolve(new URI(ctrlDecl.style))));
-				
-				control.setLocation(ctrlDecl.location);
-				
-				window.addControl(control);
 			}
 			
 			return window;

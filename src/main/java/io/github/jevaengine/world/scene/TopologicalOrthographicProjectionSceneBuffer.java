@@ -210,7 +210,7 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		{
 			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
 			
-			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX + m_translation.x, offsetY + m_translation.y, scale, renderLocation, v);
+			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX + m_translation.x, offsetY + m_translation.y, scale, renderLocation.difference(m_translation), v);
 			
 			do
 			{

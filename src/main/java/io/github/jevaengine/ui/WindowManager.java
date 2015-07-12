@@ -24,11 +24,13 @@ import io.github.jevaengine.joystick.InputMouseEvent.MouseEventType;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.MutableProcessList;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.List;
 
 public final class WindowManager
 {
 	private final List<Window> m_windows = new MutableProcessList<>();
+	private final List<Window> m_effectiveOrderBuffer = new MutableProcessList<>();
 	
 	private final Vector2D m_resolution;
 	
@@ -60,6 +62,7 @@ public final class WindowManager
 
 		window.setManager(null);
 		m_windows.remove(window);
+		m_effectiveOrderBuffer.remove(window);
 	}
 
 	public void setFocusedWindow(Window window)
@@ -85,12 +88,31 @@ public final class WindowManager
 						 (m_resolution.y - window.getBounds().height) / 2));
 	}
 	
+	private void initEffectiveOrderBuffer()
+	{
+		List<Window> topMost = new ArrayList<>();
+		
+		m_effectiveOrderBuffer.clear();
+		for(Window w : m_windows)
+		{
+			if(w.isTopMost())
+				topMost.add(w);
+			else
+				m_effectiveOrderBuffer.add(w);
+		}
+		
+		m_effectiveOrderBuffer.addAll(0, topMost);
+	}
+	
 	public void onMouseEvent(InputMouseEvent mouseEvent)
 	{
 		Window moveToTop = null;
-		Window topWindow = m_windows.size() > 0 ? m_windows.get(0) : null;
 
-		for (Window window : m_windows)
+		initEffectiveOrderBuffer();
+		
+		Window topWindow = m_effectiveOrderBuffer.size() > 0 ? m_effectiveOrderBuffer.get(0) : null;
+
+		for (Window window : m_effectiveOrderBuffer)
 		{
 			if (window.isVisible())
 			{
@@ -134,10 +156,11 @@ public final class WindowManager
 
 	public void render(Graphics2D g, int x, int y, float fScale)
 	{
-		for (int i = m_windows.size() - 1; i >= 0; i--)
+		initEffectiveOrderBuffer();
+		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--)
 		{
-			if (m_windows.get(i).isVisible())
-				m_windows.get(i).render(g, x + m_windows.get(i).getLocation().x, y + m_windows.get(i).getLocation().y, fScale);
+			if (m_effectiveOrderBuffer.get(i).isVisible())
+				m_effectiveOrderBuffer.get(i).render(g, x + m_effectiveOrderBuffer.get(i).getLocation().x, y + m_effectiveOrderBuffer.get(i).getLocation().y, fScale);
 		}
 	}
 

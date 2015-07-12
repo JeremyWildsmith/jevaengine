@@ -30,6 +30,7 @@ import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
 import java.awt.AlphaComposite;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -77,7 +78,7 @@ public final class HideEntityObstructionsEffect implements ISceneBufferEffect
 							
 							final Rect2D aabb = e.getProjectedAABB().add(new Vector2D(offsetX, offsetY));
 							final int paddingX = aabb.width;
-							final int paddingY = aabb.height / 2;
+							final int paddingY = aabb.height / 4;
 							final Shape ellipse = new Ellipse2D.Float(aabb.x - paddingX, aabb.y - paddingY, aabb.width + 2 * paddingX, aabb.height + 2 * paddingY);
 							
 							m_oldClip = g.getClip();
@@ -114,7 +115,7 @@ public final class HideEntityObstructionsEffect implements ISceneBufferEffect
 						{
 							final Rect2D aabb = e.getProjectedAABB().add(new Vector2D(offsetX, offsetY));
 							final int paddingX = aabb.width;
-							final int paddingY = aabb.height / 2;
+							final int paddingY = aabb.height / 4;
 							final Shape ellipse = new Ellipse2D.Float(aabb.x - paddingX, aabb.y - paddingY, aabb.width + 2 * paddingX, aabb.height + 2 * paddingY);
 							
 							m_oldClip = g.getClip();

@@ -34,7 +34,8 @@ public final class Window extends Control implements IDisposable
 	
 	private boolean m_isMovable;
 	private boolean m_isFocusable;
-
+	private boolean m_isTopMost;
+	
 	private WindowManager m_manager;
 	
 	private Panel m_rootPanel;
@@ -49,6 +50,7 @@ public final class Window extends Control implements IDisposable
 		m_rootPanel.setParent(this);
 		m_isFocusable = true;
 		m_isMovable = true;
+		m_isTopMost = false;
 	}
 	
 	@Override
@@ -63,6 +65,11 @@ public final class Window extends Control implements IDisposable
 	public IObserverRegistry getObservers()
 	{
 		return m_observers;
+	}
+	
+	public boolean isTopMost()
+	{
+		return m_isTopMost;
 	}
 	
 	public boolean isMovable()
@@ -80,6 +87,11 @@ public final class Window extends Control implements IDisposable
 		m_isMovable = isMovable;
 	}
 
+	public void setTopMost(boolean isTopMost)
+	{
+		m_isTopMost = isTopMost;
+	}
+	
 	public void setFocusable(boolean isFocusable)
 	{
 		m_isFocusable = isFocusable;
@@ -100,10 +112,14 @@ public final class Window extends Control implements IDisposable
 		m_rootPanel.removeControl(control);
 	}
 
-	@Nullable
 	public <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException
 	{
 		return m_rootPanel.getControl(controlClass, name);
+	}
+
+	public <T extends Control> boolean hasControl(Class<T> controlClass, String name)
+	{
+		return m_rootPanel.hasControl(controlClass, name);
 	}
 	
 	void setManager(WindowManager manager)

@@ -117,13 +117,13 @@ public final class DebugDrawComponent implements ISceneBufferEffect
 				@Override
 				public void prerender()
 				{
-					debugDrawBack(g, renderLocation.x, renderLocation.y, scale, subject.getComponent().getBounds(), projection);
+					debugDrawBack(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale, subject.getComponent().getBounds(), projection);
 				}
 
 				@Override
 				public void postrender()
 				{
-					debugDrawFront(g, renderLocation.x, renderLocation.y, scale, subject.getComponent().getBounds(), projection);
+					debugDrawFront(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale, subject.getComponent().getBounds(), projection);
 				}
 			}
 		};

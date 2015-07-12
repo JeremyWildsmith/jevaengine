@@ -76,34 +76,17 @@ public final class MergeActionSceneModel implements IActionSceneModel
 	@Override
 	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection)
 	{
-		Map<String, List<ISceneModelComponent>> componentBuffer = new HashMap<>();
+		List<ISceneModelComponent> componentBuffer = new ArrayList<>();
 		
 		for(ISceneModel m : m_models)
 		{
 			for(ISceneModelComponent c : m.getComponents(projection))
 			{
-				String name = c.getName().split("\\.")[0];
-				if(componentBuffer.containsKey(name))
-					componentBuffer.get(name).add(c);
-				else
-				{
-					ArrayList<ISceneModelComponent> relatedComponents = new ArrayList<>();
-					relatedComponents.add(c);
-					componentBuffer.put(name, relatedComponents);
-				}
+				componentBuffer.add(c);
 			}
 		}
 		
-		List<ISceneModelComponent> components = new ArrayList<>();
-		for(Map.Entry<String, List<ISceneModelComponent>> e : componentBuffer.entrySet())
-		{
-			if(e.getValue().size() <= 1)
-				components.add(e.getValue().get(0));
-			else
-				components.add(new MergeSceneModelComponent(e.getKey(), e.getValue()));
-		}
-		
-		return components;
+		return componentBuffer;
 	}
 
 	@Override

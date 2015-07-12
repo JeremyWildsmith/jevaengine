@@ -126,7 +126,6 @@ public final class Panel extends Control implements IDisposable
 	}
 
 	@SuppressWarnings("unchecked")
-	@Nullable
 	public <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException
 	{
 		for(Control c : m_controls)
@@ -136,6 +135,17 @@ public final class Panel extends Control implements IDisposable
 		}
 		
 		throw new NoSuchControlException(controlClass, name);
+	}
+	
+	public <T extends Control> boolean hasControl(Class<T> controlClass, String name)
+	{
+		for(Control c : m_controls)
+		{
+			if(c.getInstanceName().equals(name) && controlClass.isAssignableFrom(c.getClass()))
+				return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -172,9 +182,6 @@ public final class Panel extends Control implements IDisposable
 					{
 						if (m_lastOver != control)
 						{
-							if (m_lastOver != null)
-								m_lastOver.onLeave();
-
 							m_lastOver = control;
 							control.onEnter();
 						}
@@ -190,6 +197,10 @@ public final class Panel extends Control implements IDisposable
 						
 						if(control.onMouseEvent(mouseEvent))
 							return true;
+					} else if(m_lastOver == control)
+					{
+						m_lastOver.onLeave();
+						m_lastOver = null;
 					}
 				}
 			}

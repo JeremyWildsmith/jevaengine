@@ -94,7 +94,7 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel
 		{
 			for(ISceneModelComponent c : m.getComponents(projection))
 			{
-				String name = c.getName().split("\\.")[0];
+				String name = c.getName().split("!")[0];
 				if(componentBuffer.containsKey(name))
 					componentBuffer.get(name).add(c);
 				else
