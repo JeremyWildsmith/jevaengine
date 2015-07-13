@@ -24,35 +24,32 @@ import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.joystick.InputKeyEvent;
 import io.github.jevaengine.joystick.InputMouseEvent;
 import io.github.jevaengine.math.Rect2D;
-import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Shape;
 
 public class ValueGuage extends Control implements IRenderable
 {
 	public static final String COMPONENT_NAME = "valueGuage";
 	
-	private Color m_color;
-	private int m_width;
-	private int m_height;
+	private final IImmutableGraphic m_fill;
+	
 	private float m_value;
 
 	private IImmutableGraphic m_frame;
 	
-	public ValueGuage(Color color, int width, int height)
+	public ValueGuage(IImmutableGraphic fill)
 	{
 		super(COMPONENT_NAME);
-		m_color = color;
-		m_width = width;
-		m_height = height;
-		m_frame = new NullGraphic(width, height);
+		
+		m_fill = fill;
+		m_frame = new NullGraphic(fill.getBounds().width, fill.getBounds().height);
 	}
 	
-	public ValueGuage(String instanceName, Color color, int width, int height)
+	public ValueGuage(String instanceName, IImmutableGraphic fill)
 	{
 		super(COMPONENT_NAME, instanceName);
-		m_color = color;
-		m_width = width;
-		m_height = height;
+		m_fill = fill;
 	}
 
 	public void setValue(float value)
@@ -69,14 +66,19 @@ public class ValueGuage extends Control implements IRenderable
 	public void render(Graphics2D g, int x, int y, float scale)
 	{
 		m_frame.render(g, x, y, scale);
-		g.setColor(m_color);
-		g.fillRect(x + 2, y + 2, (int) ((m_width - 2) * m_value), m_height - 4);
+		Shape oldClip = g.getClip();
+		
+		Rect2D fillRect = m_fill.getBounds();
+		fillRect.width *= m_value;
+		g.setClip(new Rectangle(x, y, fillRect.width, fillRect.height));
+		m_fill.render(g, x, y, scale);
+		g.setClip(oldClip);
 	}
 
 	@Override
 	public Rect2D getBounds()
 	{
-		return new Rect2D(0, 0, m_width, m_height);
+		return m_fill.getBounds();
 	}
 
 	@Override
@@ -91,7 +93,6 @@ public class ValueGuage extends Control implements IRenderable
 	@Override
 	protected void onStyleChanged()
 	{
-		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(m_width, m_height);
+		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(m_fill.getBounds().width, m_fill.getBounds().height);
 	}
-	
 }

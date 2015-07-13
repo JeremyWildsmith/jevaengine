@@ -21,6 +21,8 @@ package io.github.jevaengine.ui;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.ValueSerializationException;
+import io.github.jevaengine.graphics.ColorGraphic;
+import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector3D;
 import io.github.jevaengine.util.Nullable;
@@ -125,7 +127,8 @@ public class DefaultControlFactory implements IControlFactory
 				Rect2D bounds = config.getChild("bounds").getValue(Rect2D.class);
 				Vector3D color = config.getChild("color").getValue(Vector3D.class);
 				
-				ValueGuage valueGuage = new ValueGuage(instanceName, new Color(color.x % 256, color.y % 256, color.z % 256), bounds.width, bounds.height);
+				IImmutableGraphic colorGraphic = new ColorGraphic(new Color(color.x % 256, color.y % 256, color.z % 256), bounds.width, bounds.height);
+				ValueGuage valueGuage = new ValueGuage(instanceName, colorGraphic);
 				
 				return (T)valueGuage;
 			}else if(controlClass.equals(Checkbox.class))
