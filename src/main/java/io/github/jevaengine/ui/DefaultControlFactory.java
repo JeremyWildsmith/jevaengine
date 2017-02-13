@@ -18,19 +18,28 @@
  */
 package io.github.jevaengine.ui;
 
+import io.github.jevaengine.config.IConfigurationFactory;
+import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
 import io.github.jevaengine.config.IImmutableVariable;
+import io.github.jevaengine.config.ImmutableVariableOverlay;
 import io.github.jevaengine.config.NoSuchChildVariableException;
+import io.github.jevaengine.config.NullVariable;
 import io.github.jevaengine.config.ValueSerializationException;
-import io.github.jevaengine.graphics.ColorGraphic;
-import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.math.Rect2D;
-import io.github.jevaengine.math.Vector3D;
 import io.github.jevaengine.util.Nullable;
-import java.awt.Color;
+import java.net.URI;
+import javax.inject.Inject;
 
 public class DefaultControlFactory implements IControlFactory
 {
-
+	private final IConfigurationFactory m_configurationFactory;
+	
+	@Inject
+	public DefaultControlFactory(IConfigurationFactory configurationFactory)
+	{
+		m_configurationFactory = configurationFactory;
+	}
+	
 	@Override
 	@Nullable
 	public Class<? extends Control> lookup(String className)
@@ -80,24 +89,28 @@ public class DefaultControlFactory implements IControlFactory
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Control> T create(Class<T> controlClass, String instanceName, IImmutableVariable config) throws ControlConstructionException
+	public <T extends Control> T create(Class<T> controlClass, String instanceName, URI config, IImmutableVariable auxConfig) throws ControlConstructionException
 	{
 		try
 		{
+			
+			String configPath = config.getPath();
+			IImmutableVariable configVar = new ImmutableVariableOverlay(auxConfig, configPath.isEmpty() || configPath.endsWith("/") ? new NullVariable() : m_configurationFactory.create(config));
+		
 			if(controlClass.equals(Button.class))
 			{
-				String text = config.getChild("text").getValue(String.class);
+				String text = configVar.getChild("text").getValue(String.class);
 				return (T)new Button(instanceName, text);
 			}else if(controlClass.equals(Label.class))
 			{
-				String text = config.childExists("text") ? config.getChild("text").getValue(String.class) : "";
+				String text = configVar.childExists("text") ? configVar.getChild("text").getValue(String.class) : "";
 				return (T)new Label(instanceName, text);
 			}else if(controlClass.equals(TextArea.class))
 			{
-				String defaultText = config.childExists("text") ? config.getChild("text").getValue(String.class) : "";
-				boolean editable = config.childExists("allowEdit") ? config.getChild("allowEdit").getValue(Boolean.class) : true;
-				boolean wordWrap = config.childExists("wordWrap") ? config.getChild("wordWrap").getValue(Boolean.class) : true;
-				Rect2D bounds = config.getChild("bounds").getValue(Rect2D.class);
+				String defaultText = configVar.childExists("text") ? configVar.getChild("text").getValue(String.class) : "";
+				boolean editable = configVar.childExists("allowEdit") ? configVar.getChild("allowEdit").getValue(Boolean.class) : true;
+				boolean wordWrap = configVar.childExists("wordWrap") ? configVar.getChild("wordWrap").getValue(Boolean.class) : true;
+				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
 				
 				TextArea textArea = new TextArea(instanceName, defaultText, bounds.width, bounds.height);
 				textArea.setEditable(editable);
@@ -106,38 +119,36 @@ public class DefaultControlFactory implements IControlFactory
 				return (T)textArea;
 			}else if(controlClass.equals(Viewport.class))
 			{
-				Rect2D bounds = config.getChild("bounds").getValue(Rect2D.class);
+				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
 				Viewport viewport = new Viewport(instanceName, bounds.width, bounds.height);
 				
 				return (T)viewport;
 			}else if(controlClass.equals(Panel.class))
 			{
-				Rect2D bounds = config.getChild("bounds").getValue(Rect2D.class);
+				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
 				Panel panel = new Panel(instanceName, bounds.width, bounds.height);
 				
 				return (T)panel;
 			}else if(controlClass.equals(WorldView.class))
 			{
-				Rect2D bounds = config.getChild("bounds").getValue(Rect2D.class);
+				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
 				WorldView worldView = new WorldView(instanceName, bounds.width, bounds.height);
 				
 				return (T)worldView;
 			}else if(controlClass.equals(ValueGuage.class))
 			{
-				Rect2D bounds = config.getChild("bounds").getValue(Rect2D.class);
-				Vector3D color = config.getChild("color").getValue(Vector3D.class);
-				
-				IImmutableGraphic colorGraphic = new ColorGraphic(new Color(color.x % 256, color.y % 256, color.z % 256), bounds.width, bounds.height);
-				ValueGuage valueGuage = new ValueGuage(instanceName, colorGraphic);
+				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
+	
+				ValueGuage valueGuage = new ValueGuage(instanceName, bounds);
 				
 				return (T)valueGuage;
 			}else if(controlClass.equals(Checkbox.class))
 			{
-				boolean value = config.childExists("value") ? config.getChild("value").getValue(Boolean.class) : false;
+				boolean value = configVar.childExists("value") ? configVar.getChild("value").getValue(Boolean.class) : false;
 				
 				return (T)new Checkbox(instanceName, value);
 			}
-		} catch(ValueSerializationException | NoSuchChildVariableException e)
+		} catch(ConfigurationConstructionException | ValueSerializationException | NoSuchChildVariableException e)
 		{
 			throw new ControlConstructionException(controlClass.getName(), e);
 		}
@@ -146,13 +157,13 @@ public class DefaultControlFactory implements IControlFactory
 	}
 
 	@Override
-	public Control create(String controlName, String instanceName, IImmutableVariable config) throws ControlConstructionException
+	public Control create(String controlName, String instanceName, URI config, IImmutableVariable auxConfig) throws ControlConstructionException
 	{
 		Class<? extends Control> ctrlClass = lookup(controlName);
 		
 		if(ctrlClass == null)
 			throw new ControlConstructionException(controlName, new UnsupportedControlException());
 		
-		return create(ctrlClass, instanceName, config);
+		return create(ctrlClass, instanceName, config, auxConfig);
 	}
 }

@@ -24,30 +24,19 @@ import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.NoSuchChildVariableException;
 import io.github.jevaengine.config.ValueSerializationException;
 
-public class Rect3F implements ISerializable
+public class Rect3D implements ISerializable
 {
 	public static final float TOLERANCE = 0.0000001F;
 	
-	public float x;
-	public float y;
-	public float z;
+	public int x;
+	public int y;
+	public int z;
 	
-	public float width;
-	public float height;
-	public float depth;
-
-	public Rect3F(Rect3D r)
-	{
-		x = r.x;
-		y = r.y;
-		z = r.z;
-		
-		width = r.width;
-		height = r.height;
-		depth = r.depth;
-	}
+	public int width;
+	public int height;
+	public int depth;
 	
-	public Rect3F(Vector3F location, float _width, float _height, float _depth)
+	public Rect3D(Vector3D location, int _width, int _height, int _depth)
 	{
 		x = location.x;
 		y = location.y;
@@ -58,7 +47,7 @@ public class Rect3F implements ISerializable
 		depth = _depth;
 	}
 	
-	public Rect3F(float _x, float _y, float _z, float _width, float _height, float _depth)
+	public Rect3D(int _x, int _y, int _z, int _width, int _height, int _depth)
 	{
 		x = _x;
 		y = _y;
@@ -69,19 +58,19 @@ public class Rect3F implements ISerializable
 		depth = _depth;
 	}
 	
-	public Rect3F(float _width, float _height)
+	public Rect3D(int _width, int _height)
 	{
 		this(_width, _height, 0);
 	}
 	
-	public Rect3F(float _width, float _height, float _depth)
+	public Rect3D(int _width, int _height, int _depth)
 	{
 		width = _width;
 		height = _height;
 		depth = _depth;
 	}
 	
-	public Rect3F(Rect3F src)
+	public Rect3D(Rect3D src)
 	{
 		x = src.x;
 		y = src.y;
@@ -92,7 +81,7 @@ public class Rect3F implements ISerializable
 		depth = src.depth;
 	}
 	
-	public Rect3F()
+	public Rect3D()
 	{
 		x = 0;
 		y = 0;
@@ -133,12 +122,12 @@ public class Rect3F implements ISerializable
 		return new Rect2F(x, y, width, height);
 	}
 	
-	public Rect3F add(Vector3F v)
+	public Rect3D add(Vector3D v)
 	{
-		return new Rect3F(x + v.x, y + v.y, z + v.z, width, height, depth);
+		return new Rect3D(x + v.x, y + v.y, z + v.z, width, height, depth);
 	}
 	
-	public boolean contains(Vector3F location)
+	public boolean contains(Vector3D location)
 	{
 		return (location.x >= x &&
 				location.x - x <= width &&
@@ -166,37 +155,37 @@ public class Rect3F implements ISerializable
 		try
 		{
 			if(source.childExists("x"))
-				this.x = source.getChild("x").getValue(Double.class).floatValue();
+				this.x = source.getChild("x").getValue(Integer.class);
 			
 			if(source.childExists("y"))
-				this.y = source.getChild("y").getValue(Double.class).floatValue();
+				this.y = source.getChild("y").getValue(Integer.class);
 			
 			if(source.childExists("z"))
-				this.z = source.getChild("z").getValue(Double.class).floatValue();
+				this.z = source.getChild("z").getValue(Integer.class);
 			
-			this.width = source.getChild("width").getValue(Double.class).floatValue();
-			this.height = source.getChild("height").getValue(Double.class).floatValue();
-			this.depth = source.getChild("depth").getValue(Double.class).floatValue();
+			this.width = source.getChild("width").getValue(Integer.class);
+			this.height = source.getChild("height").getValue(Integer.class);
+			this.depth = source.getChild("depth").getValue(Integer.class);
 		} catch(NoSuchChildVariableException e)
 		{
 			throw new ValueSerializationException(e);
 		}
 	}
 	
-	public static Rect3F getAABB(Rect3F ... rects)
+	public static Rect3D getAABB(Rect3D ... rects)
 	{
 		if(rects.length == 0)
-			return new Rect3F();
+			return new Rect3D();
 		
-		float minX = Float.MAX_VALUE;
-		float minY = Float.MAX_VALUE;
-		float minZ = Float.MAX_VALUE;
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		int minZ = Integer.MAX_VALUE;
 		
-		float maxX = Float.MIN_VALUE;
-		float maxY = Float.MIN_VALUE;
-		float maxZ = Float.MIN_VALUE;
+		int maxX = Integer.MIN_VALUE;
+		int maxY = Integer.MIN_VALUE;
+		int maxZ = Integer.MIN_VALUE;
 		
-		for(Rect3F r : rects)
+		for(Rect3D r : rects)
 		{
 			minX = Math.min(minX, r.x);
 			minY = Math.min(minY, r.y);
@@ -207,6 +196,6 @@ public class Rect3F implements ISerializable
 			maxZ = Math.max(maxZ, r.z + r.depth);
 		}
 		
-		return new Rect3F(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
+		return new Rect3D(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
 	}
 }

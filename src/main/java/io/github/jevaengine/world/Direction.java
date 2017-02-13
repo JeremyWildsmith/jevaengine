@@ -20,6 +20,7 @@ package io.github.jevaengine.world;
 
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
+import java.util.Arrays;
 
 public enum Direction
 {
@@ -33,6 +34,9 @@ public enum Direction
 	XYMinusPlus(new Vector2D(-1, 1), true),
 	Zero(new Vector2D(0, 0), false);
 
+	public static final Direction[] CLOCKWISE =
+	{ XYPlus, YPlus, XYMinusPlus, XMinus, XYMinus, YMinus, XYPlusMinus, XPlus};
+	
 	public static final Direction[] HV_DIRECTIONS =
 	{ XPlus, YPlus, XMinus, YMinus };
 
@@ -104,6 +108,22 @@ public enum Direction
 	public Vector2D getDirectionVector()
 	{
 		return m_movementVector;
+	}
+	
+	public Direction getClockwise()
+	{
+		int i = Arrays.asList(CLOCKWISE).indexOf(this);
+		
+		return (CLOCKWISE[(i + 1) % CLOCKWISE.length]);
+	}
+	
+	public Direction getCounterClockwise()
+	{
+		int i = Arrays.asList(CLOCKWISE).indexOf(this);
+		
+		if(i == 0)
+			i = CLOCKWISE.length;
+		return (CLOCKWISE[i - 1]);
 	}
 
 	public float getAngle()

@@ -24,6 +24,6 @@ public final class NoSuchControlException extends Exception
 
 	public NoSuchControlException(Class<?> componentClass, String componentName)
 	{
-		super("Behaviour missing required component " + componentName + " of class " + componentClass.getName());
+		super("No such control: " + componentName + " of class " + componentClass.getName());
 	}
 }

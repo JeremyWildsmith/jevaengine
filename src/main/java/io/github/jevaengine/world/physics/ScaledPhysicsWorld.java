@@ -301,5 +301,10 @@ public final class ScaledPhysicsWorld extends ImmutableScaledPhysicsWorld implem
 		{
 			m_body.destory();
 		}
+
+		@Override
+		public void setCollidable(boolean isCollidable) {
+			m_body.setCollidable(isCollidable);
+		}
 	}
 }

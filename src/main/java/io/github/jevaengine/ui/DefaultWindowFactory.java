@@ -78,7 +78,7 @@ public final class DefaultWindowFactory implements IWindowFactory
 			for(ControlLayoutDeclaration ctrlDecl : decl.controls)
 			{
 				
-				Control control = m_controlFactory.create(ctrlDecl.type, ctrlDecl.name, ctrlDecl.config == null ? new NullVariable() : ctrlDecl.config);
+				Control control = m_controlFactory.create(ctrlDecl.type, ctrlDecl.name, name, ctrlDecl.config == null ? new NullVariable() : ctrlDecl.config);
 				control.setLocation(ctrlDecl.location);	
 				window.addControl(control);
 				

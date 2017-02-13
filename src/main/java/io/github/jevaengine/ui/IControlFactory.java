@@ -21,6 +21,7 @@ package io.github.jevaengine.ui;
 import com.google.inject.ImplementedBy;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.util.Nullable;
+import java.net.URI;
 
 @ImplementedBy(DefaultControlFactory.class)
 public interface IControlFactory
@@ -31,8 +32,8 @@ public interface IControlFactory
 	@Nullable
 	<T extends Control> String lookup(Class<T> controlClass);
 	
-	<T extends Control> T create(Class<T> controlClass, @Nullable String instanceName, IImmutableVariable config) throws ControlConstructionException;
-	Control create(String controlName, @Nullable String instanceName, IImmutableVariable config) throws ControlConstructionException;
+	<T extends Control> T create(Class<T> controlClass, @Nullable String instanceName, URI config, IImmutableVariable auxConfig) throws ControlConstructionException;
+	Control create(String controlName, @Nullable String instanceName, URI config, IImmutableVariable auxConfig) throws ControlConstructionException;
 
 	public static final class ControlConstructionException extends Exception
 	{

@@ -143,4 +143,7 @@ public final class NullPhysicsBody implements IPhysicsBody
 	{
 		return new Circle3F();
 	}
+
+	@Override
+	public void setCollidable(boolean isCollidable) { }
 }

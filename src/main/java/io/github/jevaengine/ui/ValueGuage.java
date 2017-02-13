@@ -32,24 +32,23 @@ public class ValueGuage extends Control implements IRenderable
 {
 	public static final String COMPONENT_NAME = "valueGuage";
 	
-	private final IImmutableGraphic m_fill;
-	
 	private float m_value;
 
-	private IImmutableGraphic m_frame;
+	private IImmutableGraphic m_fill = new NullGraphic();
+	private IImmutableGraphic m_frame = new NullGraphic();
 	
-	public ValueGuage(IImmutableGraphic fill)
+	private final Rect2D m_bounds;
+	
+	public ValueGuage(Rect2D bounds)
 	{
 		super(COMPONENT_NAME);
-		
-		m_fill = fill;
-		m_frame = new NullGraphic(fill.getBounds().width, fill.getBounds().height);
+		m_bounds = new Rect2D(bounds);
 	}
 	
-	public ValueGuage(String instanceName, IImmutableGraphic fill)
+	public ValueGuage(String instanceName, Rect2D bounds)
 	{
 		super(COMPONENT_NAME, instanceName);
-		m_fill = fill;
+		m_bounds = bounds;
 	}
 
 	public void setValue(float value)
@@ -66,12 +65,17 @@ public class ValueGuage extends Control implements IRenderable
 	public void render(Graphics2D g, int x, int y, float scale)
 	{
 		m_frame.render(g, x, y, scale);
-		Shape oldClip = g.getClip();
+		Rect2D frameBounds = m_frame.getBounds();
+		Rect2D fillBounds = m_fill.getBounds();
 		
+		int offsetX = (frameBounds.width - fillBounds.width) / 2;
+		int offsetY = (frameBounds.height - fillBounds.height) / 2;
+		
+		Shape oldClip = g.getClip();
 		Rect2D fillRect = m_fill.getBounds();
 		fillRect.width *= m_value;
-		g.setClip(new Rectangle(x, y, fillRect.width, fillRect.height));
-		m_fill.render(g, x, y, scale);
+		g.setClip(new Rectangle(x + offsetX, y + offsetY, fillRect.width, fillRect.height));
+		m_fill.render(g, x + offsetX, y + offsetY, scale);
 		g.setClip(oldClip);
 	}
 
@@ -93,6 +97,7 @@ public class ValueGuage extends Control implements IRenderable
 	@Override
 	protected void onStyleChanged()
 	{
+		m_fill = getComponentStyle().getStateStyle(ComponentState.Activated).createFrame(m_bounds.height, m_bounds.height);
 		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(m_fill.getBounds().width, m_fill.getBounds().height);
 	}
 }

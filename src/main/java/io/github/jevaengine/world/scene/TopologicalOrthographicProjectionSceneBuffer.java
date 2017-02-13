@@ -32,7 +32,6 @@ import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelCo
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -185,14 +184,14 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		return translateWorldToScreen(location, 1.0F);
 	}
 
-	private List<Queue<ISceneComponentEffect>> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, Vector2D renderLocation, Vertex subject)
+	private List<List<ISceneComponentEffect>> createComponentRenderEffects(Graphics2D g, int offsetX, int offsetY, float scale, Vector2D renderLocation, Vertex subject)
 	{
 		List<ISceneBufferEntry> beneath = new ArrayList<>();
 		
 		for(Vertex v : subject.getPersistentIns())
 			beneath.add(v.m_entry);
 	
-		List<Queue<ISceneComponentEffect>> effects = new ArrayList<>();
+		List<List<ISceneComponentEffect>> effects = new ArrayList<>();
 		for(ISceneBufferEffect e : m_effects)
 			effects.add(new LinkedList<>(Arrays.asList(e.getComponentEffect(g, offsetX, offsetY, scale, new Vector2D(renderLocation), new Matrix3X3(m_worldToScreenMatrix), subject.m_entry, beneath))));
 
@@ -210,35 +209,21 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 		{
 			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
 			
-			List<Queue<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX + m_translation.x, offsetY + m_translation.y, scale, renderLocation.difference(m_translation), v);
+			List<List<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX + m_translation.x, offsetY + m_translation.y, scale, renderLocation.difference(m_translation), v);
 			
-			do
+			for(List<ISceneComponentEffect> passEffects : effects)
 			{
-				List<ISceneComponentEffect> passEffects = new ArrayList<>();
-				
-				Iterator<Queue<ISceneComponentEffect>> it = effects.iterator();
-				
-				while(it.hasNext())
-				{
-					Queue<ISceneComponentEffect> c = it.next();
-					ISceneComponentEffect effect = c.poll();
-					
-					if(c.isEmpty())
-						it.remove();
-					
-					if(effect != null)
-						passEffects.add(effect);
-				}
-				
 				for(ISceneComponentEffect e : passEffects)
 					e.prerender();
-				
-				v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
+			}
+			
+			v.m_entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
 
+			for(List<ISceneComponentEffect> passEffects : effects)
+			{
 				for(ISceneComponentEffect e : passEffects)
 					e.postrender();
-				
-			}while(!effects.isEmpty());
+			}
 		}
 		
 		for(ISceneBufferEffect e : m_effects)

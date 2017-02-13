@@ -176,4 +176,7 @@ public final class NonparticipantPhysicsBody implements IPhysicsBody
 	{
 		return new Circle3F(m_location.x, m_location.y, m_location.z, Math.max(Math.max(m_aabb.width, m_aabb.height), m_aabb.depth));
 	}
+
+	@Override
+	public void setCollidable(boolean isCollidable) { }
 }

@@ -34,4 +34,6 @@ public interface IPhysicsBody extends IImmutablePhysicsBody
 	void setLinearVelocity(Vector3F velocity);
 	
 	void destory();
+	
+	void setCollidable(boolean isCollidable);
 }
