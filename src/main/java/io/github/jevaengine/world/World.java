@@ -19,7 +19,6 @@
 package io.github.jevaengine.world;
 
 import io.github.jevaengine.FutureResult;
-import io.github.jevaengine.IDisposable;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.NullVariable;
@@ -61,7 +60,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class World implements IDisposable
+public final class World
 {
 	private final Logger m_logger = LoggerFactory.getLogger(World.class);
 	private final Observers m_observers = new Observers();
@@ -98,13 +97,6 @@ public final class World implements IDisposable
 			m_script = new WorldBridgeNotifier(scriptFactory);
 		else
 			m_script = new WorldBridgeNotifier();
-	}
-	
-	@Override
-	public void dispose()
-	{
-		m_weather.dispose();
-		m_sceneGraph.dispose();
 	}
 
 	public IWeather getWeather()

@@ -80,6 +80,9 @@ public final class ControlledCamera implements ICamera
 
 	public Vector3F boundLocation(Vector3F v)
 	{
+		if(m_world == null)
+			return new Vector3F();
+		
 		return new Vector3F(Math.min(m_world.getBounds().width - 1, Math.max(0, v.x)),
 							Math.min(m_world.getBounds().height - 1, Math.max(0, v.y)),
 							v.z);
