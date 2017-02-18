@@ -169,4 +169,8 @@ public final class WindowManager
 		for (Window window : m_windows)
 			window.update(deltaTime);
 	}
+	
+	public Vector2D getResolution() {
+		return new Vector2D(m_resolution);
+	}
 }
