@@ -38,6 +38,8 @@ public class FrameInputSource implements IInputSource, MouseMotionListener, Mous
 
 	private boolean m_isDragging = false;
 
+	private int m_lastKeyCode = 0;
+	
 	public static FrameInputSource create(final Component target)
 	{
 		final FrameInputSource manager = new FrameInputSource();
@@ -86,7 +88,7 @@ public class FrameInputSource implements IInputSource, MouseMotionListener, Mous
 
 	public void keyTyped(KeyEvent e)
 	{
-		m_events.add(new InputKeyEvent(InputKeyEvent.KeyEventType.KeyTyped, e.getKeyCode(), e.getKeyChar()));
+		m_events.add(new InputKeyEvent(InputKeyEvent.KeyEventType.KeyTyped, m_lastKeyCode, e.getKeyChar()));
 	}
 
 	public void mouseDragged(MouseEvent e)
@@ -131,6 +133,7 @@ public class FrameInputSource implements IInputSource, MouseMotionListener, Mous
 
 	public void keyPressed(KeyEvent e)
 	{
+		m_lastKeyCode = e.getKeyCode();
 		m_events.add(new InputKeyEvent(InputKeyEvent.KeyEventType.KeyDown, e.getKeyCode(), e.getKeyChar()));
 	}
 
