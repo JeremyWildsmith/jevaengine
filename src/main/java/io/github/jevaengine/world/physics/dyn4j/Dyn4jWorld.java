@@ -51,11 +51,11 @@ public final class Dyn4jWorld implements IPhysicsWorld
 	private final float m_maxSurfaceFrictionForceNewtonMeters;
 	
 	private final PhysicsContactListener m_contactListener = new PhysicsContactListener();
-	
+
 	public Dyn4jWorld(float maxSurfaceFrictionForceNewtonMeters)
 	{
 		m_maxSurfaceFrictionForceNewtonMeters = maxSurfaceFrictionForceNewtonMeters;
-		
+
 		m_physicsWorld.setGravity(new Vector2());
 		m_physicsWorld.addListener(m_contactListener);
 	}
@@ -80,7 +80,6 @@ public final class Dyn4jWorld implements IPhysicsWorld
 			points[2] = new Vector2(shape.aabb.x + shape.aabb.width, shape.aabb.y + shape.aabb.height);
 			points[3] = new Vector2(shape.aabb.x, shape.aabb.y + shape.aabb.height);
 			return new Polygon(points);
-		//	return new Circle(Math.min(aabb.width, aabb.height) / 2.0F);
 		}
 	}
 	
@@ -98,7 +97,7 @@ public final class Dyn4jWorld implements IPhysicsWorld
 	@Override
 	public void update(int deltaTime)
 	{
-		m_physicsWorld.update(deltaTime);
+		m_physicsWorld.update(deltaTime / 1000.0);
 		m_contactListener.relay();
 	}
 	
@@ -118,13 +117,17 @@ public final class Dyn4jWorld implements IPhysicsWorld
 		
 		Body body = new Body();
 		body.setLinearDamping(m_maxSurfaceFrictionForceNewtonMeters);
-		
+
 		if(bodyDescription.type == PhysicsBodyDescription.PhysicsBodyType.Static || bodyDescription.isSensor)
 			body.setMass(Mass.Type.INFINITE);
 		else
 			body.setMass(shape.createMass(bodyDescription.density));
-			
+
+		if(bodyDescription.isFixedRotation)
+			body.setMassType(Mass.Type.FIXED_ANGULAR_VELOCITY);
+
 		BodyFixture fixture = new BodyFixture(shape);
+
 		fixture.setSensor(bodyDescription.isSensor);
 		fixture.setDensity(bodyDescription.density);
 		fixture.setUserData(owner);
