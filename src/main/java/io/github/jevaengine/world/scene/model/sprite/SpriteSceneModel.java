@@ -259,9 +259,10 @@ public final class SpriteSceneModel implements IAnimationSceneModel
 		private void mergeAABB(Direction direction, Rect3F aabb)
 		{
 			if(!m_aabbs.containsKey(direction))
-				m_aabbs.put(direction, new Rect3F());
+				m_aabbs.put(direction, new Rect3F(aabb));
 			
 			Rect3F destAabb = m_aabbs.get(direction);
+
 			float maxX = Math.max(destAabb.x + destAabb.width, aabb.x + aabb.width);
 			float maxY = Math.max(destAabb.y + destAabb.height, aabb.y + aabb.height);
 			float maxZ = Math.max(destAabb.z + destAabb.depth, aabb.z + aabb.depth);
