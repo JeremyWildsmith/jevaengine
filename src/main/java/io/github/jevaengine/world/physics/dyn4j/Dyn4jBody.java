@@ -55,7 +55,9 @@ public final class Dyn4jBody implements IPhysicsBody
 	private final Set<Class<?>> m_collisionExceptions = new HashSet<>();
 	
 	private boolean m_isCollidable = true;
-	
+
+	private Direction m_direction = Direction.XYPlus;
+
 	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?> ... collisionExceptions)
 	{
 		m_body = body;
@@ -176,7 +178,7 @@ public final class Dyn4jBody implements IPhysicsBody
 	@Override
 	public Direction getDirection()
 	{
-		return Direction.fromAngle((float)m_body.getTransform().getRotation());
+		return m_direction;
 	}
 
 	@Override
@@ -200,9 +202,7 @@ public final class Dyn4jBody implements IPhysicsBody
 	@Override
 	public void setDirection(Direction direction)
 	{
-		Transform t = m_body.getTransform();
-		t.setRotation(direction.getAngle());
-		m_body.setTransform(t);	
+		m_direction = direction;
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
 	}
 
