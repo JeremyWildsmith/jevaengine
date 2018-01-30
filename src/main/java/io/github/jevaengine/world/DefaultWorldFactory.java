@@ -333,8 +333,8 @@ public class DefaultWorldFactory implements IWorldFactory
 
 			@Nullable
 			public boolean isTraversable;
-					
-			public Vector3F[] locations;
+
+			public Vector3F[] locations = new Vector3F[0];
 			
 			public SceneArtifactImportDeclaration() { }
 			
@@ -355,7 +355,9 @@ public class DefaultWorldFactory implements IWorldFactory
 				{
 					this.model = source.getChild("model").getValue(String.class);
 					this.isStatic = source.getChild("isStatic").getValue(Boolean.class);
-					this.locations = source.getChild("locations").getValues(Vector3F[].class);
+
+					if(source.childExists("locations"))
+						this.locations = source.getChild("locations").getValues(Vector3F[].class);
 					
 					Integer dirBuffer = source.getChild("direction").getValue(Integer.class);
 					
