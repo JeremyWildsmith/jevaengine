@@ -30,7 +30,8 @@ import org.slf4j.LoggerFactory;
 
 public final class GameDriver
 {
-	private static final int GAMELOOP_PERIOD = 1000 / 30;
+	private static final int GAMELOOP_PERIOD = 1000 / 20;
+	private static final int MAX_FALL_BEHIND = 2 * GAMELOOP_PERIOD;
 	
 	private final ScheduledExecutorService m_executor = new ScheduledThreadPoolExecutor(1);
 	
@@ -80,7 +81,7 @@ public final class GameDriver
 				long delta = System.currentTimeMillis() - m_lastTime;
 				m_lastTime = System.currentTimeMillis();
 
-				m_timeSinceLastUpdate += delta;
+				m_timeSinceLastUpdate = Math.min(m_timeSinceLastUpdate + delta, MAX_FALL_BEHIND);
 				
 				for(; m_timeSinceLastUpdate > GAMELOOP_PERIOD; m_timeSinceLastUpdate -= GAMELOOP_PERIOD)
 					m_game.update(GAMELOOP_PERIOD);
