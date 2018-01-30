@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,12 +18,14 @@
  */
 package io.github.jevaengine.config;
 
-public interface IImmutableVariable extends ISerializable
-{
+public interface IImmutableVariable extends ISerializable {
 	<T> T getValue(Class<T> cls) throws ValueSerializationException;
+
 	<T> T[] getValues(Class<T[]> cls) throws ValueSerializationException;
-	
+
 	boolean childExists(String name);
+
 	IImmutableVariable getChild(String name) throws NoSuchChildVariableException;
+
 	String[] getChildren();
 }

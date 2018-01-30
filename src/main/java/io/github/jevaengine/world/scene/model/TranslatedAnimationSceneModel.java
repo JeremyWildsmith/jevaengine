@@ -5,58 +5,45 @@ import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
-import java.awt.Graphics2D;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public final class TranslatedAnimationSceneModel implements IAnimationSceneModel
-{
+public final class TranslatedAnimationSceneModel implements IAnimationSceneModel {
 	private final IAnimationSceneModel m_model;
 	private final Vector3F m_translation;
-	
-	public TranslatedAnimationSceneModel(IAnimationSceneModel model, Vector3F translation)
-	{
+
+	public TranslatedAnimationSceneModel(IAnimationSceneModel model, Vector3F translation) {
 		m_model = model;
 		m_translation = new Vector3F(translation);
 	}
-	
+
 	@Override
-	public IAnimationSceneModel clone()
-	{
+	public IAnimationSceneModel clone() {
 		return new TranslatedAnimationSceneModel(m_model, m_translation);
 	}
 
 	@Override
-	public IAnimationSceneModelAnimation getAnimation(String name)
-	{
+	public IAnimationSceneModelAnimation getAnimation(String name) {
 		return m_model.getAnimation(name);
 	}
 
 	@Override
-	public boolean hasAnimation(String name)
-	{
+	public boolean hasAnimation(String name) {
 		return m_model.hasAnimation(name);
 	}
 
 	@Override
-	public void update(int deltaTime)
-	{
+	public void update(int deltaTime) {
 		m_model.update(deltaTime);
 	}
 
 	@Override
-	public void setDirection(Direction direction)
-	{
-		m_model.setDirection(direction);
-	}
-
-	@Override
-	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection)
-	{
+	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection) {
 		List<ISceneModelComponent> components = new ArrayList<>();
-		for(final ISceneModelComponent c : m_model.getComponents(projection))
-		{
+		for (final ISceneModelComponent c : m_model.getComponents(projection)) {
 			components.add(new ISceneModelComponent() {
 
 				@Override
@@ -85,32 +72,33 @@ public final class TranslatedAnimationSceneModel implements IAnimationSceneModel
 				}
 			});
 		}
-		
+
 		return components;
 	}
 
 	@Override
-	public Rect3F getAABB()
-	{
+	public Rect3F getAABB() {
 		return m_model.getAABB().add(m_translation);
 	}
 
 	@Override
-	public Direction getDirection()
-	{
+	public Direction getDirection() {
 		return m_model.getDirection();
 	}
 
 	@Override
-	public PhysicsBodyShape getBodyShape()
-	{
+	public void setDirection(Direction direction) {
+		m_model.setDirection(direction);
+	}
+
+	@Override
+	public PhysicsBodyShape getBodyShape() {
 		return m_model.getBodyShape();
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		m_model.dispose();
 	}
-	
+
 }

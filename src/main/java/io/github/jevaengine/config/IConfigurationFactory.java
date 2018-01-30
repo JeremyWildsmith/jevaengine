@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,22 +19,21 @@
 package io.github.jevaengine.config;
 
 import io.github.jevaengine.util.ThreadSafe;
+
 import java.net.URI;
 
-public interface IConfigurationFactory
-{
+public interface IConfigurationFactory {
 	@ThreadSafe
 	IVariable createMutable(URI name) throws ConfigurationConstructionException;
 
 	@ThreadSafe
 	IImmutableVariable create(URI name) throws ConfigurationConstructionException;
-	
-	public static final class ConfigurationConstructionException extends Exception
-	{
+
+	public static final class ConfigurationConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public ConfigurationConstructionException(URI assetName,
-				Exception cause) {
+		                                          Exception cause) {
 			super("Error constructing configuration " + assetName.toString(), cause);
 		}
 	}

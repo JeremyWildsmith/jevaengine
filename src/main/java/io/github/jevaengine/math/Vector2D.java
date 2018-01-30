@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,66 +18,51 @@
  */
 package io.github.jevaengine.math;
 
-import io.github.jevaengine.config.IImmutableVariable;
-import io.github.jevaengine.config.ISerializable;
-import io.github.jevaengine.config.IVariable;
-import io.github.jevaengine.config.NoSuchChildVariableException;
-import io.github.jevaengine.config.ValueSerializationException;
+import io.github.jevaengine.config.*;
 
-public final class Vector2D implements ISerializable
-{
+public final class Vector2D implements ISerializable {
 	public int x;
 	public int y;
 
-	public Vector2D(int _x, int _y)
-	{
+	public Vector2D(int _x, int _y) {
 		x = _x;
 		y = _y;
 	}
-	
-	public Vector2D(Vector2D location)
-	{
+
+	public Vector2D(Vector2D location) {
 		this(location.x, location.y);
 	}
-	
-	public Vector2D()
-	{
-		this(0,0);
+
+	public Vector2D() {
+		this(0, 0);
 	}
 
-	public Vector2D add(Vector2D a)
-	{
+	public Vector2D add(Vector2D a) {
 		return new Vector2D(x + a.x, y + a.y);
 	}
-	
-	public Vector2D multiply(int scale)
-	{
+
+	public Vector2D multiply(int scale) {
 		return new Vector2D(x * scale, y * scale);
 	}
 
-	public float getLengthSquared()
-	{
+	public float getLengthSquared() {
 		return x * x + y * y;
 	}
 
-	public float getAngle()
-	{
-		return (float)Math.atan2(y, x);
+	public float getAngle() {
+		return (float) Math.atan2(y, x);
 	}
-	
-	public float getLength()
-	{
+
+	public float getLength() {
 		return (float) Math.sqrt(getLengthSquared());
 	}
 
-	public boolean isZero()
-	{
+	public boolean isZero() {
 		return (x == 0 && y == 0);
 	}
 
 	@Override
-	public boolean equals(Object o)
-	{
+	public boolean equals(Object o) {
 		if (!(o instanceof Vector2D))
 			return false;
 		else if (this == o)
@@ -89,35 +74,29 @@ public final class Vector2D implements ISerializable
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		int hash = 5;
 		hash = 83 * hash + this.x;
 		hash = 83 * hash + this.y;
 		return hash;
 	}
 
-	public Vector2D difference(Vector2D v)
-	{
+	public Vector2D difference(Vector2D v) {
 		return new Vector2D(x - v.x, y - v.y);
 	}
-	
+
 	@Override
-	public void serialize(IVariable target) throws ValueSerializationException
-	{
+	public void serialize(IVariable target) throws ValueSerializationException {
 		target.addChild("x").setValue(x);
 		target.addChild("y").setValue(y);
 	}
 
 	@Override
-	public void deserialize(IImmutableVariable source) throws ValueSerializationException
-	{
-		try
-		{
+	public void deserialize(IImmutableVariable source) throws ValueSerializationException {
+		try {
 			x = source.getChild("x").getValue(Integer.class);
 			y = source.getChild("y").getValue(Integer.class);
-		} catch(NoSuchChildVariableException e)
-		{
+		} catch (NoSuchChildVariableException e) {
 			throw new ValueSerializationException(e);
 		}
 	}

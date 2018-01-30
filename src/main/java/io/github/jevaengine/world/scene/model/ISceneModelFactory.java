@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,16 +20,13 @@ package io.github.jevaengine.world.scene.model;
 
 import java.net.URI;
 
-public interface ISceneModelFactory
-{
+public interface ISceneModelFactory {
 	ISceneModel create(URI name) throws SceneModelConstructionException;
 
-	public static final class SceneModelConstructionException extends Exception
-	{
+	public static final class SceneModelConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
-		public SceneModelConstructionException(URI assetName, Exception cause)
-		{
+		public SceneModelConstructionException(URI assetName, Exception cause) {
 			super("Error constructing scene model " + assetName.toString(), cause);
 		}
 	}

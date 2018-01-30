@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,12 +18,13 @@
  */
 package io.github.jevaengine.util;
 
-public final class NullObservers implements IObserverRegistry
-{
+public final class NullObservers implements IObserverRegistry {
 
 	@Override
-	public void add(Object o) { }
+	public void add(Object o) {
+	}
 
 	@Override
-	public void remove(Object o) { }
+	public void remove(Object o) {
+	}
 }

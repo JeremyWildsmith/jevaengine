@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,12 +18,10 @@
  */
 package io.github.jevaengine.script;
 
-public class UnrecognizedFunctionException extends Exception
-{
+public class UnrecognizedFunctionException extends Exception {
 	private static final long serialVersionUID = 1L;
-	
-	public UnrecognizedFunctionException()
-	{
-		
+
+	public UnrecognizedFunctionException() {
+
 	}
 }

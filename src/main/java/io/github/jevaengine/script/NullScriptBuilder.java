@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,29 +21,24 @@ package io.github.jevaengine.script;
 import java.net.URI;
 
 
-public final class NullScriptBuilder implements IScriptBuilder
-{
+public final class NullScriptBuilder implements IScriptBuilder {
 	@Override
-	public IScript create(Object context) throws ScriptConstructionException
-	{
+	public IScript create(Object context) throws ScriptConstructionException {
 		return new NullScript();
 	}
 
 	@Override
-	public IScript create() throws ScriptConstructionException
-	{
+	public IScript create() throws ScriptConstructionException {
 		return new NullScript();
 	}
-	
+
 	@Override
-	public IFunctionFactory getFunctionFactory()
-	{
+	public IFunctionFactory getFunctionFactory() {
 		return new NullFunctionFactory();
 	}
-	
+
 	@Override
-	public URI getUri()
-	{
+	public URI getUri() {
 		return URI.create("");
 	}
 }

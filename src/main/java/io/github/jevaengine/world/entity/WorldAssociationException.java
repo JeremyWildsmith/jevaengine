@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,12 +18,10 @@
  */
 package io.github.jevaengine.world.entity;
 
-public class WorldAssociationException extends RuntimeException
-{
+public class WorldAssociationException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
-	public WorldAssociationException(String reason)
-	{
+	public WorldAssociationException(String reason) {
 		super(reason);
 	}
 }

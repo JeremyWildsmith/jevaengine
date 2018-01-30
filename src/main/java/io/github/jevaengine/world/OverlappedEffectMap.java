@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,64 +20,57 @@ package io.github.jevaengine.world;
 
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.search.ISearchFilter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class OverlappedEffectMap implements IImmutableEffectMap
-{
+public final class OverlappedEffectMap implements IImmutableEffectMap {
 	private final List<IImmutableEffectMap> m_maps = new ArrayList<>();
-	
-	public OverlappedEffectMap(IImmutableEffectMap ... maps)
-	{
+
+	public OverlappedEffectMap(IImmutableEffectMap... maps) {
 		m_maps.addAll(Arrays.asList(maps));
 	}
-	
-	public void add(IImmutableEffectMap e)
-	{
+
+	public void add(IImmutableEffectMap e) {
 		m_maps.add(e);
 	}
-	
-	public void remove(IImmutableEffectMap e)
-	{
+
+	public void remove(IImmutableEffectMap e) {
 		m_maps.remove(e);
 	}
 
 	@Override
-	public LogicEffects getTileEffects(Vector2F location)
-	{
+	public LogicEffects getTileEffects(Vector2F location) {
 		List<LogicEffects> effects = new ArrayList<>();
-		
-		for(IImmutableEffectMap m : m_maps)
+
+		for (IImmutableEffectMap m : m_maps)
 			effects.add(new LogicEffects(m.getTileEffects(location)));
-		
+
 		return LogicEffects.merge(effects.toArray(new LogicEffects[effects.size()]));
 	}
 
 	@Override
-	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter)
-	{
-		List<LogicEffects[]>  mapEffects = new ArrayList<>();
+	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter) {
+		List<LogicEffects[]> mapEffects = new ArrayList<>();
 		int elementsToCopy = 0;
-		
-		for(IImmutableEffectMap m : m_maps)
-		{
+
+		for (IImmutableEffectMap m : m_maps) {
 			LogicEffects[] effects = m.getTileEffects(filter);
-			
+
 			elementsToCopy += effects.length;
-			
-			if(effects.length > 0)
+
+			if (effects.length > 0)
 				mapEffects.add(effects);
 		}
-		
+
 		LogicEffects[] buffer = new LogicEffects[elementsToCopy];
-	
-		for(LogicEffects[] e : mapEffects)
-		{
+
+		for (LogicEffects[] e : mapEffects) {
 			System.arraycopy(e, 0, buffer, buffer.length - elementsToCopy, e.length);
 			elementsToCopy -= e.length;
 		}
-		
+
 		return buffer;
 	}
 }

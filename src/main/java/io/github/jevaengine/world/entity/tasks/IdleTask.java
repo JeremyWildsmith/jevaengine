@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,45 +20,38 @@ package io.github.jevaengine.world.entity.tasks;
 
 import io.github.jevaengine.world.entity.IEntity;
 
-public final class IdleTask implements ITask
-{
+public final class IdleTask implements ITask {
 	private int m_idleLength;
 	private int m_idleTime;
 
-	public IdleTask(int idleTime)
-	{
+	public IdleTask(int idleTime) {
 		m_idleLength = idleTime;
 	}
 
 	@Override
-	public void begin(IEntity entity)
-	{
+	public void begin(IEntity entity) {
 		m_idleTime = m_idleLength;
 	}
 
 	@Override
-	public void end()
-	{
+	public void end() {
 
 	}
 
 	@Override
-	public boolean doCycle(int deltaTime)
-	{
+	public boolean doCycle(int deltaTime) {
 		m_idleTime -= deltaTime;
 
 		return (m_idleTime <= 0);
 	}
 
 	@Override
-	public void cancel()
-	{
+	public void cancel() {
 		m_idleTime = 0;
 	}
 
 	@Override
-	public final boolean isParallel()
-	{
+	public final boolean isParallel() {
 		return false;
 	}
 }

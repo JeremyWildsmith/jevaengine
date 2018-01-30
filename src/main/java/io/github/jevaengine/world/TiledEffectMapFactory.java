@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.world;
 
-public final class TiledEffectMapFactory implements IEffectMapFactory
-{
+public final class TiledEffectMapFactory implements IEffectMapFactory {
 	@Override
-	public IEffectMap create()
-	{
+	public IEffectMap create() {
 		return new TiledEffectMap();
 	}
 }

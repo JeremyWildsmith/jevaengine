@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,30 +21,25 @@ package io.github.jevaengine.util;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class MapBuilder<X, Y>
-{
+public final class MapBuilder<X, Y> {
 	private Map<X, Y> m_map;
-	
-	public MapBuilder()
-	{
+
+	public MapBuilder() {
 		m_map = new HashMap<X, Y>();
 	}
-	
-	public MapBuilder(Map<X, Y> map)
-	{
+
+	public MapBuilder(Map<X, Y> map) {
 		m_map = map;
 	}
-	
-	public MapBuilder<X, Y> a(X x, Y y)
-	{
+
+	public MapBuilder<X, Y> a(X x, Y y) {
 		m_map = new HashMap<>(m_map);
 		m_map.put(x, y);
-		
+
 		return new MapBuilder<>(m_map);
 	}
-	
-	public Map<X, Y> get()
-	{
+
+	public Map<X, Y> get() {
 		return m_map;
 	}
 }

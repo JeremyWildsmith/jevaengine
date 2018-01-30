@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,15 +18,22 @@
  */
 package io.github.jevaengine.joystick;
 
-public interface IInputSourceProcessor
-{
+public interface IInputSourceProcessor {
 	void mouseClicked(InputMouseEvent e);
+
 	void mouseMoved(InputMouseEvent e);
+
 	void mouseButtonStateChanged(InputMouseEvent e);
+
 	void mouseWheelMoved(InputMouseEvent e);
+
 	void mouseLeft(InputMouseEvent e);
+
 	void mouseEntered(InputMouseEvent e);
+
 	void keyTyped(InputKeyEvent e);
+
 	void keyDown(InputKeyEvent e);
+
 	void keyUp(InputKeyEvent e);
 }

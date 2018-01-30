@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,25 +26,33 @@ import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.entity.IEntity;
 
 
-public interface IImmutablePhysicsBody
-{
+public interface IImmutablePhysicsBody {
 	IImmutablePhysicsWorld getWorld();
-	
+
 	boolean hasOwner();
+
 	IEntity getOwner();
-	
+
 	boolean isStatic();
+
 	boolean isCollidable();
+
 	boolean collidesWith(IImmutablePhysicsBody subject);
-	
+
 	Circle3F getBoundingCircle();
+
 	Rect3F getAABB();
+
 	float getMass();
+
 	Vector3F getLocation();
+
 	Direction getDirection();
-	Vector3F getLinearVelocity();	
+
+	Vector3F getLinearVelocity();
+
 	float getAngularVelocity();
-	
+
 	RayCastIntersection castRay(Vector3F direction, float maxCast);
 
 	IObserverRegistry getObservers();

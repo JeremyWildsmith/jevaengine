@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,37 +21,32 @@ package io.github.jevaengine.world.search;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2F;
 
-public final class TranslatedSearchFilter <T> implements ISearchFilter<T>
-{
+public final class TranslatedSearchFilter<T> implements ISearchFilter<T> {
 	private final ISearchFilter<T> m_searchFilter;
 	private final Vector2F m_offset;
-	
-	public TranslatedSearchFilter(ISearchFilter<T> searchFilter, Vector2F offset)
-	{
+
+	public TranslatedSearchFilter(ISearchFilter<T> searchFilter, Vector2F offset) {
 		m_searchFilter = searchFilter;
 		m_offset = new Vector2F(offset);
 	}
-	
+
 	@Override
-	public Rect2D getSearchBounds()
-	{
+	public Rect2D getSearchBounds() {
 		Rect2D bounds = m_searchFilter.getSearchBounds();
-		
+
 		bounds.x -= m_offset.x;
 		bounds.y -= m_offset.y;
-		
+
 		return bounds;
 	}
 
 	@Override
-	public boolean shouldInclude(Vector2F location)
-	{
+	public boolean shouldInclude(Vector2F location) {
 		return m_searchFilter.shouldInclude(location.difference(m_offset));
 	}
 
 	@Override
-	public boolean filter(T item)
-	{
+	public boolean filter(T item) {
 		return m_searchFilter.filter(item);
 	}
 }

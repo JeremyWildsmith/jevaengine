@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,20 +20,19 @@ package io.github.jevaengine.script;
 
 import com.google.inject.ImplementedBy;
 import io.github.jevaengine.script.rhino.RhinoScriptBuilderFactory;
+
 import java.net.URI;
 
 @ImplementedBy(RhinoScriptBuilderFactory.class)
-public interface IScriptBuilderFactory
-{
+public interface IScriptBuilderFactory {
 	IScriptBuilder create(URI name) throws ScriptBuilderConstructionException;
+
 	IScriptBuilder create() throws ScriptBuilderConstructionException;
 
-	public static final class ScriptBuilderConstructionException extends Exception
-	{
+	public static final class ScriptBuilderConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
-		public ScriptBuilderConstructionException(Exception cause)
-		{
+		public ScriptBuilderConstructionException(Exception cause) {
 			super(cause);
 		}
 	}

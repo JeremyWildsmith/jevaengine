@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,18 +19,17 @@
 package io.github.jevaengine.graphics;
 
 import io.github.jevaengine.util.ThreadSafe;
+
 import java.net.URI;
 
-public interface IGraphicFactory
-{
+public interface IGraphicFactory {
 	@ThreadSafe
 	IGraphic create(int width, int height);
 
 	@ThreadSafe
 	IImmutableGraphic create(URI name) throws GraphicConstructionException;
-	
-	public static final class GraphicConstructionException extends Exception
-	{
+
+	public static final class GraphicConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public GraphicConstructionException(URI assetName, Exception cause) {

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
  */
 package io.github.jevaengine.script;
 
-public interface IFunctionFactory
-{
+public interface IFunctionFactory {
 	IFunction wrap(Object function) throws UnrecognizedFunctionException;
+
 	boolean recognizes(Object function);
 }

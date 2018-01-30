@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,44 +22,37 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.Nullable;
 
-public final class Frame
-{
+public final class Frame {
 	private final Rect2D m_srcRect;
 	private final int m_delay;
 	private final Vector2D m_origin;
 	private final String m_event;
-	
-	public Frame(Rect2D srcRect, int delay, Vector2D origin, @Nullable String event)
-	{
+
+	public Frame(Rect2D srcRect, int delay, Vector2D origin, @Nullable String event) {
 		m_delay = delay;
 		m_srcRect = new Rect2D(srcRect);
 		m_origin = new Vector2D(origin);
 		m_event = event;
 	}
 
-	public Frame(Rect2D srcRect, int delay, Vector2D origin)
-	{
+	public Frame(Rect2D srcRect, int delay, Vector2D origin) {
 		this(srcRect, delay, origin, null);
 	}
-	
-	public Rect2D getSourceRect()
-	{
+
+	public Rect2D getSourceRect() {
 		return new Rect2D(m_srcRect);
 	}
 
-	public long getDelay()
-	{
+	public long getDelay() {
 		return m_delay;
 	}
 
-	public Vector2D getOrigin()
-	{
+	public Vector2D getOrigin() {
 		return new Vector2D(m_origin);
 	}
-	
+
 	@Nullable
-	public String getEvent()
-	{
+	public String getEvent() {
 		return m_event;
 	}
 }

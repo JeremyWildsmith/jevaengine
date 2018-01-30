@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,16 +19,13 @@
 package io.github.jevaengine.config;
 
 /**
- *
  * @author Jeremy
  */
-public final class ValueSerializationException extends Exception
-{
+public final class ValueSerializationException extends Exception {
 	private static final long serialVersionUID = 1L;
-	
-	public ValueSerializationException(Exception cause)
-	{
+
+	public ValueSerializationException(Exception cause) {
 		super(cause);
 	}
-	
+
 }

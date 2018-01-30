@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -25,29 +25,30 @@ import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.NullSceneBuffer;
 
-public final class NullCamera implements ICamera
-{
+public final class NullCamera implements ICamera {
 	@Override
-	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale)
-	{
+	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale) {
 		return new NullSceneBuffer();
 	}
-	
-	@Override
-	public void addEffect(ISceneBufferEffect e) { }
-	
-	@Override
-	public void removeEffect(ISceneBufferEffect e) { }
 
 	@Override
-	public void dettach() { }
+	public void addEffect(ISceneBufferEffect e) {
+	}
 
 	@Override
-	public void attach(World world) { }
+	public void removeEffect(ISceneBufferEffect e) {
+	}
 
 	@Override
-	public Vector3F getLookAt()
-	{
+	public void dettach() {
+	}
+
+	@Override
+	public void attach(World world) {
+	}
+
+	@Override
+	public Vector3F getLookAt() {
 		return new Vector3F();
 	}
 }

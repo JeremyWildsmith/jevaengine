@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,63 +19,21 @@
 package io.github.jevaengine.joystick;
 
 import io.github.jevaengine.math.Vector2D;
+
 import java.awt.event.MouseEvent;
 
-public class InputMouseEvent implements IInputEvent
-{
-
-	public enum MouseEventType
-	{
-		MousePressed,
-		MouseReleased,
-		MouseMoved,
-		MouseClicked,
-		MouseWheelMoved,
-		MouseLeft,
-		MouseEntered,
-	}
-
-	public enum MouseButton
-	{
-		Unknown,
-		Left,
-		Middle,
-		Right;
-
-		public static InputMouseEvent.MouseButton fromButton(int button)
-		{
-			switch (button)
-			{
-				case MouseEvent.BUTTON1:
-					return Left;
-				case MouseEvent.BUTTON2:
-					return Middle;
-				case MouseEvent.BUTTON3:
-					return Right;
-				default:
-					return Unknown;
-			}
-		}
-	}
+public class InputMouseEvent implements IInputEvent {
 
 	private static Vector2D lastLocation = new Vector2D();
-
 	public InputMouseEvent.MouseEventType type;
-
 	public Vector2D location;
-
 	public Vector2D delta;
-
 	public InputMouseEvent.MouseButton mouseButton;
-
 	public boolean mouseButtonState;
-
 	public int deltaMouseWheel;
-
 	public boolean isDragging;
 
-	public InputMouseEvent(InputMouseEvent event)
-	{
+	public InputMouseEvent(InputMouseEvent event) {
 		type = event.type;
 		location = new Vector2D(event.location);
 		mouseButton = event.mouseButton;
@@ -86,8 +44,7 @@ public class InputMouseEvent implements IInputEvent
 		delta = new Vector2D(event.location.difference(lastLocation));
 	}
 
-	protected InputMouseEvent(InputMouseEvent.MouseEventType _type, Vector2D _location, InputMouseEvent.MouseButton _mouseButton, boolean _mouseButtonState, boolean _isDragging)
-	{
+	protected InputMouseEvent(InputMouseEvent.MouseEventType _type, Vector2D _location, InputMouseEvent.MouseButton _mouseButton, boolean _mouseButtonState, boolean _isDragging) {
 		type = _type;
 		location = _location;
 		mouseButton = _mouseButton;
@@ -100,8 +57,7 @@ public class InputMouseEvent implements IInputEvent
 		lastLocation = _location;
 	}
 
-	protected InputMouseEvent(InputMouseEvent.MouseEventType _type, Vector2D _location, InputMouseEvent.MouseButton _mouseButton, boolean _mouseButtonState, boolean _isDragging, int _iDeltaMouseWheel)
-	{
+	protected InputMouseEvent(InputMouseEvent.MouseEventType _type, Vector2D _location, InputMouseEvent.MouseButton _mouseButton, boolean _mouseButtonState, boolean _isDragging, int _iDeltaMouseWheel) {
 		type = _type;
 		location = _location;
 		mouseButton = _mouseButton;
@@ -115,10 +71,8 @@ public class InputMouseEvent implements IInputEvent
 		lastLocation = _location;
 	}
 
-	public void relay(IInputSourceProcessor handler)
-	{
-		switch (type)
-		{
+	public void relay(IInputSourceProcessor handler) {
+		switch (type) {
 			case MousePressed:
 			case MouseReleased:
 				handler.mouseButtonStateChanged(this);
@@ -137,6 +91,36 @@ public class InputMouseEvent implements IInputEvent
 			case MouseEntered:
 				handler.mouseEntered(this);
 				break;
+		}
+	}
+
+	public enum MouseEventType {
+		MousePressed,
+		MouseReleased,
+		MouseMoved,
+		MouseClicked,
+		MouseWheelMoved,
+		MouseLeft,
+		MouseEntered,
+	}
+
+	public enum MouseButton {
+		Unknown,
+		Left,
+		Middle,
+		Right;
+
+		public static InputMouseEvent.MouseButton fromButton(int button) {
+			switch (button) {
+				case MouseEvent.BUTTON1:
+					return Left;
+				case MouseEvent.BUTTON2:
+					return Middle;
+				case MouseEvent.BUTTON3:
+					return Right;
+				default:
+					return Unknown;
+			}
 		}
 	}
 }

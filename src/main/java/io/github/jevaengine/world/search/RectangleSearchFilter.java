@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,46 +22,41 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Rect2F;
 import io.github.jevaengine.math.Vector2F;
 
-public class RectangleSearchFilter<T> implements ISearchFilter<T>
-{
+public class RectangleSearchFilter<T> implements ISearchFilter<T> {
 
 	private Rect2F m_srcRect;
 
-	public RectangleSearchFilter(Rect2F rect)
-	{
+	public RectangleSearchFilter(Rect2F rect) {
 		m_srcRect = rect;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#getSearchBounds()
 	 */
 	@Override
-	public final Rect2D getSearchBounds()
-	{
+	public final Rect2D getSearchBounds() {
 		return m_srcRect.round();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#shouldInclude(jeva.math.Vector2F)
 	 */
 	@Override
-	public boolean shouldInclude(Vector2F location)
-	{
+	public boolean shouldInclude(Vector2F location) {
 		return m_srcRect.contains(location);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#filter(java.lang.Object)
 	 */
 	@Override
-	public boolean filter(T o)
-	{
+	public boolean filter(T o) {
 		return true;
 	}
 }

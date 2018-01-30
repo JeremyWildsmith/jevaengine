@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,27 +21,24 @@ package io.github.jevaengine.world.steering;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
-public final class SeekBehavior implements ISteeringBehavior
-{
+public final class SeekBehavior implements ISteeringBehavior {
 	private final float m_arrivalTolorance;
 	private final float m_influence;
 	private final ISteeringSubject m_target;
-	
-	public SeekBehavior(float influence, float arrivalTolorance, ISteeringSubject target)
-	{
+
+	public SeekBehavior(float influence, float arrivalTolorance, ISteeringSubject target) {
 		m_arrivalTolorance = arrivalTolorance;
 		m_influence = influence;
 		m_target = target;
 	}
-		
+
 	@Override
-	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection)
-	{
+	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
 		Vector2F deltaFromDestination = m_target.getLocation().difference(subject.getLocation().getXy());
-		
-		if(deltaFromDestination.getLength() < m_arrivalTolorance)
+
+		if (deltaFromDestination.getLength() < m_arrivalTolorance)
 			return currentDirection;
-		
+
 		return currentDirection.add(deltaFromDestination.normalize().multiply(m_influence));
-	}	
+	}
 }

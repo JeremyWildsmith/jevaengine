@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,10 +20,11 @@ package io.github.jevaengine.world;
 
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.world.IWorldFactory.WorldConstructionException;
+
 import java.net.URI;
 
-public interface IParallelWorldFactory
-{
-	void create(final URI name, final IInitializationMonitor<World, WorldConstructionException> monitor);	
+public interface IParallelWorldFactory {
+	void create(final URI name, final IInitializationMonitor<World, WorldConstructionException> monitor);
+
 	IWorldFactory getFactory();
 }

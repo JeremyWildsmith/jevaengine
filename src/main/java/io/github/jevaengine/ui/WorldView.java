@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -33,130 +33,113 @@ import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.NullSceneBuffer;
 import io.github.jevaengine.world.scene.camera.ICamera;
 import io.github.jevaengine.world.scene.camera.NullCamera;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Shape;
 
-public final class WorldView extends Control
-{
+import java.awt.*;
+
+public final class WorldView extends Control {
 	public static final String COMPONENT_NAME = "worldView";
-	
+
 	private final int m_desiredWidth;
 	private final int m_desiredHeight;
-	
-	private IImmutableGraphic m_frame;
-	
 	private final Observers m_observers = new Observers();
-	
+	private IImmutableGraphic m_frame;
 	private ICamera m_camera = new NullCamera();
-	
+
 	private IImmutableSceneBuffer m_lastScene = new NullSceneBuffer();
-	
-	public WorldView(int desiredWidth, int desiredHeight)
-	{
+
+	public WorldView(int desiredWidth, int desiredHeight) {
 		super(COMPONENT_NAME);
 		m_desiredWidth = desiredWidth;
 		m_desiredHeight = desiredHeight;
 		m_frame = new NullGraphic(desiredWidth, desiredHeight);
 	}
-	
-	public WorldView(String instanceName, int desiredWidth, int desiredHeight)
-	{
+
+	public WorldView(String instanceName, int desiredWidth, int desiredHeight) {
 		super(COMPONENT_NAME, instanceName);
 		m_desiredWidth = desiredWidth;
 		m_desiredHeight = desiredHeight;
 		m_frame = new NullGraphic(desiredWidth, desiredHeight);
 	}
 
-	public IObserverRegistry getObservers()
-	{
+	public IObserverRegistry getObservers() {
 		return m_observers;
 	}
-	
+
 	@Override
-	public Rect2D getBounds()
-	{
+	public Rect2D getBounds() {
 		return m_frame.getBounds();
 	}
 
-	public void setCamera(ICamera camera)
-	{
+	public void setCamera(ICamera camera) {
 		m_camera = camera;
 	}
 
-	public Vector2F translateScreenToWorld(Vector2F relativeLocation)
-	{
-		if(m_camera == null)
+	public Vector2F translateScreenToWorld(Vector2F relativeLocation) {
+		if (m_camera == null)
 			return new Vector2F();
-		
+
 		return m_lastScene.translateScreenToWorld(new Vector3F(relativeLocation, m_camera.getLookAt().z), 1.0F);
 	}
-	
-	public Vector2D translateWorldToScreen(Vector3F location)
-	{
-		if(m_camera == null)
+
+	public Vector2D translateWorldToScreen(Vector3F location) {
+		if (m_camera == null)
 			return new Vector2D();
-		
-		return m_lastScene.translateWorldToScreen(location.difference(new Vector3F(0,0,m_camera.getLookAt().z))).difference(getAbsoluteLocation());
+
+		return m_lastScene.translateWorldToScreen(location.difference(new Vector3F(0, 0, m_camera.getLookAt().z))).difference(getAbsoluteLocation());
 	}
 
 	@Nullable
-	public <T> T pick(Class<T> clazz, Vector2D location)
-	{
-		if (m_lastScene != null)
-		{
+	public <T> T pick(Class<T> clazz, Vector2D location) {
+		if (m_lastScene != null) {
 			return m_lastScene.pick(clazz, location.x, location.y, 1.0F);
-		}else
+		} else
 			return null;
 	}
-	
+
 	@Override
-	public boolean onMouseEvent(InputMouseEvent mouseEvent)
-	{
+	public boolean onMouseEvent(InputMouseEvent mouseEvent) {
 		InputMouseEvent relativeMouseEvent = new InputMouseEvent(mouseEvent);
 		relativeMouseEvent.location = mouseEvent.location.difference(getAbsoluteLocation());
-			
+
 		m_observers.raise(IWorldViewInputObserver.class).mouseEvent(relativeMouseEvent);
-			
+
 		return true;
 	}
 
 	@Override
-	public boolean onKeyEvent(InputKeyEvent keyEvent)
-	{
+	public boolean onKeyEvent(InputKeyEvent keyEvent) {
 		m_observers.raise(IWorldViewInputObserver.class).keyEvent(keyEvent);
 		return true;
 	}
 
 	@Override
-	public void update(int deltaTime) { }
-	
+	public void update(int deltaTime) {
+	}
+
 	@Override
-	public void render(Graphics2D g, int x, int y, float scale)
-	{
+	public void render(Graphics2D g, int x, int y, float scale) {
 		m_frame.render(g, x, y, scale);
-		
+
 		g.setColor(Color.black);
 		g.fillRect(x, y, getBounds().width, getBounds().height);
-			
+
 		Shape oldClip = g.getClip();
 		g.clipRect(x, y, getBounds().width, getBounds().height);
-		
+
 		m_lastScene = m_camera.getScene(getBounds(), scale);
 		m_lastScene.render(g, x, y, scale, getBounds());
-			
+
 		g.setClip(oldClip);
 	}
 
 	@Override
-	public void onStyleChanged()
-	{
+	public void onStyleChanged() {
 		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(m_desiredWidth, m_desiredHeight);
 	}
-	
-	public interface IWorldViewInputObserver
-	{
+
+	public interface IWorldViewInputObserver {
 		void mouseEvent(InputMouseEvent event);
+
 		void keyEvent(InputKeyEvent event);
 	}
 }

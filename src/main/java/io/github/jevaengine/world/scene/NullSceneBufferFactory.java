@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.world.scene;
 
-public final class NullSceneBufferFactory implements ISceneBufferFactory
-{
+public final class NullSceneBufferFactory implements ISceneBufferFactory {
 	@Override
-	public ISceneBuffer create()
-	{
+	public ISceneBuffer create() {
 		return new NullSceneBuffer();
 	}
 }

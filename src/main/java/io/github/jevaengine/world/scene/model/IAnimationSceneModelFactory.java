@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,11 +20,11 @@ package io.github.jevaengine.world.scene.model;
 
 import com.google.inject.ImplementedBy;
 import io.github.jevaengine.world.scene.model.sprite.SpriteSceneModelFactory;
+
 import java.net.URI;
 
 @ImplementedBy(SpriteSceneModelFactory.class)
-public interface IAnimationSceneModelFactory extends ISceneModelFactory
-{
+public interface IAnimationSceneModelFactory extends ISceneModelFactory {
 	@Override
 	IAnimationSceneModel create(URI name) throws SceneModelConstructionException;
 }

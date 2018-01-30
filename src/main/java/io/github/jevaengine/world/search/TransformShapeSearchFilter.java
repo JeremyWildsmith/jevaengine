@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,30 +21,27 @@ package io.github.jevaengine.world.search;
 import io.github.jevaengine.math.Matrix2X2;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2F;
-import java.awt.Rectangle;
-import java.awt.Shape;
 
-public class TransformShapeSearchFilter<T> implements ISearchFilter<T>
-{
+import java.awt.*;
+
+public class TransformShapeSearchFilter<T> implements ISearchFilter<T> {
 
 	private Shape m_shape;
 
 	private Matrix2X2 m_transform;
 
-	public TransformShapeSearchFilter(Matrix2X2 transform, Shape shape)
-	{
+	public TransformShapeSearchFilter(Matrix2X2 transform, Shape shape) {
 		m_transform = transform;
 		m_shape = shape;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#getSearchBounds()
 	 */
 	@Override
-	public Rect2D getSearchBounds()
-	{
+	public Rect2D getSearchBounds() {
 		Rectangle bounds = m_shape.getBounds();
 
 		Matrix2X2 inverse = m_transform.inverse();
@@ -59,12 +56,11 @@ public class TransformShapeSearchFilter<T> implements ISearchFilter<T>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#shouldInclude(jeva.math.Vector2F)
 	 */
 	@Override
-	public boolean shouldInclude(Vector2F location)
-	{
+	public boolean shouldInclude(Vector2F location) {
 		Vector2F transformedLocation = m_transform.dot(location);
 
 		return m_shape.contains(transformedLocation.x, transformedLocation.y);
@@ -72,12 +68,11 @@ public class TransformShapeSearchFilter<T> implements ISearchFilter<T>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#filter(java.lang.Object)
 	 */
 	@Override
-	public boolean filter(T item)
-	{
+	public boolean filter(T item) {
 		return true;
 	}
 

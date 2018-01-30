@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,12 +20,16 @@ package io.github.jevaengine.world.entity;
 
 import io.github.jevaengine.world.entity.tasks.ITask;
 
-public interface IEntityTaskModel
-{
+public interface IEntityTaskModel {
 	void addTask(ITask task);
+
 	void cancelTasks();
+
 	void cancelTask(ITask task);
+
 	boolean isTaskActive(ITask task);
+
 	boolean isTaskBlocking();
+
 	void update(int deltaTime);
 }

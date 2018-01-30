@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,8 +18,8 @@
  */
 package io.github.jevaengine.audio;
 
-public interface IAudioClipStateObserver
-{
+public interface IAudioClipStateObserver {
 	void begin();
+
 	void end();
 }

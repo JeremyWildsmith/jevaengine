@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -30,73 +30,61 @@ import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 import io.github.jevaengine.world.scene.model.ISceneModel;
 import io.github.jevaengine.world.scene.model.NullSceneModel;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class SceneArtifact implements IEntity
-{
+public final class SceneArtifact implements IEntity {
 	private static final AtomicInteger m_unnamedCount = new AtomicInteger(0);
 
 	private final String m_name;
-	
-	@Nullable
-	private ISceneModel m_model = new NullSceneModel();
-
 	@Nullable
 	private final PhysicsBodyDescription m_physicsBodyDescription;
-	
+	private final Observers m_observers = new Observers();
+	private final EntityBridge m_bridge;
+	private final boolean m_isStatic;
+	@Nullable
+	private ISceneModel m_model = new NullSceneModel();
 	private IPhysicsBody m_body = new NullPhysicsBody();
-
 	@Nullable
 	private World m_world;
-	
-	private final Observers m_observers = new Observers();
-	
-	private final EntityBridge m_bridge;
 
-	private final boolean m_isStatic;
-	
-	public SceneArtifact(ISceneModel model, boolean isStatic, boolean isTraversable)
-	{
+	public SceneArtifact(ISceneModel model, boolean isStatic, boolean isTraversable) {
 		m_name = this.getClass().getName() + m_unnamedCount.getAndIncrement();
-		
+
 		m_isStatic = isStatic;
-		
+
 		m_model = model;
 
-		if(!isTraversable)
+		if (!isTraversable)
 			m_physicsBodyDescription = new PhysicsBodyDescription(PhysicsBodyType.Static, model.getBodyShape(), 1.0F, true, false, 1.0F);
 		else
 			m_physicsBodyDescription = null;
-		
+
 		m_bridge = new EntityBridge(this);
 	}
-	
+
 	@Override
-	public void dispose()
-	{
-		if(m_world != null)
+	public void dispose() {
+		if (m_world != null)
 			m_world.removeEntity(this);
-		
+
 		m_observers.clear();
 	}
 
 	@Override
-	public String getInstanceName()
-	{
+	public String getInstanceName() {
 		return m_name;
 	}
-	
+
 	@Override
-	public final World getWorld()
-	{
+	public final World getWorld() {
 		return m_world;
 	}
 
 	@Override
-	public final void associate(World world)
-	{
+	public final void associate(World world) {
 		if (m_world != null)
 			throw new WorldAssociationException("Already associated with world");
 
@@ -107,82 +95,70 @@ public final class SceneArtifact implements IEntity
 	}
 
 	@Override
-	public final void disassociate()
-	{
+	public final void disassociate() {
 		if (m_world == null)
 			throw new WorldAssociationException("Not associated with world");
 
 		m_observers.raise(IEntityWorldObserver.class).leaveWorld();
 
 		destroyPhysicsBody();
-		
+
 		m_world = null;
 	}
 
-	private void constructPhysicsBody()
-	{
-		if(m_physicsBodyDescription == null)
+	private void constructPhysicsBody() {
+		if (m_physicsBodyDescription == null)
 			m_body = new NonparticipantPhysicsBody(this, m_model.getAABB());
-		else
-		{
+		else {
 			m_body = m_world.getPhysicsWorld().createBody(this, m_physicsBodyDescription);
 			m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), m_body);
 		}
 	}
-	
-	private void destroyPhysicsBody()
-	{
+
+	private void destroyPhysicsBody() {
 		m_body.destory();
 		m_body = new NullPhysicsBody();
 		m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), m_body);
 	}
 
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return m_isStatic;
 	}
-	
+
 	@Override
-	public final IPhysicsBody getBody()
-	{
+	public final IPhysicsBody getBody() {
 		return m_body;
 	}
-	
+
 	@Override
-	public void update(int deltaTime)
-	{
+	public void update(int deltaTime) {
 		m_model.update(deltaTime);
 	}
-	
+
 	@Override
 	@Nullable
-	public IImmutableSceneModel getModel()
-	{
+	public IImmutableSceneModel getModel() {
 		return m_model;
 	}
 
 	@Override
-	public Map<String, Integer> getFlags()
-	{
+	public Map<String, Integer> getFlags() {
 		return new HashMap<>();
 	}
 
 	@Override
-	public IObserverRegistry getObservers()
-	{
+	public IObserverRegistry getObservers() {
 		return m_observers;
 	}
-	
+
 	@Override
-	public EntityBridge getBridge()
-	{
+	public EntityBridge getBridge() {
 		return m_bridge;
 	}
 
 	@Override
-	public IEntityTaskModel getTaskModel()
-	{
+	public IEntityTaskModel getTaskModel() {
 		return new NullEntityTaskModel();
 	}
 }

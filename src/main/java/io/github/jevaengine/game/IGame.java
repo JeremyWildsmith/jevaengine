@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,10 +20,10 @@ package io.github.jevaengine.game;
 
 import io.github.jevaengine.ui.WindowManager;
 
-public interface IGame
-{	
+public interface IGame {
 	void render(IRenderer r);
+
 	void update(int deltaTime);
-	
+
 	WindowManager getWindowManager();
 }

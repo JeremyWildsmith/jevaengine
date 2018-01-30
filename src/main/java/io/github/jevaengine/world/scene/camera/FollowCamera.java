@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,47 +27,42 @@ import io.github.jevaengine.world.entity.IEntity.IEntityWorldObserver;
 import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBufferFactory;
+
 import java.lang.ref.WeakReference;
 
-public final class FollowCamera implements ICamera
-{
+public final class FollowCamera implements ICamera {
 	private final ControlledCamera m_camera;
 	private final EntityObserver m_observer = new EntityObserver();
 
-	private WeakReference<IEntity> m_target;	
-	
-	public FollowCamera(ISceneBufferFactory sceneBufferFactory)
-	{
+	private WeakReference<IEntity> m_target;
+
+	public FollowCamera(ISceneBufferFactory sceneBufferFactory) {
 		m_camera = new ControlledCamera(sceneBufferFactory);
 		m_target = new WeakReference<>(null);
 	}
 
 	@Override
-	public void addEffect(ISceneBufferEffect e)
-	{
+	public void addEffect(ISceneBufferEffect e) {
 		m_camera.addEffect(e);
 	}
-	
+
 	@Override
-	public void removeEffect(ISceneBufferEffect e)
-	{
+	public void removeEffect(ISceneBufferEffect e) {
 		m_camera.removeEffect(e);
 	}
-	
-	public void setTarget(@Nullable IEntity target)
-	{
-		if(m_target.get() != null)
+
+	public void setTarget(@Nullable IEntity target) {
+		if (m_target.get() != null)
 			m_target.get().getObservers().remove(m_observer);
-		
+
 		m_target = new WeakReference<>(target);
-		
-		if(target != null)
+
+		if (target != null)
 			target.getObservers().add(m_observer);
 	}
 
 	@Override
-	public Vector3F getLookAt()
-	{
+	public Vector3F getLookAt() {
 		if (m_target.get() == null)
 			return new Vector3F();
 		else
@@ -75,35 +70,31 @@ public final class FollowCamera implements ICamera
 	}
 
 	@Override
-	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale)
-	{
+	public IImmutableSceneBuffer getScene(Rect2D bounds, float scale) {
 		Vector3F target = m_target.get() == null ? new Vector3F() : m_target.get().getBody().getLocation();
 		m_camera.lookAt(target);
-		
+
 		return m_camera.getScene(bounds, scale);
 	}
 
 	@Override
-	public void dettach()
-	{
+	public void dettach() {
 		m_camera.dettach();
 	}
 
 	@Override
-	public void attach(World world)
-	{
+	public void attach(World world) {
 		m_camera.attach(world);
 	}
-	
-	private class EntityObserver implements IEntityWorldObserver
-	{
+
+	private class EntityObserver implements IEntityWorldObserver {
 		@Override
-		public void leaveWorld()
-		{
+		public void leaveWorld() {
 			setTarget(null);
 		}
 
 		@Override
-		public void enterWorld() { }
+		public void enterWorld() {
+		}
 	}
 }

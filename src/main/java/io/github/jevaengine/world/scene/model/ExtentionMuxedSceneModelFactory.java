@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,31 +22,26 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ExtentionMuxedSceneModelFactory implements ISceneModelFactory
-{
+public final class ExtentionMuxedSceneModelFactory implements ISceneModelFactory {
 	private final Map<String, ISceneModelFactory> m_factories = new HashMap<>();
 	private final ISceneModelFactory m_defaultFactory;
-	
-	public ExtentionMuxedSceneModelFactory(ISceneModelFactory defaultFactory)
-	{
+
+	public ExtentionMuxedSceneModelFactory(ISceneModelFactory defaultFactory) {
 		m_defaultFactory = defaultFactory;
 	}
-	
-	public void put(String extention, ISceneModelFactory factory)
-	{
+
+	public void put(String extention, ISceneModelFactory factory) {
 		String ext = extention.startsWith(".") ? extention : "." + extention;
 		m_factories.put(ext, factory);
 	}
 
 	@Override
-	public ISceneModel create(URI name) throws SceneModelConstructionException
-	{
-		for(Map.Entry<String, ISceneModelFactory> e : m_factories.entrySet())
-		{
-			if(name.getPath().endsWith(e.getKey()))
+	public ISceneModel create(URI name) throws SceneModelConstructionException {
+		for (Map.Entry<String, ISceneModelFactory> e : m_factories.entrySet()) {
+			if (name.getPath().endsWith(e.getKey()))
 				return e.getValue().create(name);
 		}
-		
+
 		return m_defaultFactory.create(name);
 	}
 }

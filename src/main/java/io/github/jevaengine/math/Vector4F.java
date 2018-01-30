@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,8 +18,7 @@
  */
 package io.github.jevaengine.math;
 
-public final class Vector4F
-{
+public final class Vector4F {
 	public static final float TOLERANCE = 0.0000001F;
 
 	public float x;
@@ -27,8 +26,7 @@ public final class Vector4F
 	public float z;
 	public float w;
 
-	public Vector4F(float _x, float _y, float _z, float _w)
-	{
+	public Vector4F(float _x, float _y, float _z, float _w) {
 		x = _x;
 		y = _y;
 		z = _z;

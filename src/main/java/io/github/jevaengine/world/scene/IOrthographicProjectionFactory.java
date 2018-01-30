@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,6 @@ package io.github.jevaengine.world.scene;
 
 import io.github.jevaengine.math.Matrix3X3;
 
-public interface IOrthographicProjectionFactory
-{
+public interface IOrthographicProjectionFactory {
 	Matrix3X3 create();
 }

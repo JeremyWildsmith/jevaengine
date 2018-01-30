@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -25,11 +25,9 @@ import io.github.jevaengine.world.physics.IPhysicsWorld;
 import io.github.jevaengine.world.physics.IPhysicsWorldFactory;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription;
 
-public final class Dyn4jDebuggerWorldFactory implements IPhysicsWorldFactory
-{
+public final class Dyn4jDebuggerWorldFactory implements IPhysicsWorldFactory {
 	@Override
-	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters)
-	{
+	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters) {
 		final Dyn4jWorld world = new Dyn4jWorld(maxSurfaceFrictionForceNewtonMeters);
 
 		final Dyn4jDebuggerWorld debugger = new Dyn4jDebuggerWorld(world.getWorld());

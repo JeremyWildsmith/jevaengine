@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,39 +20,30 @@ package io.github.jevaengine.graphics;
 
 import java.net.URI;
 
-public interface IGraphicShaderFactory
-{
+public interface IGraphicShaderFactory {
 	IGraphicShader create(URI name) throws GraphicShaderConstructionException;
-	
-	public static final class GraphicShaderConstructionException extends Exception
-	{
-		public GraphicShaderConstructionException(Exception cause)
-		{
+
+	public static final class GraphicShaderConstructionException extends Exception {
+		public GraphicShaderConstructionException(Exception cause) {
 			super(cause);
 		}
 	}
-	
-	public static final class UnrecognizedGraphicShaderException extends Exception
-	{
-		public UnrecognizedGraphicShaderException(URI name)
-		{
+
+	public static final class UnrecognizedGraphicShaderException extends Exception {
+		public UnrecognizedGraphicShaderException(URI name) {
 			super("Unrecognized shader: " + name.toString());
 		}
 	}
-	
-	public static final class GraphicShaderArgumentsParseException extends Exception
-	{
-		public GraphicShaderArgumentsParseException(Exception cause)
-		{
+
+	public static final class GraphicShaderArgumentsParseException extends Exception {
+		public GraphicShaderArgumentsParseException(Exception cause) {
 			super("Unable to parse graphic shader arguments.", cause);
 		}
 	}
-	
-	public static final class NullGraphicShader implements IGraphicShader
-	{
+
+	public static final class NullGraphicShader implements IGraphicShader {
 		@Override
-		public IImmutableGraphic shade(IImmutableGraphic source)
-		{
+		public IImmutableGraphic shade(IImmutableGraphic source) {
 			return source;
 		}
 	}

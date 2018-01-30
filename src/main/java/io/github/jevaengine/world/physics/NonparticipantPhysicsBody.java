@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,156 +27,141 @@ import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.entity.IEntity;
 
-public final class NonparticipantPhysicsBody implements IPhysicsBody
-{
+public final class NonparticipantPhysicsBody implements IPhysicsBody {
 	private final IEntity m_owner;
 	private final Rect3F m_aabb;
+	private final Observers m_observers = new Observers();
 	private Vector3F m_location = new Vector3F();
 	private Direction m_direction = Direction.Zero;
 
-	private final Observers m_observers = new Observers();
-	
-	public NonparticipantPhysicsBody(IEntity owner, Rect3F aabb)
-	{
+	public NonparticipantPhysicsBody(IEntity owner, Rect3F aabb) {
 		m_owner = owner;
 		m_aabb = new Rect3F(aabb);
 	}
 
-	public NonparticipantPhysicsBody(IEntity owner)
-	{
+	public NonparticipantPhysicsBody(IEntity owner) {
 		m_owner = owner;
 		m_aabb = new Rect3F();
 	}
-	
-	public NonparticipantPhysicsBody()
-	{
+
+	public NonparticipantPhysicsBody() {
 		m_owner = null;
 		m_aabb = new Rect3F();
 	}
-	
+
 	@Override
-	public void destory() { }
-	
+	public void destory() {
+	}
+
 	@Override
-	public IImmutablePhysicsWorld getWorld()
-	{
+	public IImmutablePhysicsWorld getWorld() {
 		return new NullPhysicsWorld();
 	}
 
 	@Override
-	public boolean hasOwner()
-	{
+	public boolean hasOwner() {
 		return m_owner != null;
 	}
-	
+
 	@Override
-	public IEntity getOwner()
-	{
+	public IEntity getOwner() {
 		return m_owner;
 	}
 
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return true;
 	}
-	
+
 	@Override
-	public float getMass()
-	{
+	public float getMass() {
 		return 1.0F;
 	}
-	
+
 	@Override
-	public Vector3F getLocation()
-	{
+	public Vector3F getLocation() {
 		return new Vector3F(m_location);
 	}
 
 	@Override
-	public Direction getDirection()
-	{
-		return m_direction;
-	}
-
-	@Override
-	public Vector3F getLinearVelocity()
-	{
-		return new Vector3F();
-	}
-
-	@Override
-	public float getAngularVelocity()
-	{
-		return 0;
-	}
-
-	@Override
-	@Nullable
-	public RayCastIntersection castRay(Vector3F direction, float maxCast)
-	{
-		return null;
-	}
-	
-	@Override
-	public IObserverRegistry getObservers()
-	{
-		return m_observers;
-	}
-
-	@Override
-	public void setLocation(Vector3F location)
-	{
+	public void setLocation(Vector3F location) {
 		m_location = new Vector3F(location);
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).locationSet();
 	}
 
 	@Override
-	public void setDirection(Direction direction)
-	{
+	public Direction getDirection() {
+		return m_direction;
+	}
+
+	@Override
+	public void setDirection(Direction direction) {
 		m_direction = direction;
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
 	}
-	
-	@Override
-	public void applyLinearImpulse(Vector3F impulse) { }
 
 	@Override
-	public void applyAngularImpulse(float impulse) { }
-
-	@Override
-	public void applyForceToCenter(Vector3F force) { }
-
-	@Override
-	public void applyTorque(float torque) { }
-	
-	@Override
-	public void setLinearVelocity(Vector3F velocity) { }
-	
-	@Override
-	public boolean isCollidable()
-	{
-		return false;
-	}
-	
-	@Override
-	public boolean collidesWith(IImmutablePhysicsBody subject)
-	{
-		return false;
+	public Vector3F getLinearVelocity() {
+		return new Vector3F();
 	}
 
 	@Override
-	public Rect3F getAABB()
-	{
+	public void setLinearVelocity(Vector3F velocity) {
+	}
+
+	@Override
+	public float getAngularVelocity() {
+		return 0;
+	}
+
+	@Override
+	@Nullable
+	public RayCastIntersection castRay(Vector3F direction, float maxCast) {
+		return null;
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_observers;
+	}
+
+	@Override
+	public void applyLinearImpulse(Vector3F impulse) {
+	}
+
+	@Override
+	public void applyAngularImpulse(float impulse) {
+	}
+
+	@Override
+	public void applyForceToCenter(Vector3F force) {
+	}
+
+	@Override
+	public void applyTorque(float torque) {
+	}
+
+	@Override
+	public boolean isCollidable() {
+		return false;
+	}
+
+	@Override
+	public void setCollidable(boolean isCollidable) {
+	}
+
+	@Override
+	public boolean collidesWith(IImmutablePhysicsBody subject) {
+		return false;
+	}
+
+	@Override
+	public Rect3F getAABB() {
 		return m_aabb.add(m_location);
 	}
 
 	@Override
-	public Circle3F getBoundingCircle()
-	{
+	public Circle3F getBoundingCircle() {
 		return new Circle3F(m_location.x, m_location.y, m_location.z, Math.max(Math.max(m_aabb.width, m_aabb.height), m_aabb.depth));
 	}
-
-	@Override
-	public void setCollidable(boolean isCollidable) { }
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,7 +18,6 @@
  */
 package io.github.jevaengine.world.physics;
 
-public interface IImmutablePhysicsWorld
-{
+public interface IImmutablePhysicsWorld {
 	float getMaxFrictionForce();
 }

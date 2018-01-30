@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,33 +20,16 @@ package io.github.jevaengine.world.search;
 
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2F;
+
 import java.util.NoSuchElementException;
 
-public class BinarySearchFilter<T> implements ISearchFilter<T>
-{
-
-	enum Operation
-	{
-
-		Or,
-
-		And,
-
-		Nand,
-
-		Nor,
-
-		Xor
-	}
+public class BinarySearchFilter<T> implements ISearchFilter<T> {
 
 	private Operation m_operation;
-
 	private ISearchFilter<T> m_filterA;
-
 	private ISearchFilter<T> m_filterB;
 
-	public BinarySearchFilter(ISearchFilter<T> a, ISearchFilter<T> b, Operation operation)
-	{
+	public BinarySearchFilter(ISearchFilter<T> a, ISearchFilter<T> b, Operation operation) {
 		m_operation = operation;
 		m_filterA = a;
 		m_filterB = b;
@@ -54,12 +37,11 @@ public class BinarySearchFilter<T> implements ISearchFilter<T>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#getSearchBounds()
 	 */
 	@Override
-	public Rect2D getSearchBounds()
-	{
+	public Rect2D getSearchBounds() {
 		Rect2D boundsA = m_filterA.getSearchBounds();
 		Rect2D boundsB = m_filterB.getSearchBounds();
 
@@ -69,14 +51,12 @@ public class BinarySearchFilter<T> implements ISearchFilter<T>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#shouldInclude(jeva.math.Vector2F)
 	 */
 	@Override
-	public final boolean shouldInclude(Vector2F location)
-	{
-		switch (m_operation)
-		{
+	public final boolean shouldInclude(Vector2F location) {
+		switch (m_operation) {
 			case And:
 				return m_filterA.shouldInclude(location) && m_filterB.shouldInclude(location);
 			case Or:
@@ -94,13 +74,25 @@ public class BinarySearchFilter<T> implements ISearchFilter<T>
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.github.jeremywildsmith.jevaengine.world.ISearchFilter#filter(java.lang.Object)
 	 */
 	@Override
-	public boolean filter(T item)
-	{
+	public boolean filter(T item) {
 		return true;
+	}
+
+	enum Operation {
+
+		Or,
+
+		And,
+
+		Nand,
+
+		Nor,
+
+		Xor
 	}
 
 }

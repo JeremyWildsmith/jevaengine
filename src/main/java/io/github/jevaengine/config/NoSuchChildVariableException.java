@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,13 +18,11 @@
  */
 package io.github.jevaengine.config;
 
-public final class NoSuchChildVariableException extends Exception
-{
+public final class NoSuchChildVariableException extends Exception {
 	private static final long serialVersionUID = 1L;
 
-	public NoSuchChildVariableException(String name)
-	{
+	public NoSuchChildVariableException(String name) {
 		super("Child does not exist with the name: " + name);
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,41 +19,37 @@
 package io.github.jevaengine.config;
 
 
-public final class NullVariable implements IImmutableVariable
-{
+public final class NullVariable implements IImmutableVariable {
 	@Override
-	public void serialize(IVariable target) { }
+	public void serialize(IVariable target) {
+	}
 
 	@Override
-	public void deserialize(IImmutableVariable source) { }
+	public void deserialize(IImmutableVariable source) {
+	}
 
 	@Override
-	public <T> T getValue(Class<T> cls) throws ValueSerializationException
-	{
+	public <T> T getValue(Class<T> cls) throws ValueSerializationException {
 		throw new ValueSerializationException(new UnsupportedValueTypeException());
 	}
 
 	@Override
-	public <T> T[] getValues(Class<T[]> cls) throws ValueSerializationException
-	{
+	public <T> T[] getValues(Class<T[]> cls) throws ValueSerializationException {
 		throw new ValueSerializationException(new UnsupportedValueTypeException());
 	}
 
 	@Override
-	public boolean childExists(String name)
-	{
+	public boolean childExists(String name) {
 		return false;
 	}
 
 	@Override
-	public IImmutableVariable getChild(String name) throws NoSuchChildVariableException
-	{
+	public IImmutableVariable getChild(String name) throws NoSuchChildVariableException {
 		throw new NoSuchChildVariableException(name);
 	}
 
 	@Override
-	public String[] getChildren()
-	{
+	public String[] getChildren() {
 		return new String[0];
 	}
 

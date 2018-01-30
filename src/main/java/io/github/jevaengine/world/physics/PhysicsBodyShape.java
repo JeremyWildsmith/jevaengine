@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,59 +18,49 @@
  */
 package io.github.jevaengine.world.physics;
 
-import io.github.jevaengine.config.IImmutableVariable;
-import io.github.jevaengine.config.ISerializable;
-import io.github.jevaengine.config.IVariable;
-import io.github.jevaengine.config.NoSuchChildVariableException;
-import io.github.jevaengine.config.ValueSerializationException;
+import io.github.jevaengine.config.*;
 import io.github.jevaengine.math.Rect3F;
 
-public class PhysicsBodyShape implements ISerializable
-{
+public class PhysicsBodyShape implements ISerializable {
 	public PhysicsBodyShapeType type = PhysicsBodyShapeType.Box;
 	public Rect3F aabb = new Rect3F();
 
-	public PhysicsBodyShape() { }
-	
-	public PhysicsBodyShape(PhysicsBodyShapeType type, Rect3F aabb)
-	{
+	public PhysicsBodyShape() {
+	}
+
+	public PhysicsBodyShape(PhysicsBodyShapeType type, Rect3F aabb) {
 		this.type = type;
 		this.aabb = new Rect3F(aabb);
 	}
-	
-	public PhysicsBodyShape(PhysicsBodyShape s)
-	{
+
+	public PhysicsBodyShape(PhysicsBodyShape s) {
 		this(s.type, s.aabb);
-	}
-		
-	public enum PhysicsBodyShapeType
-	{
-		Circle,
-		Box,
 	}
 
 	@Override
-	public void serialize(IVariable target) throws ValueSerializationException
-	{
+	public void serialize(IVariable target) throws ValueSerializationException {
 		target.addChild("aabb").setValue(aabb);
 		target.addChild("type").setValue(type.ordinal());
 	}
 
 	@Override
 	public void deserialize(IImmutableVariable source) throws ValueSerializationException {
-		try
-		{
+		try {
 			aabb = source.getChild("aabb").getValue(Rect3F.class);
 
 			Integer shapeIndex = source.getChild("type").getValue(Integer.class);
 
-			if(shapeIndex < 0 || shapeIndex > PhysicsBodyShapeType.values().length)
+			if (shapeIndex < 0 || shapeIndex > PhysicsBodyShapeType.values().length)
 				throw new ValueSerializationException(new IndexOutOfBoundsException("type index is outside of bounds."));
 
-			type = PhysicsBodyShapeType.values()[shapeIndex];		
-		} catch (NoSuchChildVariableException e)
-		{
+			type = PhysicsBodyShapeType.values()[shapeIndex];
+		} catch (NoSuchChildVariableException e) {
 			throw new ValueSerializationException(e);
 		}
+	}
+
+	public enum PhysicsBodyShapeType {
+		Circle,
+		Box,
 	}
 }

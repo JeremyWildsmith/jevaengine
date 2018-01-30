@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,11 +20,13 @@ package io.github.jevaengine.game;
 
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.math.Vector2D;
-import java.awt.GraphicsConfiguration;
 
-public interface IRenderer
-{
+import java.awt.*;
+
+public interface IRenderer {
 	GraphicsConfiguration getGraphicsConfiguration();
+
 	void render(IRenderable frame);
+
 	Vector2D getResolution();
 }

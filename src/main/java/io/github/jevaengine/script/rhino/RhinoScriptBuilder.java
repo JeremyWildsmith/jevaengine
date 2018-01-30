@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,40 +23,36 @@ import io.github.jevaengine.script.IScript;
 import io.github.jevaengine.script.IScriptBuilder;
 import io.github.jevaengine.script.ScriptExecuteException;
 import io.github.jevaengine.util.Nullable;
-import java.net.URI;
-import javax.inject.Inject;
 
-public final class RhinoScriptBuilder implements IScriptBuilder
-{
+import javax.inject.Inject;
+import java.net.URI;
+
+public final class RhinoScriptBuilder implements IScriptBuilder {
 	private final URI m_name;
 	private final String m_script;
-	
+
 	@Inject
-	public RhinoScriptBuilder(URI name, String script)
-	{
+	public RhinoScriptBuilder(URI name, String script) {
 		m_name = name;
 		m_script = script;
 	}
-	
-	public RhinoScriptBuilder()
-	{
+
+	public RhinoScriptBuilder() {
 		m_name = URI.create("");
 		m_script = null;
 	}
 
 	@Override
-	public IScript create(@Nullable Object context) throws ScriptConstructionException
-	{
-		try
-		{
+	public IScript create(@Nullable Object context) throws ScriptConstructionException {
+		try {
 			IScript script = new RhinoScript();
-			
+
 			script.put("util", new RhinoUtility());
-			
-			if(context != null)
+
+			if (context != null)
 				script.put("me", context);
-			
-			if(m_script != null)
+
+			if (m_script != null)
 				script.evaluate(m_script);
 
 			return script;
@@ -66,20 +62,17 @@ public final class RhinoScriptBuilder implements IScriptBuilder
 	}
 
 	@Override
-	public IScript create() throws ScriptConstructionException
-	{
+	public IScript create() throws ScriptConstructionException {
 		return create(null);
 	}
-	
+
 	@Override
-	public IFunctionFactory getFunctionFactory()
-	{
+	public IFunctionFactory getFunctionFactory() {
 		return new RhinoFunctionFactory();
 	}
-	
+
 	@Override
-	public URI getUri()
-	{
+	public URI getUri() {
 		return m_name;
 	}
 }

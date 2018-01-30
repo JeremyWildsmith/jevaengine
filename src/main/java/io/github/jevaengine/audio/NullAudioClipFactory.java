@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,11 +20,9 @@ package io.github.jevaengine.audio;
 
 import java.net.URI;
 
-public final class NullAudioClipFactory implements IAudioClipFactory
-{
+public final class NullAudioClipFactory implements IAudioClipFactory {
 	@Override
-	public IAudioClip create(URI name)
-	{
+	public IAudioClip create(URI name) {
 		return new NullAudioClip();
 	}
 }

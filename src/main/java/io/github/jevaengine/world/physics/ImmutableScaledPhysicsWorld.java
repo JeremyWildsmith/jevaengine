@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,23 +19,19 @@
 package io.github.jevaengine.world.physics;
 
 /**
- *
  * @author Jeremy
  */
-public class ImmutableScaledPhysicsWorld implements IImmutablePhysicsWorld
-{
-	private final IImmutablePhysicsWorld m_world;
+public class ImmutableScaledPhysicsWorld implements IImmutablePhysicsWorld {
 	protected final float m_scale;
-	
-	public ImmutableScaledPhysicsWorld(IImmutablePhysicsWorld world, float scale)
-	{
+	private final IImmutablePhysicsWorld m_world;
+
+	public ImmutableScaledPhysicsWorld(IImmutablePhysicsWorld world, float scale) {
 		m_world = world;
 		m_scale = scale;
 	}
-	
+
 	@Override
-	public float getMaxFrictionForce()
-	{
+	public float getMaxFrictionForce() {
 		return m_world.getMaxFrictionForce() / m_scale;
 	}
 }

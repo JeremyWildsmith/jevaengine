@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,53 +24,43 @@ import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.joystick.InputKeyEvent;
 import io.github.jevaengine.joystick.InputMouseEvent;
 import io.github.jevaengine.math.Rect2D;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.Shape;
 
-public class ValueGuage extends Control implements IRenderable
-{
+import java.awt.*;
+
+public class ValueGuage extends Control implements IRenderable {
 	public static final String COMPONENT_NAME = "valueGuage";
-	
+	private final Rect2D m_bounds;
 	private float m_value;
-
 	private IImmutableGraphic m_fill = new NullGraphic();
 	private IImmutableGraphic m_frame = new NullGraphic();
-	
-	private final Rect2D m_bounds;
-	
-	public ValueGuage(Rect2D bounds)
-	{
+
+	public ValueGuage(Rect2D bounds) {
 		super(COMPONENT_NAME);
 		m_bounds = new Rect2D(bounds);
 	}
-	
-	public ValueGuage(String instanceName, Rect2D bounds)
-	{
+
+	public ValueGuage(String instanceName, Rect2D bounds) {
 		super(COMPONENT_NAME, instanceName);
 		m_bounds = bounds;
 	}
 
-	public void setValue(float value)
-	{
-		m_value = value;
-	}
-
-	public float getValue()
-	{
+	public float getValue() {
 		return m_value;
 	}
 
+	public void setValue(float value) {
+		m_value = value;
+	}
+
 	@Override
-	public void render(Graphics2D g, int x, int y, float scale)
-	{
+	public void render(Graphics2D g, int x, int y, float scale) {
 		m_frame.render(g, x, y, scale);
 		Rect2D frameBounds = m_frame.getBounds();
 		Rect2D fillBounds = m_fill.getBounds();
-		
+
 		int offsetX = (frameBounds.width - fillBounds.width) / 2;
 		int offsetY = (frameBounds.height - fillBounds.height) / 2;
-		
+
 		Shape oldClip = g.getClip();
 		Rect2D fillRect = m_fill.getBounds();
 		fillRect.width *= m_value;
@@ -80,23 +70,26 @@ public class ValueGuage extends Control implements IRenderable
 	}
 
 	@Override
-	public Rect2D getBounds()
-	{
+	public Rect2D getBounds() {
 		return m_fill.getBounds();
 	}
 
 	@Override
-	public boolean onMouseEvent(InputMouseEvent mouseEvent) { return false; }
+	public boolean onMouseEvent(InputMouseEvent mouseEvent) {
+		return false;
+	}
 
 	@Override
-	public boolean onKeyEvent(InputKeyEvent keyEvent) { return false; }
+	public boolean onKeyEvent(InputKeyEvent keyEvent) {
+		return false;
+	}
 
 	@Override
-	public void update(int deltaTime) { }
+	public void update(int deltaTime) {
+	}
 
 	@Override
-	protected void onStyleChanged()
-	{
+	protected void onStyleChanged() {
 		m_fill = getComponentStyle().getStateStyle(ComponentState.Activated).createFrame(m_bounds.height, m_bounds.height);
 		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(m_fill.getBounds().width, m_fill.getBounds().height);
 	}

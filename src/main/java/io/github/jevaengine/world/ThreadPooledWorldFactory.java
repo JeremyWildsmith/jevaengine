@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,40 +23,34 @@ import io.github.jevaengine.IEngineThreadPool;
 import io.github.jevaengine.IEngineThreadPool.Purpose;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.world.IWorldFactory.WorldConstructionException;
+
 import java.net.URI;
 
-public final class ThreadPooledWorldFactory implements IParallelWorldFactory
-{
+public final class ThreadPooledWorldFactory implements IParallelWorldFactory {
 	private final IWorldFactory m_worldFactory;
 	private final IEngineThreadPool m_threadPool;
-	
-	public ThreadPooledWorldFactory(IWorldFactory worldFactory, IEngineThreadPool threadPool)
-	{
+
+	public ThreadPooledWorldFactory(IWorldFactory worldFactory, IEngineThreadPool threadPool) {
 		m_worldFactory = worldFactory;
 		m_threadPool = threadPool;
 	}
-	
+
 	@Override
-	public void create(final URI name, final IInitializationMonitor<World, WorldConstructionException> monitor)
-	{
+	public void create(final URI name, final IInitializationMonitor<World, WorldConstructionException> monitor) {
 		m_threadPool.execute(Purpose.Loading, new Runnable() {
 			@Override
-			public void run()
-			{
-				try
-				{
+			public void run() {
+				try {
 					monitor.completed(new FutureResult<World, WorldConstructionException>(m_worldFactory.create(name, monitor)));
-				} catch(WorldConstructionException e)
-				{
+				} catch (WorldConstructionException e) {
 					monitor.completed(new FutureResult<World, WorldConstructionException>(e));
 				}
 			}
 		});
 	}
-	
+
 	@Override
-	public IWorldFactory getFactory()
-	{
+	public IWorldFactory getFactory() {
 		return m_worldFactory;
 	}
 }

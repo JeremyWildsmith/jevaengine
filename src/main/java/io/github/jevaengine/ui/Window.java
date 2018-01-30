@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,185 +26,153 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
-import java.awt.Graphics2D;
 
-public final class Window extends Control implements IDisposable
-{
+import java.awt.*;
+
+public final class Window extends Control implements IDisposable {
 	private static final String COMPONENT_NAME = "window";
-	
+	private final Observers m_observers = new Observers();
 	private boolean m_isMovable;
 	private boolean m_isFocusable;
 	private boolean m_isTopMost;
-	
 	private WindowManager m_manager;
-	
 	private Panel m_rootPanel;
-	
-	private final Observers m_observers = new Observers();
-	
-	public Window(int width, int height)
-	{
+
+	public Window(int width, int height) {
 		super(COMPONENT_NAME);
-		
+
 		m_rootPanel = new Panel(width, height);
 		m_rootPanel.setParent(this);
 		m_isFocusable = true;
 		m_isMovable = true;
 		m_isTopMost = false;
 	}
-	
+
 	@Override
-	public void dispose()
-	{
-		if(m_manager != null)
+	public void dispose() {
+		if (m_manager != null)
 			m_manager.removeWindow(this);
-		
+
 		m_rootPanel.dispose();
 	}
-	
-	public IObserverRegistry getObservers()
-	{
+
+	public IObserverRegistry getObservers() {
 		return m_observers;
 	}
-	
-	public boolean isTopMost()
-	{
+
+	public boolean isTopMost() {
 		return m_isTopMost;
 	}
-	
-	public boolean isMovable()
-	{
+
+	public void setTopMost(boolean isTopMost) {
+		m_isTopMost = isTopMost;
+	}
+
+	public boolean isMovable() {
 		return m_isMovable;
 	}
 
-	public boolean isFocusable()
-	{
-		return m_isFocusable;
-	}
-
-	public void setMovable(boolean isMovable)
-	{
+	public void setMovable(boolean isMovable) {
 		m_isMovable = isMovable;
 	}
 
-	public void setTopMost(boolean isTopMost)
-	{
-		m_isTopMost = isTopMost;
+	public boolean isFocusable() {
+		return m_isFocusable;
 	}
-	
-	public void setFocusable(boolean isFocusable)
-	{
+
+	public void setFocusable(boolean isFocusable) {
 		m_isFocusable = isFocusable;
 	}
-	
-	public void addControl(Control control)
-	{
+
+	public void addControl(Control control) {
 		m_rootPanel.addControl(control);
 	}
-	
-	public void addControl(Control control, Vector2D location)
-	{
+
+	public void addControl(Control control, Vector2D location) {
 		m_rootPanel.addControl(control, location);
 	}
-	
-	public void removeControl(Control control)
-	{
+
+	public void removeControl(Control control) {
 		m_rootPanel.removeControl(control);
 	}
 
-	public <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException
-	{
+	public <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException {
 		return m_rootPanel.getControl(controlClass, name);
 	}
 
-	public <T extends Control> boolean hasControl(Class<T> controlClass, String name)
-	{
+	public <T extends Control> boolean hasControl(Class<T> controlClass, String name) {
 		return m_rootPanel.hasControl(controlClass, name);
 	}
-	
-	void setManager(WindowManager manager)
-	{
-		m_manager = manager;
-	}
-	
+
 	@Nullable
-	public WindowManager getManager()
-	{
+	public WindowManager getManager() {
 		return m_manager;
 	}
-	
-	public void center()
-	{
-		if(m_manager != null)
+
+	void setManager(WindowManager manager) {
+		m_manager = manager;
+	}
+
+	public void center() {
+		if (m_manager != null)
 			m_manager.centerWindow(this);
 	}
-	
-	public void remove()
-	{
-		if(m_manager != null)
+
+	public void remove() {
+		if (m_manager != null)
 			m_manager.removeWindow(this);
 	}
-	
-	public void focus()
-	{
-		if(isFocusable() && isVisible() && m_manager != null)
-		{
+
+	public void focus() {
+		if (isFocusable() && isVisible() && m_manager != null) {
 			m_manager.setFocusedWindow(this);
 		}
 	}
 
 	@Override
-	public void render(Graphics2D g, int x, int y, float scale)
-	{
+	public void render(Graphics2D g, int x, int y, float scale) {
 		m_rootPanel.render(g, x, y, scale);
 	}
 
 	@Override
-	public boolean onMouseEvent(InputMouseEvent mouseEvent)
-	{
+	public boolean onMouseEvent(InputMouseEvent mouseEvent) {
 		m_observers.raise(IWindowInputObserver.class).onMouseEvent(mouseEvent);
 		return m_rootPanel.onMouseEvent(mouseEvent);
 	}
 
 	@Override
-	public boolean onKeyEvent(InputKeyEvent keyEvent)
-	{
+	public boolean onKeyEvent(InputKeyEvent keyEvent) {
 		m_observers.raise(IWindowInputObserver.class).onKeyEvent(keyEvent);
 		return m_rootPanel.onKeyEvent(keyEvent);
 	}
 
 	@Override
-	public Rect2D getBounds()
-	{
+	public Rect2D getBounds() {
 		return m_rootPanel.getBounds();
 	}
 
 	@Override
-	public void update(int deltaTime)
-	{
+	public void update(int deltaTime) {
 		m_rootPanel.update(deltaTime);
 	}
-	
+
 	@Override
-	protected void onStyleChanged()
-	{
+	protected void onStyleChanged() {
 		m_rootPanel.setStyle(getStyle());
 	}
 
 	@Override
-	protected void onFocusChanged()
-	{
+	protected void onFocusChanged() {
 		m_observers.raise(IWindowFocusObserver.class).onFocusChanged(hasFocus());
 	}
-	
-	public interface IWindowInputObserver
-	{
+
+	public interface IWindowInputObserver {
 		void onKeyEvent(InputKeyEvent event);
+
 		void onMouseEvent(InputMouseEvent event);
 	}
-	
-	public interface IWindowFocusObserver
-	{
+
+	public interface IWindowFocusObserver {
 		void onFocusChanged(boolean hasFocus);
 	}
 }

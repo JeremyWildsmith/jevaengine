@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,8 +18,7 @@
  */
 package io.github.jevaengine.graphics;
 
-public enum AnimationState
-{
+public enum AnimationState {
 	Play,
 	PlayWrap,
 	Stop,

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,15 +18,13 @@
  */
 package io.github.jevaengine.math;
 
-public final class Vector4D
-{
+public final class Vector4D {
 	public int x;
 	public int y;
 	public int z;
 	public int w;
-	
-	public Vector4D(int _x, int _y, int _z, int _w)
-	{
+
+	public Vector4D(int _x, int _y, int _z, int _w) {
 		x = _x;
 		y = _y;
 		z = _z;

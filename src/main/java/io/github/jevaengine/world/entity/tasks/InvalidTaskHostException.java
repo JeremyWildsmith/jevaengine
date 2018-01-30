@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,18 +19,15 @@
 package io.github.jevaengine.world.entity.tasks;
 
 /**
- *
  * @author Jeremy
  */
-public class InvalidTaskHostException extends RuntimeException
-{
+public class InvalidTaskHostException extends RuntimeException {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public InvalidTaskHostException(String message)
-	{
+	public InvalidTaskHostException(String message) {
 		super(message);
 	}
 }

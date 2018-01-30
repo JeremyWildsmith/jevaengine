@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,21 +19,20 @@
 package io.github.jevaengine.audio;
 
 import com.google.inject.ImplementedBy;
+
 import java.net.URI;
 
 @ImplementedBy(CachedAudioClipFactory.class)
-public interface IAudioClipFactory
-{
+public interface IAudioClipFactory {
 	IAudioClip create(URI name) throws AudioClipConstructionException;
 
-	public static final class AudioClipConstructionException extends Exception
-	{
+	public static final class AudioClipConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
-		
+
 		public AudioClipConstructionException(URI assetName, Exception cause) {
 			super("Error constructing audio clip " + assetName.toString(), cause);
 		}
-		
+
 		public AudioClipConstructionException(String message, Exception cause) {
 			super(message, cause);
 		}

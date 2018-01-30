@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,43 +22,36 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.search.ISearchFilter;
 import io.github.jevaengine.world.search.ScaledSearchFilter;
 
-public final class ScaledEffectMap implements IEffectMap
-{
+public final class ScaledEffectMap implements IEffectMap {
 	private final IEffectMap m_effectMap;
 	private final float m_scale;
 
-	public ScaledEffectMap(IEffectMap effectMap, float scale)
-	{
+	public ScaledEffectMap(IEffectMap effectMap, float scale) {
 		m_effectMap = effectMap;
 		m_scale = scale;
 	}
-	
-	private Vector2F scale(Vector2F v)
-	{
+
+	private Vector2F scale(Vector2F v) {
 		return new Vector2F(m_scale * v.x, m_scale * v.y);
 	}
-	
+
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		m_effectMap.clear();
 	}
 
 	@Override
-	public LogicEffects getTileEffects(Vector2F location)
-	{
+	public LogicEffects getTileEffects(Vector2F location) {
 		return m_effectMap.getTileEffects(scale(location));
 	}
 
 	@Override
-	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter)
-	{
+	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter) {
 		return m_effectMap.getTileEffects(new ScaledSearchFilter<>(filter, m_scale));
 	}
 
 	@Override
-	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay)
-	{
+	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay) {
 		m_effectMap.applyOverlayEffects(new ScaledSearchFilter<>(filter, m_scale), overlay);
 	}
 }

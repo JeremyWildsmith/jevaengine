@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -25,33 +25,29 @@ import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.IVariable;
 import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.util.ThreadSafe;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URI;
-import javax.inject.Inject;
 
-public final class JsonConfigurationFactory implements IConfigurationFactory
-{
+public final class JsonConfigurationFactory implements IConfigurationFactory {
 	private final IAssetStreamFactory m_assetFactory;
-	
+
 	@Inject
-	public JsonConfigurationFactory(IAssetStreamFactory assetFactory)
-	{
+	public JsonConfigurationFactory(IAssetStreamFactory assetFactory) {
 		m_assetFactory = assetFactory;
 	}
-	
+
 	@Override
 	@ThreadSafe
-	public IImmutableVariable create(URI name) throws ConfigurationConstructionException
-	{
+	public IImmutableVariable create(URI name) throws ConfigurationConstructionException {
 		return createMutable(name);
 	}
-	
+
 	@Override
 	@ThreadSafe
-	public IVariable createMutable(URI name) throws ConfigurationConstructionException
-	{
-		try
-		{
+	public IVariable createMutable(URI name) throws ConfigurationConstructionException {
+		try {
 			return JsonVariable.create(m_assetFactory.create(name));
 		} catch (IOException | ValueSerializationException | AssetStreamConstructionException e) {
 			throw new ConfigurationConstructionException(name, e);

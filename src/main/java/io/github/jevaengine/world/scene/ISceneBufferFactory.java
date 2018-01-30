@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,7 +19,6 @@
 package io.github.jevaengine.world.scene;
 
 
-public interface ISceneBufferFactory
-{
+public interface ISceneBufferFactory {
 	ISceneBuffer create();
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,6 +19,8 @@
 package io.github.jevaengine.audio;
 
 import io.github.jevaengine.IDisposable;
+
+import javax.sound.sampled.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.ReferenceQueue;
@@ -26,15 +28,8 @@ import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class AudioClipCache implements IDisposable
-{
+public class AudioClipCache implements IDisposable {
 	private final ArrayList<SoftReference<Clip>> m_clips = new ArrayList<>();
 
 	private final ArrayList<Clip> m_busyClips = new ArrayList<>();
@@ -44,9 +39,8 @@ public class AudioClipCache implements IDisposable
 	private final URI m_clipName;
 
 	private final ReferenceQueue<Clip> m_clipCleanupQueue;
-	
-	public AudioClipCache(URI name, byte[] source, ReferenceQueue<Clip> clipCleanupQueue)
-	{
+
+	public AudioClipCache(URI name, byte[] source, ReferenceQueue<Clip> clipCleanupQueue) {
 		m_clipName = name;
 		m_clipCleanupQueue = clipCleanupQueue;
 
@@ -54,26 +48,21 @@ public class AudioClipCache implements IDisposable
 	}
 
 	@Override
-	public void dispose()
-	{
-		try
-		{
+	public void dispose() {
+		try {
 			m_clipStream.close();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			// This should never happen
 			throw new RuntimeException(e);
 		}
 	}
 
-	public synchronized Clip getClip() throws IOException, UnsupportedAudioFileException, UnsupportedAudioFormatException, LineUnavailableException
-	{
+	public synchronized Clip getClip() throws IOException, UnsupportedAudioFileException, UnsupportedAudioFormatException, LineUnavailableException {
 		Clip clip = null;
 
 		ArrayList<SoftReference<Clip>> garbageClips = new ArrayList<>();
 
-		for (SoftReference<Clip> entry : m_clips)
-		{
+		for (SoftReference<Clip> entry : m_clips) {
 			if (entry.get() == null)
 				garbageClips.add(entry);
 			else if (!m_busyClips.contains(entry.get()))
@@ -82,21 +71,18 @@ public class AudioClipCache implements IDisposable
 
 		m_clips.removeAll(garbageClips);
 
-		if (clip == null)
-		{
+		if (clip == null) {
 			m_clipStream.reset();
-			try (AudioInputStream ais = AudioSystem.getAudioInputStream(m_clipStream))
-			{
+			try (AudioInputStream ais = AudioSystem.getAudioInputStream(m_clipStream)) {
 				AudioFormat baseFormat = ais.getFormat();
-				
+
 				AudioFormat[] supportedTargets = AudioSystem.getTargetFormats(AudioFormat.Encoding.PCM_SIGNED, baseFormat);
-				
-				if(supportedTargets.length == 0)
+
+				if (supportedTargets.length == 0)
 					throw new UnsupportedAudioFormatException(baseFormat.toString());
-				
+
 				clip = AudioSystem.getClip();
-				try (AudioInputStream targetAis = AudioSystem.getAudioInputStream(supportedTargets[0], ais))
-				{
+				try (AudioInputStream targetAis = AudioSystem.getAudioInputStream(supportedTargets[0], ais)) {
 					clip.open(targetAis);
 				}
 			}
@@ -109,49 +95,40 @@ public class AudioClipCache implements IDisposable
 		return clip;
 	}
 
-	public synchronized void freeClip(Clip clip)
-	{
+	public synchronized void freeClip(Clip clip) {
 		clip.stop();
 		m_busyClips.remove(clip);
 	}
 
-	public synchronized void cleanupCache()
-	{
-		for (SoftReference<Clip> clip : m_clips)
-		{
+	public synchronized void cleanupCache() {
+		for (SoftReference<Clip> clip : m_clips) {
 			if (clip.get() == null)
 				m_clips.remove(clip);
 		}
 	}
 
-	public URI getName()
-	{
+	public URI getName() {
 		return m_clipName;
 	}
 
-	public synchronized boolean isEmpty()
-	{
+	public synchronized boolean isEmpty() {
 		return m_clips.isEmpty();
 	}
 
-	private static class ByteBufferAdapter extends InputStream
-	{
+	private static class ByteBufferAdapter extends InputStream {
 		private final ByteBuffer m_buffer;
 
-		public ByteBufferAdapter(ByteBuffer buffer)
-		{
+		public ByteBufferAdapter(ByteBuffer buffer) {
 			m_buffer = buffer;
 		}
 
 		@Override
-		public synchronized void reset()
-		{
+		public synchronized void reset() {
 			m_buffer.rewind();
 		}
 
 		@Override
-		public int read() throws IOException
-		{
+		public int read() throws IOException {
 			if (!m_buffer.hasRemaining())
 				return -1;
 
@@ -161,8 +138,7 @@ public class AudioClipCache implements IDisposable
 		}
 
 		@Override
-		public int read(byte[] bytes, int off, int len) throws IOException
-		{
+		public int read(byte[] bytes, int off, int len) throws IOException {
 			if (!m_buffer.hasRemaining())
 				return -1;
 
@@ -170,5 +146,5 @@ public class AudioClipCache implements IDisposable
 			m_buffer.get(bytes, off, len);
 			return len;
 		}
-	}	
+	}
 }

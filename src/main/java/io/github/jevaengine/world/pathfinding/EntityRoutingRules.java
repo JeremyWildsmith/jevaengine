@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,54 +27,48 @@ import io.github.jevaengine.world.TiledEffectMap;
 import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.search.RectangleSearchFilter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityRoutingRules implements IRoutingRules
-{
+public class EntityRoutingRules implements IRoutingRules {
 	private final Direction[] m_allowedMovements;
 	private final IEntity m_subject;
-	
-	public EntityRoutingRules(IEntity subject, Direction[] allowedMovements)
-	{
+
+	public EntityRoutingRules(IEntity subject, Direction[] allowedMovements) {
 		m_subject = subject;
 		m_allowedMovements = allowedMovements;
 	}
 
-	private boolean hasClearance(World world, Vector2D point)
-	{
+	private boolean hasClearance(World world, Vector2D point) {
 		Rect2F bounds = m_subject.getBody().getAABB().getXy();
-		bounds.x = (float)Math.floor(bounds.x + point.x - m_subject.getBody().getLocation().x);
-		bounds.y = (float)Math.floor(bounds.y + point.y - m_subject.getBody().getLocation().y);
-		bounds.width = (float)Math.ceil(bounds.width);
-		bounds.height = (float)Math.ceil(bounds.height);
-		
+		bounds.x = (float) Math.floor(bounds.x + point.x - m_subject.getBody().getLocation().x);
+		bounds.y = (float) Math.floor(bounds.y + point.y - m_subject.getBody().getLocation().y);
+		bounds.width = (float) Math.ceil(bounds.width);
+		bounds.height = (float) Math.ceil(bounds.height);
+
 		LogicEffects[] effects = world.getEffectMap().getTileEffects(new RectangleSearchFilter<TiledEffectMap.LogicEffects>(bounds));
-		
-		for(TiledEffectMap.LogicEffects e : effects)
-		{
-			if(!e.isTraversable(m_subject))
+
+		for (TiledEffectMap.LogicEffects e : effects) {
+			if (!e.isTraversable(m_subject))
 				return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	@Override
-	public Direction[] getMovements(World world, Vector2F origin)
-	{
+	public Direction[] getMovements(World world, Vector2F origin) {
 		List<Direction> directions = new ArrayList<>();
 		SearchNode currentNode = new SearchNode(null, Direction.Zero, origin.round());
-		
-		for (Direction dir : m_allowedMovements)
-		{
-			if (hasClearance(world, currentNode.getLocation(dir)))
-			{
+
+		for (Direction dir : m_allowedMovements) {
+			if (hasClearance(world, currentNode.getLocation(dir))) {
 				// So sorry for these if statements...
 				if (!dir.isDiagonal())
 					directions.add(dir);
 				else if (hasClearance(world, currentNode.getLocation(Direction.fromVector(new Vector2F(dir.getDirectionVector().x, 0)))) &&
-									hasClearance(world, currentNode.getLocation(Direction.fromVector(new Vector2F(0, dir.getDirectionVector().y)))))
+						hasClearance(world, currentNode.getLocation(Direction.fromVector(new Vector2F(0, dir.getDirectionVector().y)))))
 					directions.add(dir);
 			}
 		}

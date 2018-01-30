@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,10 +18,10 @@
  */
 package io.github.jevaengine;
 
-public final class NullIInitializationProgressMonitor implements IInitializationProgressMonitor
-{
+public final class NullIInitializationProgressMonitor implements IInitializationProgressMonitor {
 
 	@Override
-	public void statusChanged(float progress, String status) { }
+	public void statusChanged(float progress, String status) {
+	}
 
 }

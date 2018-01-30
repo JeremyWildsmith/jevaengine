@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,15 +19,14 @@
 package io.github.jevaengine.ui.style;
 
 import com.google.inject.ImplementedBy;
+
 import java.net.URI;
 
 @ImplementedBy(DefaultUIStyleFactory.class)
-public interface IUIStyleFactory
-{
+public interface IUIStyleFactory {
 	IUIStyle create(URI name) throws UIStyleConstructionException;
-	
-	public static final class UIStyleConstructionException extends Exception
-	{
+
+	public static final class UIStyleConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public UIStyleConstructionException(URI assetName, Exception cause) {

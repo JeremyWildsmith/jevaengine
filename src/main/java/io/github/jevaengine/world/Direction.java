@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,10 +20,10 @@ package io.github.jevaengine.world;
 
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
+
 import java.util.Arrays;
 
-public enum Direction
-{
+public enum Direction {
 	XPlus(new Vector2D(1, 0), false),
 	YPlus(new Vector2D(0, 1), false),
 	XMinus(new Vector2D(-1, 0), false),
@@ -35,49 +35,40 @@ public enum Direction
 	Zero(new Vector2D(0, 0), false);
 
 	public static final Direction[] CLOCKWISE =
-	{ XYPlus, YPlus, XYMinusPlus, XMinus, XYMinus, YMinus, XYPlusMinus, XPlus};
-	
+			{XYPlus, YPlus, XYMinusPlus, XMinus, XYMinus, YMinus, XYPlusMinus, XPlus};
+
 	public static final Direction[] HV_DIRECTIONS =
-	{ XPlus, YPlus, XMinus, YMinus };
+			{XPlus, YPlus, XMinus, YMinus};
 
 	public static final Direction[] DIAGONAL_DIRECTIONS =
-	{ XYPlus, XYMinus, XYPlusMinus, XYMinusPlus };
+			{XYPlus, XYMinus, XYPlusMinus, XYMinusPlus};
 
 	public static final Direction[] ALL_DIRECTIONS =
-	{ XPlus, YPlus, XMinus, YMinus, XYPlus, XYMinus, XYPlusMinus, XYMinusPlus };
+			{XPlus, YPlus, XMinus, YMinus, XYPlus, XYMinus, XYPlusMinus, XYMinusPlus};
 
 	private Vector2D m_movementVector;
 
 	private boolean m_isDiagonal;
 
-	Direction(Vector2D movementVector, boolean isDiagonal)
-	{
+	Direction(Vector2D movementVector, boolean isDiagonal) {
 		m_movementVector = movementVector;
 		m_isDiagonal = isDiagonal;
 	}
 
-	public boolean isDiagonal()
-	{
-		return m_isDiagonal;
-	}
-
-	public static Direction fromAngle(float angle)
-	{
+	public static Direction fromAngle(float angle) {
 		Vector2F vec = new Vector2F(1, 0);
-		
+
 		return fromVector(vec.rotate(angle));
 	}
-	
-	public static Direction fromVector(Vector2F vec)
-	{
+
+	public static Direction fromVector(Vector2F vec) {
 		if (vec.isZero())
 			return Direction.Zero;
 
 		Vector2F dir = vec.normalize();
 		float fAngle = (float) Math.atan(Math.abs(dir.y) / Math.abs(dir.x));
 
-		if (fAngle < Math.PI / 4 - Math.PI / 5.5 || fAngle > Math.PI / 4 + Math.PI / 5.5)
-		{
+		if (fAngle < Math.PI / 4 - Math.PI / 5.5 || fAngle > Math.PI / 4 + Math.PI / 5.5) {
 			if (dir.x > Vector2F.TOLERANCE && dir.y > Vector2F.TOLERANCE)
 				return dir.x > dir.y ? XPlus : YPlus;
 			else if (dir.x < -Vector2F.TOLERANCE && dir.y < -Vector2F.TOLERANCE)
@@ -90,8 +81,7 @@ public enum Direction
 				return (dir.x < 0 ? XMinus : XPlus);
 			else if (Math.abs(dir.x) <= Vector2F.TOLERANCE && Math.abs(dir.y) >= Vector2F.TOLERANCE)
 				return (dir.y > 0 ? YPlus : YMinus);
-		} else
-		{
+		} else {
 			if (vec.x > Vector2F.TOLERANCE && vec.y > Vector2F.TOLERANCE)
 				return XYPlus;
 			else if (vec.x > Vector2F.TOLERANCE && vec.y < -Vector2F.TOLERANCE)
@@ -105,31 +95,30 @@ public enum Direction
 		return Direction.Zero;
 	}
 
-	public Vector2D getDirectionVector()
-	{
+	public boolean isDiagonal() {
+		return m_isDiagonal;
+	}
+
+	public Vector2D getDirectionVector() {
 		return m_movementVector;
 	}
-	
-	public Direction getClockwise()
-	{
+
+	public Direction getClockwise() {
 		int i = Arrays.asList(CLOCKWISE).indexOf(this);
-		
+
 		return (CLOCKWISE[(i + 1) % CLOCKWISE.length]);
 	}
-	
-	public Direction getCounterClockwise()
-	{
+
+	public Direction getCounterClockwise() {
 		int i = Arrays.asList(CLOCKWISE).indexOf(this);
-		
-		if(i == 0)
+
+		if (i == 0)
 			i = CLOCKWISE.length;
 		return (CLOCKWISE[i - 1]);
 	}
 
-	public float getAngle()
-	{
-		switch (this)
-		{
+	public float getAngle() {
+		switch (this) {
 			case XMinus:
 				return (float) Math.PI;
 			case XPlus:
@@ -155,13 +144,11 @@ public enum Direction
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Enum#toString()
 	 */
-	public String toString()
-	{
-		switch (this)
-		{
+	public String toString() {
+		switch (this) {
 			case XMinus:
 				return "w";
 			case XPlus:

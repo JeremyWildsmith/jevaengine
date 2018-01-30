@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,31 +22,26 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ExtentionMuxedAnimationSceneModelFactory implements IAnimationSceneModelFactory
-{
+public final class ExtentionMuxedAnimationSceneModelFactory implements IAnimationSceneModelFactory {
 	private final Map<String, IAnimationSceneModelFactory> m_factories = new HashMap<>();
 	private final IAnimationSceneModelFactory m_defaultFactory;
-	
-	public ExtentionMuxedAnimationSceneModelFactory(IAnimationSceneModelFactory defaultFactory)
-	{
+
+	public ExtentionMuxedAnimationSceneModelFactory(IAnimationSceneModelFactory defaultFactory) {
 		m_defaultFactory = defaultFactory;
 	}
-	
-	public void put(String extention, IAnimationSceneModelFactory factory)
-	{
+
+	public void put(String extention, IAnimationSceneModelFactory factory) {
 		String ext = extention.startsWith(".") ? extention : "." + extention;
 		m_factories.put(ext, factory);
 	}
 
 	@Override
-	public IAnimationSceneModel create(URI name) throws SceneModelConstructionException
-	{
-		for(Map.Entry<String, IAnimationSceneModelFactory> e : m_factories.entrySet())
-		{
-			if(name.getPath().endsWith(e.getKey()))
+	public IAnimationSceneModel create(URI name) throws SceneModelConstructionException {
+		for (Map.Entry<String, IAnimationSceneModelFactory> e : m_factories.entrySet()) {
+			if (name.getPath().endsWith(e.getKey()))
 				return e.getValue().create(name);
 		}
-		
+
 		return m_defaultFactory.create(name);
 	}
 }

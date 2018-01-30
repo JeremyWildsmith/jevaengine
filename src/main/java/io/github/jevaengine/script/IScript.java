@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,12 +20,11 @@ package io.github.jevaengine.script;
 
 import io.github.jevaengine.util.Nullable;
 
-public interface IScript
-{
+public interface IScript {
 	void put(String name, Object o);
 
 	IFunctionFactory getFunctionFactory();
-	
+
 	@Nullable
 	Object evaluate(String expression) throws ScriptExecuteException;
 }

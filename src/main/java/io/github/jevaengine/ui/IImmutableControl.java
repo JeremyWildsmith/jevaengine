@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,26 +26,28 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.ui.style.ComponentStyle;
 import io.github.jevaengine.ui.style.IUIStyle;
 
-public interface IImmutableControl extends IRenderable
-{
+public interface IImmutableControl extends IRenderable {
 	boolean hasFocus();
-	
+
 	String getInstanceName();
-	
+
 	Vector2D getLocation();
+
 	Vector2D getAbsoluteLocation();
-	
+
 	ComponentStyle getComponentStyle();
+
 	IUIStyle getStyle();
-	
+
 	IImmutableControl getParent();
-	
+
 	boolean isVisible();
-	
+
 	boolean onMouseEvent(InputMouseEvent mouseEvent);
+
 	boolean onKeyEvent(InputKeyEvent keyEvent);
-	
+
 	Rect2D getBounds();
-	
+
 	void update(int deltaTime);
 }

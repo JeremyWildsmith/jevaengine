@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,6 @@ package io.github.jevaengine.ui.style;
 
 import io.github.jevaengine.graphics.IImmutableGraphic;
 
-public interface IFrameFactory
-{
+public interface IFrameFactory {
 	IImmutableGraphic create(int desiredWidth, int desiredHeight);
 }

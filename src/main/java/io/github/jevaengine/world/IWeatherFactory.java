@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,64 +27,58 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
-import java.awt.Graphics2D;
+
+import java.awt.*;
 import java.net.URI;
 import java.util.Collection;
 
 
 @ImplementedBy(DefaultWeatherFactory.class)
-public interface IWeatherFactory
-{
+public interface IWeatherFactory {
 	IWeather create(URI name) throws WeatherConstructionException;
-	
-	interface IWeather extends ISceneBufferEffect
-	{
+
+	interface IWeather extends ISceneBufferEffect {
 		void update(int deltaTime);
+
 		void dispose();
 	}
 
-	public static final class NullWeather implements IWeather
-	{
+	public static final class NullWeather implements IWeather {
 
 		@Override
-		public void update(int deltaTime) { }
+		public void update(int deltaTime) {
+		}
 
 		@Override
-		public void dispose() { }
+		public void dispose() {
+		}
 
 		@Override
-		public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection)
-		{
+		public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection) {
 			return new NullGraphic();
 		}
 
 		@Override
-		public IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection)
-		{
+		public IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection) {
 			return new NullGraphic();
 		}
 
 		@Override
-		public ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, final Vector2D renderlocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath)
-		{
+		public ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, final Vector2D renderlocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath) {
 			return new ISceneComponentEffect[0];
 		}
 
 	}
-	
-	public static final class NullWeatherFactory implements IWeatherFactory
-	{
+
+	public static final class NullWeatherFactory implements IWeatherFactory {
 		@Override
-		public IWeather create(URI name) throws WeatherConstructionException
-		{
+		public IWeather create(URI name) throws WeatherConstructionException {
 			return new NullWeather();
 		}
 	}
-	
-	public final class WeatherConstructionException extends Exception
-	{
-		public WeatherConstructionException(Exception e)
-		{
+
+	public final class WeatherConstructionException extends Exception {
+		public WeatherConstructionException(Exception e) {
 			super(e);
 		}
 	}

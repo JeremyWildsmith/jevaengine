@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,15 +24,16 @@ import io.github.jevaengine.world.World;
 import io.github.jevaengine.world.scene.IImmutableSceneBuffer;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 
-public interface ICamera
-{
+public interface ICamera {
 	IImmutableSceneBuffer getScene(Rect2D bounds, float scale);
-	
+
 	Vector3F getLookAt();
 
 	void addEffect(ISceneBufferEffect effect);
+
 	void removeEffect(ISceneBufferEffect effect);
-	
+
 	void dettach();
+
 	void attach(World world);
 }

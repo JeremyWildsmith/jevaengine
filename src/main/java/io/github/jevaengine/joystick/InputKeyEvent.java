@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,31 +18,19 @@
  */
 package io.github.jevaengine.joystick;
 
-public class InputKeyEvent implements IInputEvent
-{
-
-	public enum KeyEventType
-	{
-		KeyTyped,
-		KeyDown,
-		KeyUp,
-	}
+public class InputKeyEvent implements IInputEvent {
 
 	public InputKeyEvent.KeyEventType type;
 	public int keyCode;
 	public char keyChar;
-
-	protected InputKeyEvent(InputKeyEvent.KeyEventType _type, int _keyCode, char _keyChar)
-	{
+	protected InputKeyEvent(InputKeyEvent.KeyEventType _type, int _keyCode, char _keyChar) {
 		type = _type;
 		keyCode = _keyCode;
 		keyChar = _keyChar;
 	}
 
-	public void relay(IInputSourceProcessor handler)
-	{
-		switch (type)
-		{
+	public void relay(IInputSourceProcessor handler) {
+		switch (type) {
 			case KeyTyped:
 				handler.keyTyped(this);
 				break;
@@ -53,5 +41,11 @@ public class InputKeyEvent implements IInputEvent
 				handler.keyDown(this);
 				break;
 		}
+	}
+
+	public enum KeyEventType {
+		KeyTyped,
+		KeyDown,
+		KeyUp,
 	}
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +22,6 @@ import com.google.inject.ImplementedBy;
 import io.github.jevaengine.world.physics.dyn4j.Dyn4jWorldFactory;
 
 @ImplementedBy(Dyn4jWorldFactory.class)
-public interface IPhysicsWorldFactory
-{
+public interface IPhysicsWorldFactory {
 	IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters);
 }

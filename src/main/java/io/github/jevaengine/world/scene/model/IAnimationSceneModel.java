@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,105 +24,100 @@ import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.NullObservers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public interface IAnimationSceneModel extends ISceneModel
-{
+public interface IAnimationSceneModel extends ISceneModel {
 	IAnimationSceneModel clone();
+
 	IAnimationSceneModelAnimation getAnimation(String name);
+
 	boolean hasAnimation(String name);
-	
-	public interface IAnimationSceneModelAnimation
-	{
-		AnimationSceneModelAnimationState getState();
-		void setState(AnimationSceneModelAnimationState state);
-		IObserverRegistry getObservers();
-	}
-	
-	public interface IAnimationSceneModelAnimationObserver
-	{
-		void event(String name);
-		void stateChanged(AnimationSceneModelAnimationState state);
-	}
-	
-	public enum AnimationSceneModelAnimationState
-	{
+
+	public enum AnimationSceneModelAnimationState {
 		Play,
 		PlayWrap,
 		Stop,
 		PlayToEnd,
 	}
-	
-	public static final class NullAnimationSceneModelAnimation implements IAnimationSceneModelAnimation
-	{
+
+	public interface IAnimationSceneModelAnimation {
+		AnimationSceneModelAnimationState getState();
+
+		void setState(AnimationSceneModelAnimationState state);
+
+		IObserverRegistry getObservers();
+	}
+
+	public interface IAnimationSceneModelAnimationObserver {
+		void event(String name);
+
+		void stateChanged(AnimationSceneModelAnimationState state);
+	}
+
+	public static final class NullAnimationSceneModelAnimation implements IAnimationSceneModelAnimation {
 		@Override
-		public AnimationSceneModelAnimationState getState()
-		{
+		public AnimationSceneModelAnimationState getState() {
 			return AnimationSceneModelAnimationState.Stop;
 		}
 
 		@Override
-		public void setState(AnimationSceneModelAnimationState state) { }
+		public void setState(AnimationSceneModelAnimationState state) {
+		}
 
 		@Override
-		public IObserverRegistry getObservers()
-		{
+		public IObserverRegistry getObservers() {
 			return new NullObservers();
 		}
 	}
-	
-	public static final class NullAnimationSceneModel implements IAnimationSceneModel
-	{
+
+	public static final class NullAnimationSceneModel implements IAnimationSceneModel {
 		@Override
-		public void dispose() { }
-		
-		@Override
-		public void update(int deltaTime) { }
+		public void dispose() {
+		}
 
 		@Override
-		public Direction getDirection()
-		{
+		public void update(int deltaTime) {
+		}
+
+		@Override
+		public Direction getDirection() {
 			return Direction.Zero;
 		}
 
 		@Override
-		public PhysicsBodyShape getBodyShape()
-		{
-			return new PhysicsBodyShape();
+		public void setDirection(Direction direction) {
 		}
-		
-		@Override
-		public void setDirection(Direction direction) { }
 
 		@Override
-		public List<ISceneModelComponent> getComponents(Matrix3X3 projection)
-		{
+		public PhysicsBodyShape getBodyShape() {
+			return new PhysicsBodyShape();
+		}
+
+		@Override
+		public List<ISceneModelComponent> getComponents(Matrix3X3 projection) {
 			return new ArrayList<>();
 		}
 
 		@Override
-		public Rect3F getAABB()
-		{
+		public Rect3F getAABB() {
 			return new Rect3F();
 		}
 
 		@Override
-		public IAnimationSceneModel clone()
-		{
+		public IAnimationSceneModel clone() {
 			return new NullAnimationSceneModel();
 		}
 
 		@Override
-		public IAnimationSceneModelAnimation getAnimation(String name)
-		{
+		public IAnimationSceneModelAnimation getAnimation(String name) {
 			return new NullAnimationSceneModelAnimation();
 		}
 
 		@Override
-		public boolean hasAnimation(String name)
-		{
+		public boolean hasAnimation(String name) {
 			return false;
-		}		
+		}
 	}
 }

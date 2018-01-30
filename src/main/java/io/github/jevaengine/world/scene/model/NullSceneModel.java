@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,46 +22,44 @@ import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public final class NullSceneModel implements ISceneModel
-{
+public final class NullSceneModel implements ISceneModel {
 	@Override
-	public void dispose() { }
-	
-	public NullSceneModel clone()
-	{
+	public void dispose() {
+	}
+
+	public NullSceneModel clone() {
 		return new NullSceneModel();
 	}
-	
+
 	@Override
-	public List<ISceneModelComponent> getComponents(Matrix3X3 projection)
-	{
+	public List<ISceneModelComponent> getComponents(Matrix3X3 projection) {
 		return new ArrayList<>();
 	}
-	
+
 	@Override
-	public Rect3F getAABB()
-	{
+	public Rect3F getAABB() {
 		return new Rect3F();
 	}
 
 	@Override
-	public PhysicsBodyShape getBodyShape()
-	{
+	public PhysicsBodyShape getBodyShape() {
 		return new PhysicsBodyShape();
 	}
-	
-	@Override
-	public void update(int deltaTime) { }
 
 	@Override
-	public Direction getDirection()
-	{
+	public void update(int deltaTime) {
+	}
+
+	@Override
+	public Direction getDirection() {
 		return Direction.Zero;
 	}
 
 	@Override
-	public void setDirection(Direction direction) { }
+	public void setDirection(Direction direction) {
+	}
 }

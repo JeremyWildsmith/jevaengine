@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,32 +20,28 @@ package io.github.jevaengine.world.physics.dyn4j;
 
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
-import java.util.NoSuchElementException;
 import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Vector2;
 
-final class Dyn4jUtil
-{
-	public static Vector2F wrap(Vector2 vec)
-	{
-		return new Vector2F((float)vec.x, (float)vec.y);
+import java.util.NoSuchElementException;
+
+final class Dyn4jUtil {
+	public static Vector2F wrap(Vector2 vec) {
+		return new Vector2F((float) vec.x, (float) vec.y);
 	}
-	
-	public static Vector2 unwrap(Vector2F vec)
-	{
+
+	public static Vector2 unwrap(Vector2F vec) {
 		return new Vector2(vec.x, vec.y);
 	}
-	
-	public static Mass.Type unwrap(PhysicsBodyType bodyType)
-	{
-		switch(bodyType)
-		{
-		case Dynamic:
-			return Mass.Type.NORMAL;
-		case Static:
-			return Mass.Type.INFINITE;
-		default:
-			throw new NoSuchElementException();
+
+	public static Mass.Type unwrap(PhysicsBodyType bodyType) {
+		switch (bodyType) {
+			case Dynamic:
+				return Mass.Type.NORMAL;
+			case Static:
+				return Mass.Type.INFINITE;
+			default:
+				throw new NoSuchElementException();
 		}
 	}
 }

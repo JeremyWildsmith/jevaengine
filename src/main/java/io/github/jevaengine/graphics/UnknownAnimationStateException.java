@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,13 +18,11 @@
  */
 package io.github.jevaengine.graphics;
 
-public class UnknownAnimationStateException extends RuntimeException
-{
+public class UnknownAnimationStateException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public UnknownAnimationStateException(AnimationState state)
-	{
+	public UnknownAnimationStateException(AnimationState state) {
 		super("Unknown ANimation State: " + state);
 	}
 }

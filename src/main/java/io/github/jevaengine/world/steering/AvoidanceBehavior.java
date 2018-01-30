@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,49 +24,45 @@ import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 import io.github.jevaengine.world.physics.RayCastIntersection;
 
-public final class AvoidanceBehavior implements ISteeringBehavior
-{
+public final class AvoidanceBehavior implements ISteeringBehavior {
 	private final int RAYCAST_ITERATIONS = 3;
 	private final float m_reactionDistance;
-	
-	public AvoidanceBehavior(float reactionDistance)
-	{
+
+	public AvoidanceBehavior(float reactionDistance) {
 		m_reactionDistance = reactionDistance;
 	}
-	
+
 	@Override
-	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection)
-	{
-		if(currentDirection.isZero())
+	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
+		if (currentDirection.isZero())
 			return currentDirection;
-		
+
 		Circle2F bounds = subject.getAABB().getXy().getBoundingCircle();
 		float reactionDistance = m_reactionDistance + bounds.radius;
-		
-		float angle = (float)Math.PI / (2 * RAYCAST_ITERATIONS);
+
+		float angle = (float) Math.PI / (2 * RAYCAST_ITERATIONS);
 		Vector2F travelDirection = currentDirection.normalize();
-		
-		for(int i = 0; i < RAYCAST_ITERATIONS; i++)
-		{
+
+		for (int i = 0; i < RAYCAST_ITERATIONS; i++) {
 			Vector2F rayDirectionLeft = travelDirection.rotate(-angle);
 			Vector2F rayDirectionRight = travelDirection.rotate(angle);
-			
+
 			RayCastIntersection resultsLeft = subject.castRay(new Vector3F(rayDirectionLeft, 0), reactionDistance);
 			RayCastIntersection resultsRight = subject.castRay(new Vector3F(rayDirectionRight, 0), reactionDistance);
 			RayCastIntersection resultsStraight = subject.castRay(new Vector3F(travelDirection, 0), reactionDistance);
-			
-			if(resultsLeft != null && resultsRight != null && resultsStraight != null)
+
+			if (resultsLeft != null && resultsRight != null && resultsStraight != null)
 				return new Vector2F();
-			else if(resultsLeft != null && resultsRight != null)
+			else if (resultsLeft != null && resultsRight != null)
 				break;
-			else if(resultsLeft != null)
+			else if (resultsLeft != null)
 				travelDirection = travelDirection.rotate(angle);
-			else if(resultsRight != null)
+			else if (resultsRight != null)
 				travelDirection = travelDirection.rotate(-angle);
 			else
 				break;
 		}
-		
+
 		return travelDirection;
 	}
 }

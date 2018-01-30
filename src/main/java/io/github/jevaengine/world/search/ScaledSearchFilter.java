@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,39 +21,34 @@ package io.github.jevaengine.world.search;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2F;
 
-public final class ScaledSearchFilter<T> implements ISearchFilter<T>
-{
+public final class ScaledSearchFilter<T> implements ISearchFilter<T> {
 	private final ISearchFilter<T> m_searchFilter;
 	private final float m_scale;
-	
-	public ScaledSearchFilter(ISearchFilter<T> searchFilter, float scale)
-	{
+
+	public ScaledSearchFilter(ISearchFilter<T> searchFilter, float scale) {
 		m_searchFilter = searchFilter;
 		m_scale = scale;
 	}
-	
+
 	@Override
-	public Rect2D getSearchBounds()
-	{
+	public Rect2D getSearchBounds() {
 		Rect2D bounds = m_searchFilter.getSearchBounds();
-		
-		return new Rect2D((int)Math.floor(m_scale * bounds.x),
-							(int)Math.floor(m_scale * bounds.y),
-							(int)Math.ceil(m_scale * bounds.width),
-							(int)Math.ceil(m_scale * bounds.height));
+
+		return new Rect2D((int) Math.floor(m_scale * bounds.x),
+				(int) Math.floor(m_scale * bounds.y),
+				(int) Math.ceil(m_scale * bounds.width),
+				(int) Math.ceil(m_scale * bounds.height));
 	}
 
 	@Override
-	public boolean shouldInclude(Vector2F location)
-	{
+	public boolean shouldInclude(Vector2F location) {
 		Vector2F scaled = new Vector2F(location.x / m_scale, location.y / m_scale);
-		
+
 		return m_searchFilter.shouldInclude(scaled);
 	}
 
 	@Override
-	public boolean filter(T item)
-	{
+	public boolean filter(T item) {
 		return m_searchFilter.filter(item);
 	}
 }

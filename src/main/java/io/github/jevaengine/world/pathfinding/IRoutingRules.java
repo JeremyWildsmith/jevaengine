@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +22,6 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.World;
 
-public interface IRoutingRules
-{
+public interface IRoutingRules {
 	public Direction[] getMovements(World world, Vector2F origin);
 }

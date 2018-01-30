@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,18 +21,15 @@ package io.github.jevaengine.world.scene;
 import io.github.jevaengine.math.Matrix3X3;
 
 
-public final class TopologicalOrthographicProjectionSceneBufferFactory implements ISceneBufferFactory
-{
+public final class TopologicalOrthographicProjectionSceneBufferFactory implements ISceneBufferFactory {
 	private final Matrix3X3 m_projection;
-	
-	public TopologicalOrthographicProjectionSceneBufferFactory(Matrix3X3 projection)
-	{
+
+	public TopologicalOrthographicProjectionSceneBufferFactory(Matrix3X3 projection) {
 		m_projection = projection;
 	}
-	
+
 	@Override
-	public ISceneBuffer create()
-	{
+	public ISceneBuffer create() {
 		return new TopologicalOrthographicProjectionSceneBuffer(new Matrix3X3(m_projection));
 	}
 }

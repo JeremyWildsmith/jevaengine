@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,39 +27,30 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.entity.IEntity;
-import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
-import io.github.jevaengine.world.physics.IPhysicsBody;
-import io.github.jevaengine.world.physics.IPhysicsBodyContactObserver;
-import io.github.jevaengine.world.physics.IPhysicsBodyOrientationObserver;
-import io.github.jevaengine.world.physics.RayCastIntersection;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import io.github.jevaengine.world.physics.*;
 import org.dyn4j.collision.Fixture;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.geometry.AABB;
 import org.dyn4j.geometry.Transform;
 import org.dyn4j.geometry.Vector2;
 
-public final class Dyn4jBody implements IPhysicsBody
-{
-	private Dyn4jWorld m_world;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+public final class Dyn4jBody implements IPhysicsBody {
 	private final Body m_body;
 	private final Fixture m_fixture;
-	
-	private float m_depth = 0.0F;
-	
 	private final IEntity m_owner;
 	private final Observers m_observers = new Observers();
-	
 	private final Set<Class<?>> m_collisionExceptions = new HashSet<>();
-	
+	private Dyn4jWorld m_world;
+	private float m_depth = 0.0F;
 	private boolean m_isCollidable = true;
 
 	private Direction m_direction = Direction.XYPlus;
 
-	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?> ... collisionExceptions)
-	{
+	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?>... collisionExceptions) {
 		m_body = body;
 		m_fixture = fixture;
 		m_owner = owner;
@@ -67,148 +58,106 @@ public final class Dyn4jBody implements IPhysicsBody
 		m_world = world;
 		m_collisionExceptions.addAll(Arrays.asList(collisionExceptions));
 	}
-	
-	void beginContact(Dyn4jBody other)
-	{
+
+	void beginContact(Dyn4jBody other) {
 		m_observers.raise(IPhysicsBodyContactObserver.class).onBeginContact(other);
 	}
-	
-	void endContact(Dyn4jBody other)
-	{
-		m_observers.raise(IPhysicsBodyContactObserver.class).onEndContact(other);		
+
+	void endContact(Dyn4jBody other) {
+		m_observers.raise(IPhysicsBodyContactObserver.class).onEndContact(other);
 	}
-	
+
 	@Override
-	public void destory()
-	{
+	public void destory() {
 		m_observers.clear();
 		m_body.getWorld().removeBody(m_body);
 		m_world = null;
 	}
-	
+
 	@Override
-	public Dyn4jWorld getWorld()
-	{
+	public Dyn4jWorld getWorld() {
 		return m_world;
 	}
-	
+
 	@Override
 	@Nullable
-	public RayCastIntersection castRay(Vector3F direction, float maxCast)
-	{
-		if(direction.isZero() || m_world == null)
+	public RayCastIntersection castRay(Vector3F direction, float maxCast) {
+		if (direction.isZero() || m_world == null)
 			return null;
-		
-		Vector3F startPoint = getLocation().add(direction.normalize().multiply((float)m_fixture.getShape().getRadius()));
+
+		Vector3F startPoint = getLocation().add(direction.normalize().multiply((float) m_fixture.getShape().getRadius()));
 		Vector3F endPoint = startPoint.add(direction.normalize().multiply(maxCast));
-		
+
 		return new Dyn4jRaycaster().cast(m_world, startPoint.getXy(), endPoint.getXy(), m_body);
 	}
-	
+
 	@Override
-	public IObserverRegistry getObservers()
-	{
+	public IObserverRegistry getObservers() {
 		return m_observers;
 	}
-	
+
 	@Override
-	public boolean hasOwner()
-	{
+	public boolean hasOwner() {
 		return m_owner != null;
 	}
-	
+
 	@Override
-	public IEntity getOwner()
-	{
+	public IEntity getOwner() {
 		return m_owner;
 	}
-	
+
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return m_body.getMass().isInfinite();
 	}
-	
+
 	@Override
-	public boolean isCollidable()
-	{
+	public boolean isCollidable() {
 		return !(m_fixture.isSensor() || !m_isCollidable);
 	}
-	
+
 	@Override
-	public boolean collidesWith(IImmutablePhysicsBody body)
-	{
-		if(m_fixture.isSensor() || !m_isCollidable)
+	public void setCollidable(boolean isCollidable) {
+		m_isCollidable = isCollidable;
+	}
+
+	@Override
+	public boolean collidesWith(IImmutablePhysicsBody body) {
+		if (m_fixture.isSensor() || !m_isCollidable)
 			return false;
-		
+
 		return body.hasOwner() ? !m_collisionExceptions.contains(body.getOwner().getClass()) : true;
 	}
-	
+
 	@Override
-	public Circle3F getBoundingCircle()
-	{
-		return new Circle3F(0, 0, 0, (float)m_fixture.getShape().getRadius());
+	public Circle3F getBoundingCircle() {
+		return new Circle3F(0, 0, 0, (float) m_fixture.getShape().getRadius());
 	}
-	
+
 	@Override
-	public Rect3F getAABB()
-	{
+	public Rect3F getAABB() {
 		Rect3F aabb = new Rect3F();
 		AABB b2aabb = m_fixture.getShape().createAABB();
 
-		aabb.x = (float)b2aabb.getMinX();
-		aabb.y = (float)b2aabb.getMinY();
-		aabb.width = (float)(b2aabb.getMaxX() - b2aabb.getMinX());
-		aabb.height = (float)(b2aabb.getMaxY() - b2aabb.getMinY());
+		aabb.x = (float) b2aabb.getMinX();
+		aabb.y = (float) b2aabb.getMinY();
+		aabb.width = (float) (b2aabb.getMaxX() - b2aabb.getMinX());
+		aabb.height = (float) (b2aabb.getMaxY() - b2aabb.getMinY());
 		return aabb.add(getLocation());
 	}
-	
+
 	@Override
-	public float getMass()
-	{
-		return (float)m_body.getMass().getMass();
+	public float getMass() {
+		return (float) m_body.getMass().getMass();
 	}
-	
+
 	@Override
-	public Vector3F getLocation()
-	{
+	public Vector3F getLocation() {
 		return new Vector3F(Dyn4jUtil.wrap(m_body.getTransform().getTranslation()), m_depth);
 	}
 
 	@Override
-	public Direction getDirection()
-	{
-		return m_direction;
-	}
-
-	@Override
-	public Vector3F getLinearVelocity()
-	{
-		return new Vector3F(Dyn4jUtil.wrap(m_body.getLinearVelocity()), 0);
-	}
-	
-	@Override
-	public void setLinearVelocity(Vector3F velocity)
-	{
-		m_body.setLinearVelocity(Dyn4jUtil.unwrap(velocity.getXy()));
-	}
-
-	@Override
-	public float getAngularVelocity()
-	{
-		return (float)m_body.getAngularVelocity();
-	}
-
-	@Override
-	public void setDirection(Direction direction)
-	{
-		m_direction = direction;
-		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
-	}
-
-	@Override
-	public void setLocation(Vector3F location)
-	{
+	public void setLocation(Vector3F location) {
 		Transform t = m_body.getTransform();
 		t.translate(new Vector2(location.x, location.y));
 		m_body.setTransform(t);
@@ -217,32 +166,48 @@ public final class Dyn4jBody implements IPhysicsBody
 	}
 
 	@Override
-	public void applyLinearImpulse(Vector3F impulse)
-	{
+	public Direction getDirection() {
+		return m_direction;
+	}
+
+	@Override
+	public void setDirection(Direction direction) {
+		m_direction = direction;
+		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
+	}
+
+	@Override
+	public Vector3F getLinearVelocity() {
+		return new Vector3F(Dyn4jUtil.wrap(m_body.getLinearVelocity()), 0);
+	}
+
+	@Override
+	public void setLinearVelocity(Vector3F velocity) {
+		m_body.setLinearVelocity(Dyn4jUtil.unwrap(velocity.getXy()));
+	}
+
+	@Override
+	public float getAngularVelocity() {
+		return (float) m_body.getAngularVelocity();
+	}
+
+	@Override
+	public void applyLinearImpulse(Vector3F impulse) {
 		m_body.applyImpulse(Dyn4jUtil.unwrap(impulse.getXy()));
 	}
-	
+
 	@Override
-	public void applyAngularImpulse(float impulse)
-	{
+	public void applyAngularImpulse(float impulse) {
 		m_body.applyImpulse(impulse);
 	}
-	
+
 	@Override
-	public void applyForceToCenter(Vector3F force)
-	{
+	public void applyForceToCenter(Vector3F force) {
 		m_body.applyForce(Dyn4jUtil.unwrap(force.getXy()));
 	}
-	
+
 	@Override
-	public void applyTorque(float torque)
-	{
+	public void applyTorque(float torque) {
 		m_body.applyTorque(torque);
-	}
-	
-	@Override
-	public void setCollidable(boolean isCollidable)
-	{
-		m_isCollidable = isCollidable;
 	}
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,12 +22,12 @@ import io.github.jevaengine.graphics.IGraphic;
 import io.github.jevaengine.graphics.IGraphicFactory;
 import io.github.jevaengine.graphics.IImmutableGraphic;
 import io.github.jevaengine.graphics.Sprite;
-import java.awt.Graphics2D;
 
-public final class TiledFrameFactory implements IFrameFactory
-{
+import java.awt.*;
+
+public final class TiledFrameFactory implements IFrameFactory {
 	private IGraphicFactory m_graphicFactory;
-	
+
 	private Sprite m_topLeft;
 	private Sprite m_top;
 	private Sprite m_topRight;
@@ -37,9 +37,8 @@ public final class TiledFrameFactory implements IFrameFactory
 	private Sprite m_bottomLeft;
 	private Sprite m_bottom;
 	private Sprite m_bottomRight;
-	
-	public TiledFrameFactory(IGraphicFactory graphicFactory, Sprite topLeft, Sprite top, Sprite topRight, Sprite left, Sprite fill, Sprite right, Sprite bottomLeft, Sprite bottom, Sprite bottomRight)
-	{
+
+	public TiledFrameFactory(IGraphicFactory graphicFactory, Sprite topLeft, Sprite top, Sprite topRight, Sprite left, Sprite fill, Sprite right, Sprite bottomLeft, Sprite bottom, Sprite bottomRight) {
 		m_graphicFactory = graphicFactory;
 		m_topLeft = topLeft;
 		m_top = top;
@@ -53,14 +52,13 @@ public final class TiledFrameFactory implements IFrameFactory
 	}
 
 	@Override
-	public IImmutableGraphic create(int desiredWidth, int desiredHeight)
-	{
+	public IImmutableGraphic create(int desiredWidth, int desiredHeight) {
 		int minHeight = m_topLeft.getBounds().height + m_bottomLeft.getBounds().height;
 		int minWidth = m_topLeft.getBounds().width + m_topRight.getBounds().width;
-		
-		int height = m_left.getBounds().height * (int)(Math.floor(Math.max(minHeight, desiredHeight) / m_left.getBounds().height));
-		int width = m_left.getBounds().width * (int)(Math.floor(Math.max(minWidth, desiredWidth) / m_left.getBounds().width));
-		
+
+		int height = m_left.getBounds().height * (int) (Math.floor(Math.max(minHeight, desiredHeight) / m_left.getBounds().height));
+		int width = m_left.getBounds().width * (int) (Math.floor(Math.max(minWidth, desiredWidth) / m_left.getBounds().width));
+
 		IGraphic constructedFrame = m_graphicFactory.create(width, height);
 
 		Graphics2D g = constructedFrame.createGraphics();
@@ -78,8 +76,7 @@ public final class TiledFrameFactory implements IFrameFactory
 		int offsetY = m_top.getBounds().height;
 
 		// Render fill and left\right border
-		for (; offsetY < height - m_bottom.getBounds().height; offsetY += m_fill.getBounds().width)
-		{
+		for (; offsetY < height - m_bottom.getBounds().height; offsetY += m_fill.getBounds().width) {
 			m_left.render(g, 0, offsetY, 1.0F);
 
 			for (offsetX = m_left.getBounds().width; offsetX < width - m_right.getBounds().width; offsetX += m_fill.getBounds().width)
@@ -91,14 +88,14 @@ public final class TiledFrameFactory implements IFrameFactory
 		// Render lower border
 		offsetX = 0;
 		m_bottomLeft.render(g, offsetX, offsetY, 1.0F);
-		
+
 		for (offsetX = m_bottomLeft.getBounds().width; offsetX < width - m_bottomRight.getBounds().width; offsetX += m_top.getBounds().width)
 			m_bottom.render(g, offsetX, offsetY, 1.0F);
 
 		m_bottomRight.render(g, offsetX, offsetY, 1.0F);
 
 		g.dispose();
-		
+
 		return constructedFrame;
 	}
 }

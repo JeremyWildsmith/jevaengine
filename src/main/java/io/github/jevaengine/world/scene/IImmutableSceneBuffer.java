@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -23,17 +23,20 @@ import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.Nullable;
-import java.awt.Graphics2D;
 
-public interface IImmutableSceneBuffer
-{
+import java.awt.*;
+
+public interface IImmutableSceneBuffer {
 	Vector2F translateScreenToWorld(Vector3F screenLocation, float scale);
+
 	Vector2F translateScreenToWorld(Vector3F screenLocation);
+
 	Vector2D translateWorldToScreen(Vector3F location, float scale);
+
 	Vector2D translateWorldToScreen(Vector3F location);
 
 	@Nullable
 	<T> T pick(Class<T> clazz, int x, int y, float scale);
-	
+
 	void render(Graphics2D g, int x, int y, float scale, Rect2D bounds);
 }

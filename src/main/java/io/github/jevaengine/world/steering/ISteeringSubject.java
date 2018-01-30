@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,7 +20,6 @@ package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.math.Vector2F;
 
-public interface ISteeringSubject
-{
+public interface ISteeringSubject {
 	Vector2F getLocation();
 }

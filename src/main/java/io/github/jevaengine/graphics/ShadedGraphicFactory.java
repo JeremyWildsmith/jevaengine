@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,83 +18,68 @@
  */
 package io.github.jevaengine.graphics;
 
-import io.github.jevaengine.config.IConfigurationFactory;
+import io.github.jevaengine.config.*;
 import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
-import io.github.jevaengine.config.IImmutableVariable;
-import io.github.jevaengine.config.ISerializable;
-import io.github.jevaengine.config.IVariable;
-import io.github.jevaengine.config.NoSuchChildVariableException;
-import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.IGraphicShaderFactory.GraphicShaderConstructionException;
+
+import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.inject.Inject;
 
-public final class ShadedGraphicFactory implements IGraphicFactory
-{
+public final class ShadedGraphicFactory implements IGraphicFactory {
 	private final IConfigurationFactory m_configurationFactory;
 	private final IGraphicShaderFactory m_shaderFactory;
 	private final IGraphicFactory m_baseGraphicFactory;
 
 	@Inject
-	public ShadedGraphicFactory(IGraphicShaderFactory shaderFactory, IGraphicFactory baseGraphicFactory, IConfigurationFactory configurationFactory)
-	{
+	public ShadedGraphicFactory(IGraphicShaderFactory shaderFactory, IGraphicFactory baseGraphicFactory, IConfigurationFactory configurationFactory) {
 		m_shaderFactory = shaderFactory;
 		m_baseGraphicFactory = baseGraphicFactory;
 		m_configurationFactory = configurationFactory;
 	}
 
 	@Override
-	public IGraphic create(int width, int height)
-	{
+	public IGraphic create(int width, int height) {
 		return m_baseGraphicFactory.create(width, height);
 	}
 
 	@Override
-	public IImmutableGraphic create(URI name) throws GraphicConstructionException
-	{
-		try
-		{
+	public IImmutableGraphic create(URI name) throws GraphicConstructionException {
+		try {
 			ShadedGraphicDeclaration decl = m_configurationFactory.create(name).getValue(ShadedGraphicDeclaration.class);
-			
+
 			URI sourceName = name.resolve(new URI(decl.texture));
 			IImmutableGraphic source = m_baseGraphicFactory.create(sourceName);
 
 			URI shaderName = name.resolve(new URI(decl.shader));
 			source = m_shaderFactory.create(shaderName).shade(source);
-			
+
 			return source;
-		} catch (ConfigurationConstructionException | 
-				ValueSerializationException | 
-				URISyntaxException | 
-				GraphicConstructionException | 
-				GraphicShaderConstructionException e)
-		{
+		} catch (ConfigurationConstructionException |
+				ValueSerializationException |
+				URISyntaxException |
+				GraphicConstructionException |
+				GraphicShaderConstructionException e) {
 			throw new GraphicConstructionException(name, e);
 		}
 	}
-	
-	public static final class ShadedGraphicDeclaration implements ISerializable
-	{
+
+	public static final class ShadedGraphicDeclaration implements ISerializable {
 		public String shader;
 		public String texture;
 
 		@Override
-		public void serialize(IVariable target) throws ValueSerializationException
-		{
+		public void serialize(IVariable target) throws ValueSerializationException {
 			target.addChild("shader").setValue(shader);
 			target.addChild("texture").setValue(texture);
 		}
 
 		@Override
-		public void deserialize(IImmutableVariable source) throws ValueSerializationException
-		{
-			try
-			{
+		public void deserialize(IImmutableVariable source) throws ValueSerializationException {
+			try {
 				shader = source.getChild("shader").getValue(String.class);
 				texture = source.getChild("texture").getValue(String.class);
-			} catch (NoSuchChildVariableException e)
-			{
+			} catch (NoSuchChildVariableException e) {
 				throw new ValueSerializationException(e);
 			}
 		}

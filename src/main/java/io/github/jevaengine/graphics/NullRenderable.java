@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,10 +18,10 @@
  */
 package io.github.jevaengine.graphics;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 
-public final class NullRenderable implements IRenderable
-{
+public final class NullRenderable implements IRenderable {
 	@Override
-	public void render(Graphics2D g, int x, int y, float scale) { }
+	public void render(Graphics2D g, int x, int y, float scale) {
+	}
 }

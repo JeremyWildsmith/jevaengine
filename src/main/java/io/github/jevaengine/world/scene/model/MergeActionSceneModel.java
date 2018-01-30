@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -24,128 +24,109 @@ import io.github.jevaengine.util.MutableProcessList;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public final class MergeActionSceneModel implements IActionSceneModel
-{
+public final class MergeActionSceneModel implements IActionSceneModel {
 	private final MutableProcessList<ISceneModel> m_models = new MutableProcessList<>();
 	private final IActionSceneModel m_base;
-	
-	public MergeActionSceneModel(IActionSceneModel base, ISceneModel ... merge)
-	{
+
+	public MergeActionSceneModel(IActionSceneModel base, ISceneModel... merge) {
 		m_base = base;
 		m_models.addAll(Arrays.asList(merge));
 		m_models.add(base);
 	}
 
 	@Override
-	public void dispose()
-	{
-		for(ISceneModel m : new ArrayList<>(m_models))
-		{
+	public void dispose() {
+		for (ISceneModel m : new ArrayList<>(m_models)) {
 			remove(m);
 			m.dispose();
 		}
 	}
-	
-	public void add(ISceneModel model)
-	{
+
+	public void add(ISceneModel model) {
 		//If there are other models in our merge set, align this one with them, otherwise just leave it.
-		if(!m_models.isEmpty())
+		if (!m_models.isEmpty())
 			model.setDirection(getDirection());
-		
+
 		m_models.add(model);
 	}
-	
-	public void remove(ISceneModel model)
-	{
+
+	public void remove(ISceneModel model) {
 		m_models.remove(model);
 	}
-	
+
 	@Override
-	public ISceneModel clone()
-	{
+	public ISceneModel clone() {
 		throw new SceneModelNotCloneableException();
 	}
 
 	@Override
-	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection)
-	{
+	public Collection<ISceneModelComponent> getComponents(Matrix3X3 projection) {
 		List<ISceneModelComponent> componentBuffer = new ArrayList<>();
-		
-		for(ISceneModel m : m_models)
-		{
-			for(ISceneModelComponent c : m.getComponents(projection))
-			{
+
+		for (ISceneModel m : m_models) {
+			for (ISceneModelComponent c : m.getComponents(projection)) {
 				componentBuffer.add(c);
 			}
 		}
-		
+
 		return componentBuffer;
 	}
 
 	@Override
-	public Rect3F getAABB()
-	{
+	public Rect3F getAABB() {
 		Rect3F aabbs[] = new Rect3F[m_models.size()];
-		
-		for(int i = 0; i < m_models.size(); i++)
+
+		for (int i = 0; i < m_models.size(); i++)
 			aabbs[i] = m_models.get(i).getAABB();
-		
+
 		return Rect3F.getAABB(aabbs);
 	}
 
-	
+
 	@Override
-	public PhysicsBodyShape getBodyShape()
-	{
+	public PhysicsBodyShape getBodyShape() {
 		return new PhysicsBodyShape(PhysicsBodyShapeType.Box, getAABB());
 	}
-	
+
 	@Override
-	public void update(int deltaTime)
-	{
-		for(ISceneModel m : m_models)
+	public void update(int deltaTime) {
+		for (ISceneModel m : m_models)
 			m.update(deltaTime);
 	}
 
 	@Override
-	public Direction getDirection()
-	{
+	public Direction getDirection() {
 		Direction d = null;
-		
-		for(ISceneModel m : m_models)
-		{
-			if(d == null)
+
+		for (ISceneModel m : m_models) {
+			if (d == null)
 				d = m.getDirection();
-			else if(m.getDirection() != d)
+			else if (m.getDirection() != d)
 				return Direction.Zero;
 		}
-		
+
 		return d;
 	}
 
 	@Override
-	public void setDirection(Direction direction)
-	{
-		for(ISceneModel m : m_models)
+	public void setDirection(Direction direction) {
+		for (ISceneModel m : m_models)
 			m.setDirection(direction);
 	}
 
 	@Override
-	public IActionSceneModelAction getAction(String name)
-	{
+	public IActionSceneModelAction getAction(String name) {
 		return m_base.getAction(name);
 	}
 
 	@Override
-	public boolean hasAction(String name)
-	{
+	public boolean hasAction(String name) {
 		return m_base.hasAction(name);
 	}
 }

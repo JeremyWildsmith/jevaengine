@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,50 +21,41 @@ package io.github.jevaengine.ui;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.IObserverRegistry;
 
-public abstract class WindowBehaviourInjector
-{
+public abstract class WindowBehaviourInjector {
 	private Window m_host;
-	
-	public final void inject(Window host) throws NoSuchControlException
-	{
+
+	public final void inject(Window host) throws NoSuchControlException {
 		m_host = host;
 		doInject();
 	}
-	
-	protected final IObserverRegistry getObservers()
-	{
+
+	protected final IObserverRegistry getObservers() {
 		return m_host.getObservers();
 	}
-	
-	protected final void addControl(Control control, Vector2D location)
-	{
+
+	protected final void addControl(Control control, Vector2D location) {
 		m_host.addControl(control, location);
 	}
-	
-	protected final void addControl(Control control)
-	{
+
+	protected final void addControl(Control control) {
 		m_host.addControl(control);
 	}
-	
-	protected final void removeControl(Control control)
-	{
+
+	protected final void removeControl(Control control) {
 		m_host.removeControl(control);
 	}
-	
-	protected final boolean isVisible()
-	{
+
+	protected final boolean isVisible() {
 		return m_host.isVisible();
 	}
-	
-	protected final <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException
-	{
+
+	protected final <T extends Control> T getControl(Class<T> controlClass, String name) throws NoSuchControlException {
 		return m_host.getControl(controlClass, name);
 	}
-	
-	protected final <T extends Control> boolean hasControl(Class<T> controlClass, String name)
-	{
+
+	protected final <T extends Control> boolean hasControl(Class<T> controlClass, String name) {
 		return m_host.hasControl(controlClass, name);
 	}
-	
+
 	protected abstract void doInject() throws NoSuchControlException;
 }

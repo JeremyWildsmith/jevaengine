@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,42 +20,36 @@ package io.github.jevaengine.world.entity.tasks;
 
 import io.github.jevaengine.world.entity.IEntity;
 
-public abstract class SynchronousOneShotTask implements ITask
-{
+public abstract class SynchronousOneShotTask implements ITask {
 
 	private IEntity m_entity;
 	private boolean m_queryCancel = false;
-	
+
 	@Override
-	public final void cancel()
-	{
+	public final void cancel() {
 		m_queryCancel = true;
 	}
 
 
 	@Override
-	public final void begin(IEntity entity)
-	{
+	public final void begin(IEntity entity) {
 		m_entity = entity;
 	}
 
 	@Override
-	public final void end()
-	{
+	public final void end() {
 	}
 
 	@Override
-	public final boolean doCycle(int deltaTime)
-	{
-		if(!m_queryCancel)
+	public final boolean doCycle(int deltaTime) {
+		if (!m_queryCancel)
 			run(m_entity);
-		
+
 		return true;
 	}
 
 	@Override
-	public final boolean isParallel()
-	{
+	public final boolean isParallel() {
 		return false;
 	}
 

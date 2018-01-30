@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,16 +20,15 @@ package io.github.jevaengine.graphics;
 
 import com.google.inject.ImplementedBy;
 import io.github.jevaengine.util.ThreadSafe;
+
 import java.net.URI;
 
 @ImplementedBy(DefaultSpriteFactory.class)
-public interface ISpriteFactory
-{
+public interface ISpriteFactory {
 	@ThreadSafe
 	Sprite create(URI path) throws SpriteConstructionException;
-	
-	public static final class SpriteConstructionException extends Exception
-	{
+
+	public static final class SpriteConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public SpriteConstructionException(URI assetName, Exception cause) {

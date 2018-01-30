@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -25,31 +25,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author Jeremy
  */
-public final class InvokeScriptFunctionTask extends SynchronousOneShotTask
-{
+public final class InvokeScriptFunctionTask extends SynchronousOneShotTask {
 	private IFunction m_function;
-	
+
 	private Object[] m_arguments;
 
 	private Logger m_logger = LoggerFactory.getLogger(InvokeScriptFunctionTask.class);
-	
-	public InvokeScriptFunctionTask(IFunction function, Object ... arguments)
-	{
+
+	public InvokeScriptFunctionTask(IFunction function, Object... arguments) {
 		m_function = function;
 		m_arguments = arguments;
 	}
-	
+
 	@Override
-	public void run(IEntity entity)
-	{
-		try
-		{
+	public void run(IEntity entity) {
+		try {
 			m_function.call(m_arguments);
-		} catch(ScriptExecuteException e)
-		{
+		} catch (ScriptExecuteException e) {
 			m_logger.error("Error invoking callback task on entity" + entity.getInstanceName(), e);
 		}
 	}

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,34 +21,30 @@ package io.github.jevaengine.ui.style;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-public final class DefaultUIStyle implements IUIStyle
-{
+public final class DefaultUIStyle implements IUIStyle {
 	private String m_defaultStyle;
 	private Map<String, ComponentStyle> m_componentStyles;
 
-	public DefaultUIStyle(String defaultStyle, Map<String, ComponentStyle> componentStyles)
-	{
+	public DefaultUIStyle(String defaultStyle, Map<String, ComponentStyle> componentStyles) {
 		m_defaultStyle = defaultStyle;
 		m_componentStyles = componentStyles;
 	}
-	
+
 	@Override
-	public void dispose()
-	{
-		for(ComponentStyle style : m_componentStyles.values())
+	public void dispose() {
+		for (ComponentStyle style : m_componentStyles.values())
 			style.dispose();
 	}
 
-	public ComponentStyle getComponentStyle(String componentName)
-	{
+	public ComponentStyle getComponentStyle(String componentName) {
 		ComponentStyle style = m_componentStyles.get(componentName);
-		
-		if(style == null)
+
+		if (style == null)
 			style = m_componentStyles.get(m_defaultStyle);
-		
-		if(style == null)
+
+		if (style == null)
 			throw new NoSuchElementException();
-		
+
 		return style;
 	}
 }

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,35 +18,31 @@
  */
 package io.github.jevaengine.script.rhino;
 
-import java.util.LinkedList;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.ScriptableObject;
 
+import java.util.LinkedList;
 
-public class RhinoQueue extends NativeJavaObject
-{
+
+public class RhinoQueue extends NativeJavaObject {
 	private static final long serialVersionUID = 1L;
 
-	private RhinoQueue(ScriptableObject scope)
-	{
+	private RhinoQueue(ScriptableObject scope) {
 		super(scope, new LinkedList<Object>(), LinkedList.class);
 	}
-	
-	private RhinoQueue(Context cx)
-	{
+
+	private RhinoQueue(Context cx) {
 		this(cx.initStandardObjects());
 		Context.exit();
 	}
-	
-	public RhinoQueue()
-	{
+
+	public RhinoQueue() {
 		this(Context.enter());
 	}
-	
+
 	@Override
-	public String getClassName()
-	{
+	public String getClassName() {
 		return "Queue";
 	}
 }

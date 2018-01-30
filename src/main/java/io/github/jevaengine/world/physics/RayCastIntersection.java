@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,24 +20,20 @@ package io.github.jevaengine.world.physics;
 
 import io.github.jevaengine.math.Vector3F;
 
-public class RayCastIntersection
-{
+public class RayCastIntersection {
 	private final Vector3F m_normal;
 	private final float m_distance;
-	
-	public RayCastIntersection(Vector3F normal, float distance)
-	{
+
+	public RayCastIntersection(Vector3F normal, float distance) {
 		m_normal = new Vector3F(normal);
 		m_distance = distance;
 	}
-	
-	public Vector3F getNormal()
-	{
+
+	public Vector3F getNormal() {
 		return new Vector3F(m_normal);
 	}
-	
-	public float getDistance()
-	{
+
+	public float getDistance() {
 		return m_distance;
 	}
 }

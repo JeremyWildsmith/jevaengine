@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,34 +22,32 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.search.ISearchFilter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class TiledEffectMap implements IEffectMap
-{
+public final class TiledEffectMap implements IEffectMap {
 	private final HashMap<Vector2D, LogicEffects> m_tileEffects = new HashMap<>();
-	
-	public TiledEffectMap() { }
 
-	public TiledEffectMap(TiledEffectMap map)
-	{
+	public TiledEffectMap() {
+	}
+
+	public TiledEffectMap(TiledEffectMap map) {
 		for (Map.Entry<Vector2D, LogicEffects> effects : map.m_tileEffects.entrySet())
-			m_tileEffects.put(new Vector2D(effects.getKey()), new LogicEffects(effects.getValue()));	
+			m_tileEffects.put(new Vector2D(effects.getKey()), new LogicEffects(effects.getValue()));
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		m_tileEffects.clear();
 	}
 
 	@Override
-	public LogicEffects getTileEffects(Vector2F location)
-	{
+	public LogicEffects getTileEffects(Vector2F location) {
 		Vector2D tileLocation = location.round();
-		
+
 		if (!m_tileEffects.containsKey(tileLocation))
 			return new LogicEffects();
 
@@ -57,16 +55,13 @@ public final class TiledEffectMap implements IEffectMap
 	}
 
 	@Override
-	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter)
-	{
+	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter) {
 		List<LogicEffects> tileEffects = new ArrayList<>();
 
 		Rect2D searchBounds = filter.getSearchBounds();
 
-		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++)
-		{
-			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++)
-			{
+		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++) {
+			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++) {
 				LogicEffects effects = m_tileEffects.get(new Vector2D(x, y));
 
 				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && filter.filter(effects))
@@ -78,22 +73,19 @@ public final class TiledEffectMap implements IEffectMap
 	}
 
 	@Override
-	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay)
-	{
+	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay) {
 		Rect2D searchBounds = filter.getSearchBounds();
 
-		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++)
-		{
-			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++)
-			{
-				if(!filter.shouldInclude(new Vector2F(x, y)))
+		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++) {
+			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++) {
+				if (!filter.shouldInclude(new Vector2F(x, y)))
 					continue;
-				
+
 				if (!m_tileEffects.containsKey(new Vector2D(x, y)))
 					m_tileEffects.put(new Vector2D(x, y), new LogicEffects());
-				
+
 				LogicEffects effects = m_tileEffects.get(new Vector2D(x, y));
-	
+
 				if (filter.filter(effects))
 					effects.overlay(overlay);
 			}

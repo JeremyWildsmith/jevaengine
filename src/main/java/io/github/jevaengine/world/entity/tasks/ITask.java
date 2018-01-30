@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,9 +20,9 @@ package io.github.jevaengine.world.entity.tasks;
 
 import io.github.jevaengine.world.entity.IEntity;
 
-public interface ITask
-{
+public interface ITask {
 	void begin(IEntity entity);
+
 	void end();
 
 	void cancel();
@@ -30,27 +30,27 @@ public interface ITask
 	boolean doCycle(int deltaTime);
 
 	boolean isParallel();
-	
-	public static final class NullTask implements ITask
-	{
+
+	public static final class NullTask implements ITask {
 		@Override
-		public void begin(IEntity entity) { }
+		public void begin(IEntity entity) {
+		}
 
 		@Override
-		public void end() { }
+		public void end() {
+		}
 
 		@Override
-		public void cancel() { }
+		public void cancel() {
+		}
 
 		@Override
-		public boolean doCycle(int deltaTime)
-		{
+		public boolean doCycle(int deltaTime) {
 			return true;
 		}
 
 		@Override
-		public boolean isParallel()
-		{
+		public boolean isParallel() {
 			return false;
 		}
 	}

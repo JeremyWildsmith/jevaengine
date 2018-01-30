@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,127 +22,113 @@ import io.github.jevaengine.FutureResult;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.util.Nullable;
+
 import java.net.URI;
 
-public final class NullEntityFactory implements IEntityFactory, IParallelEntityFactory
-{
+public final class NullEntityFactory implements IEntityFactory, IParallelEntityFactory {
 	@Override
-	public <T extends IEntity> void create(Class<T> entityClass, String instanceName, IImmutableVariable config, IInitializationMonitor<T, EntityConstructionException> monitor)
-	{
+	public <T extends IEntity> void create(Class<T> entityClass, String instanceName, IImmutableVariable config, IInitializationMonitor<T, EntityConstructionException> monitor) {
 		monitor.completed(new FutureResult<T, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
-	public <T extends IEntity> void create(Class<T> entityClass, String instanceName, URI config, IInitializationMonitor<T, EntityConstructionException> monitor)
-	{
-		monitor.completed(new FutureResult<T, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
-	}
-	
-	@Override
-	public <T extends IEntity> void create(Class<T> entityClass, String instanceName, IInitializationMonitor<T, EntityConstructionException> monitor)
-	{
+	public <T extends IEntity> void create(Class<T> entityClass, String instanceName, URI config, IInitializationMonitor<T, EntityConstructionException> monitor) {
 		monitor.completed(new FutureResult<T, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
-	public Class<? extends DefaultEntity> lookup(String className)
-	{
+	public <T extends IEntity> void create(Class<T> entityClass, String instanceName, IInitializationMonitor<T, EntityConstructionException> monitor) {
+		monitor.completed(new FutureResult<T, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
+	}
+
+	@Override
+	public Class<? extends DefaultEntity> lookup(String className) {
 		return null;
 	}
 
 	@Override
-	public <T extends IEntity> String lookup(Class<T> entityClass)
-	{
+	public <T extends IEntity> String lookup(Class<T> entityClass) {
 		return null;
 	}
 
 	@Override
-	public <T extends IEntity> T create(Class<T> entityClass, String instanceName, IImmutableVariable config) throws EntityConstructionException
-	{
+	public <T extends IEntity> T create(Class<T> entityClass, String instanceName, IImmutableVariable config) throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
 	}
 
 	@Override
-	public <T extends IEntity> T create(Class<T> entityClass, String instanceName, URI config) throws EntityConstructionException
-	{
+	public <T extends IEntity> T create(Class<T> entityClass, String instanceName, URI config) throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
-	}
-	
-	@Override
-	public <T extends IEntity> T create(Class<T> entityClass, String instanceName) throws EntityConstructionException
-	{
-		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
-	}
-	
-	public static final class NullEntityFactoryCannotConstructEntities extends Exception
-	{
-		private static final long serialVersionUID = 1L;
-	
-		private NullEntityFactoryCannotConstructEntities() { }
 	}
 
 	@Override
-	public void create(String entityClass, @Nullable String instanceName, IImmutableVariable config, IInitializationMonitor<IEntity, EntityConstructionException> monitor)
-	{
+	public <T extends IEntity> T create(Class<T> entityClass, String instanceName) throws EntityConstructionException {
+		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
+	}
+
+	@Override
+	public void create(String entityClass, @Nullable String instanceName, IImmutableVariable config, IInitializationMonitor<IEntity, EntityConstructionException> monitor) {
 		monitor.completed(new FutureResult<IEntity, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
-	public void create(String entityClass, @Nullable String instanceName, URI config, IInitializationMonitor<IEntity, EntityConstructionException> monitor)
-	{
+	public void create(String entityClass, @Nullable String instanceName, URI config, IInitializationMonitor<IEntity, EntityConstructionException> monitor) {
 		monitor.completed(new FutureResult<IEntity, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
-	public void create(String entityClass, @Nullable String instanceName, IInitializationMonitor<IEntity, EntityConstructionException> monitor)
-	{
-		monitor.completed(new FutureResult<IEntity, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));	
+	public void create(String entityClass, @Nullable String instanceName, IInitializationMonitor<IEntity, EntityConstructionException> monitor) {
+		monitor.completed(new FutureResult<IEntity, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
-	public IEntity create(String entityClass, @Nullable String instanceName, URI config) throws EntityConstructionException
-	{
+	public IEntity create(String entityClass, @Nullable String instanceName, URI config) throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
 	}
 
 	@Override
-	public IEntity create(String entityClass, @Nullable String instanceName, IImmutableVariable config) throws EntityConstructionException
-	{
+	public IEntity create(String entityClass, @Nullable String instanceName, IImmutableVariable config) throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
 	}
 
 	@Override
-	public IEntity create(String entityClass, @Nullable String instanceName) throws EntityConstructionException
-	{
+	public IEntity create(String entityClass, @Nullable String instanceName) throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
 	}
 
 	@Override
 	public <T extends IEntity> void create(Class<T> entityClass,
-			@Nullable String instanceName, URI config,
-			IImmutableVariable auxConfig,
-			IInitializationMonitor<T, EntityConstructionException> monitor) {
-		monitor.completed(new FutureResult<T, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));	
+	                                       @Nullable String instanceName, URI config,
+	                                       IImmutableVariable auxConfig,
+	                                       IInitializationMonitor<T, EntityConstructionException> monitor) {
+		monitor.completed(new FutureResult<T, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
 	public void create(String entityClass, @Nullable String instanceName,
-			URI config, IImmutableVariable auxConfig,
-			IInitializationMonitor<IEntity, EntityConstructionException> monitor) {
-		monitor.completed(new FutureResult<IEntity, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));		
+	                   URI config, IImmutableVariable auxConfig,
+	                   IInitializationMonitor<IEntity, EntityConstructionException> monitor) {
+		monitor.completed(new FutureResult<IEntity, EntityConstructionException>(new EntityConstructionException(new NullEntityFactoryCannotConstructEntities())));
 	}
 
 	@Override
 	public <T extends IEntity> T create(Class<T> entityClass,
-			@Nullable String instanceName, URI config,
-			IImmutableVariable auxConfig) throws EntityConstructionException {
+	                                    @Nullable String instanceName, URI config,
+	                                    IImmutableVariable auxConfig) throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
 	}
 
 	@Override
 	public IEntity create(String entityClass, @Nullable String instanceName,
-			URI config, IImmutableVariable auxConfig)
+	                      URI config, IImmutableVariable auxConfig)
 			throws EntityConstructionException {
 		throw new EntityConstructionException(new NullEntityFactoryCannotConstructEntities());
+	}
+
+	public static final class NullEntityFactoryCannotConstructEntities extends Exception {
+		private static final long serialVersionUID = 1L;
+
+		private NullEntityFactoryCannotConstructEntities() {
+		}
 	}
 }

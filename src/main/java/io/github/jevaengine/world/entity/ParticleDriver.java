@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,127 +27,107 @@ import io.github.jevaengine.world.physics.NonparticipantPhysicsBody;
 import io.github.jevaengine.world.physics.NullPhysicsBody;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 import io.github.jevaengine.world.scene.model.particle.IParticleEmitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public final class ParticleDriver implements IEntity
-{
+public final class ParticleDriver implements IEntity {
 	private final Logger m_logger = LoggerFactory.getLogger(ParticleDriver.class);
-	
+
 	private final String m_name;
-
-	private World m_world;
-	
 	private final HashMap<String, Integer> m_flags = new HashMap<>();
-	
 	private final ParticleDriverBridge m_bridge;
-	
-	private IPhysicsBody m_body = new NullPhysicsBody();
-	
 	private final Observers m_observers = new Observers();
-
 	private final IParticleEmitter m_emitter;
-	
-	public ParticleDriver(String name, IParticleEmitter emitter)
-	{
-		m_name = name;	
+	private World m_world;
+	private IPhysicsBody m_body = new NullPhysicsBody();
+
+	public ParticleDriver(String name, IParticleEmitter emitter) {
+		m_name = name;
 		m_bridge = new ParticleDriverBridge();
 		m_emitter = emitter;
 	}
-	
+
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		m_observers.clear();
-		
-		if(m_world != null)
+
+		if (m_world != null)
 			m_world.removeEntity(this);
 	}
-	
-	private void createPhysicsBody()
-	{
-		if(m_world == null)
+
+	private void createPhysicsBody() {
+		if (m_world == null)
 			return;
-		
+
 		m_body = new NonparticipantPhysicsBody(this);
 
 		m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), m_body);
 	}
-	
-	private void destoryPhysicsBody()
-	{
+
+	private void destoryPhysicsBody() {
 		m_body.destory();
 		m_body = new NullPhysicsBody();
-		
+
 		m_observers.raise(IEntityBodyObserver.class).bodyChanged(new NullPhysicsBody(), new NullPhysicsBody());
 	}
-	
+
 	@Override
-	public IObserverRegistry getObservers()
-	{
+	public IObserverRegistry getObservers() {
 		return m_observers;
 	}
-	
+
 	@Override
-	public final IPhysicsBody getBody()
-	{
+	public final IPhysicsBody getBody() {
 		return m_body;
 	}
-	
+
 	/*
 	 * Primitive entity property accessors.
 	 */
-	
+
 	@Override
-	public final String getInstanceName()
-	{
+	public final String getInstanceName() {
 		return m_name;
 	}
-	
+
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return false;
 	}
-	
+
 	@Override
-	public IEntityTaskModel getTaskModel()
-	{
+	public IEntityTaskModel getTaskModel() {
 		return new NullEntityTaskModel();
 	}
-	
+
 	/*
 	 * Flag operations.
 	 */
-	public final void setFlag(String name, int value)
-	{
+	public final void setFlag(String name, int value) {
 		m_flags.put(name, value);
 		m_observers.raise(IEntityFlagObserver.class).flagSet(name, value);
 	}
-		
-	public final void setFlag(String name)
-	{
+
+	public final void setFlag(String name) {
 		setFlag(name, 0);
 	}
-		
-	public final void clearFlag(String name)
-	{
+
+	public final void clearFlag(String name) {
 		m_flags.remove(name);
 		m_observers.raise(IEntityFlagObserver.class).flagCleared(name);
 	}
 
-	public final void clearFlags()
-	{
+	public final void clearFlags() {
 		m_flags.clear();
 	}
-	
+
 	@Override
-	public final Map<String, Integer> getFlags()
-	{
+	public final Map<String, Integer> getFlags() {
 		return Collections.unmodifiableMap(m_flags);
 	}
 
@@ -155,14 +135,12 @@ public final class ParticleDriver implements IEntity
 	 * World association routines.
 	 */
 	@Override
-	public final World getWorld()
-	{
+	public final World getWorld() {
 		return m_world;
 	}
 
 	@Override
-	public final void associate(World world)
-	{
+	public final void associate(World world) {
 		if (m_world != null)
 			throw new WorldAssociationException("Already associated with world");
 
@@ -173,8 +151,7 @@ public final class ParticleDriver implements IEntity
 	}
 
 	@Override
-	public final void disassociate()
-	{
+	public final void disassociate() {
 		if (m_world == null)
 			throw new WorldAssociationException("Not associated with world");
 
@@ -182,65 +159,54 @@ public final class ParticleDriver implements IEntity
 		destoryPhysicsBody();
 		m_world = null;
 	}
-	
-	public void setEmit(boolean emit)
-	{
+
+	public void setEmit(boolean emit) {
 		m_emitter.setEmit(emit);
 	}
-	
+
 	/*
 	 * Scene model methods...
 	 */
 	@Override
-	public final IImmutableSceneModel getModel()
-	{
+	public final IImmutableSceneModel getModel() {
 		return m_emitter;
 	}
-	
+
 	@Override
-	public final ParticleDriverBridge getBridge()
-	{
+	public final ParticleDriverBridge getBridge() {
 		return m_bridge;
 	}
 
 	@Override
-	public final void update(int deltaTime)
-	{
+	public final void update(int deltaTime) {
 		if (m_world == null)
 			throw new WorldAssociationException("Entity is unassociated with a world and thus cannot process logic.");
 
 		doLogic(deltaTime);
 	}
-	
-	protected void doLogic(int deltaTime)
-	{
+
+	protected void doLogic(int deltaTime) {
 		m_emitter.update(deltaTime);
 	}
-	
-	public final class ParticleDriverBridge extends EntityBridge
-	{	
-		private ParticleDriverBridge()
-		{
+
+	public final class ParticleDriverBridge extends EntityBridge {
+		private ParticleDriverBridge() {
 			super(ParticleDriver.this, new NullFunctionFactory(), URI.create(""));
 		}
-		
-		public void setEmit(boolean emit)
-		{
+
+		public void setEmit(boolean emit) {
 			ParticleDriver.this.setEmit(emit);
 		}
-		
-		public final void setFlag(String name, int value)
-		{
+
+		public final void setFlag(String name, int value) {
 			ParticleDriver.this.setFlag(name, value);
 		}
-		
-		public final void clearFlag(String name)
-		{
+
+		public final void clearFlag(String name) {
 			ParticleDriver.this.clearFlag(name);
 		}
-		
-		public final void clearFlags()
-		{
+
+		public final void clearFlags() {
 			ParticleDriver.this.clearFlags();
 		}
 	}

@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,18 +18,15 @@
  */
 package io.github.jevaengine.script;
 
-public class NullFunctionFactory implements IFunctionFactory
-{
+public class NullFunctionFactory implements IFunctionFactory {
 	@Override
-	public IFunction wrap(Object function) throws UnrecognizedFunctionException
-	{
+	public IFunction wrap(Object function) throws UnrecognizedFunctionException {
 		throw new UnrecognizedFunctionException();
 	}
 
 	@Override
-	public boolean recognizes(Object function)
-	{
+	public boolean recognizes(Object function) {
 		return false;
 	}
-	
+
 }

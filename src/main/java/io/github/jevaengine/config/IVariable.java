@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,27 +18,34 @@
  */
 package io.github.jevaengine.config;
 
-public interface IVariable extends IImmutableVariable
-{
+public interface IVariable extends IImmutableVariable {
 	void setValue(ISerializable value) throws ValueSerializationException;
+
 	void setValue(ISerializable[] value) throws ValueSerializationException;
-	
+
 	void setValue(String value) throws ValueSerializationException;
+
 	void setValue(String[] value) throws ValueSerializationException;
-	
+
 	void setValue(int value) throws ValueSerializationException;
+
 	void setValue(int[] value) throws ValueSerializationException;
-	
+
 	void setValue(double value) throws ValueSerializationException;
+
 	void setValue(double[] value) throws ValueSerializationException;
-	
+
 	void setValue(boolean value) throws ValueSerializationException;
+
 	void setValue(boolean[] value) throws ValueSerializationException;
-	
+
 	void setValue(Object o) throws ValueSerializationException;
-	
+
 	boolean childExists(String name);
+
 	IVariable getChild(String name) throws NoSuchChildVariableException;
+
 	IVariable addChild(String name);
+
 	void removeChild(String name) throws NoSuchChildVariableException;
 }

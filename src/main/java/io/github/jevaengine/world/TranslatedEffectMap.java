@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,26 +22,22 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.search.ISearchFilter;
 import io.github.jevaengine.world.search.TranslatedSearchFilter;
 
-public final class TranslatedEffectMap implements IImmutableEffectMap
-{
+public final class TranslatedEffectMap implements IImmutableEffectMap {
 	private final IImmutableEffectMap m_effectMap;
 	private final Vector2F m_offset;
 
-	public TranslatedEffectMap(IImmutableEffectMap effectMap, Vector2F offset)
-	{
+	public TranslatedEffectMap(IImmutableEffectMap effectMap, Vector2F offset) {
 		m_effectMap = effectMap;
 		m_offset = offset;
 	}
 
 	@Override
-	public LogicEffects getTileEffects(Vector2F location)
-	{
+	public LogicEffects getTileEffects(Vector2F location) {
 		return m_effectMap.getTileEffects(location.difference(m_offset));
 	}
 
 	@Override
-	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter)
-	{
+	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter) {
 		return m_effectMap.getTileEffects(new TranslatedSearchFilter<>(filter, new Vector2F(m_offset)));
 	}
 }

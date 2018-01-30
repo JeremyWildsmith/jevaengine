@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,212 +18,181 @@
  */
 package io.github.jevaengine.graphics;
 
-import io.github.jevaengine.config.IConfigurationFactory;
+import io.github.jevaengine.config.*;
 import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
-import io.github.jevaengine.config.IImmutableVariable;
-import io.github.jevaengine.config.ISerializable;
-import io.github.jevaengine.config.IVariable;
-import io.github.jevaengine.config.NoSuchChildVariableException;
-import io.github.jevaengine.config.NullVariable;
-import io.github.jevaengine.config.ValueSerializationException;
 import io.github.jevaengine.graphics.DefaultGraphicShaderFactory.DefaultGraphicShaderDeclaration.DefaultGraphicShaderPassDeclaration;
 import io.github.jevaengine.math.Vector3D;
-import java.awt.Color;
+
+import javax.inject.Inject;
+import java.awt.*;
 import java.awt.image.RGBImageFilter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.inject.Inject;
 
-public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory
-{
+public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory {
 	public final Map<String, IShaderConstructor> m_shaderTypes = new HashMap<>();
 	private final IConfigurationFactory m_configurationFactory;
-	
+
 	@Inject
-	public DefaultGraphicShaderFactory(IConfigurationFactory configurationFactory)
-	{
-		m_configurationFactory =configurationFactory;
-		
+	public DefaultGraphicShaderFactory(IConfigurationFactory configurationFactory) {
+		m_configurationFactory = configurationFactory;
+
 		m_shaderTypes.put("null", new IShaderConstructor() {
 			@Override
 			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				return new NullGraphicShader();
 			}
 		});
-		
+
 		m_shaderTypes.put("blackAndWhite", new IShaderConstructor() {
 			@Override
 			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				return new BlackAndWhiteShader();
 			}
 		});
-		
+
 		m_shaderTypes.put("redGreenFilterToneBlueReplace", new IShaderConstructor() {
 			@Override
 			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
-				try
-				{
+				try {
 					Vector3D colourVector = arguments.getChild("replace").getValue(Vector3D.class);
 					int redFilter = arguments.getChild("redFilter").getValue(Integer.class);
 					int greenFilter = arguments.getChild("greenFilter").getValue(Integer.class);
-					
+
 					return new RedGreenFilterToneBlueReplace(redFilter % 256,
-															 greenFilter % 256,
-															 new Color(colourVector.x % 256, colourVector.y % 256, colourVector.y % 256));
-					
-				} catch (NoSuchChildVariableException | ValueSerializationException e)
-				{
+							greenFilter % 256,
+							new Color(colourVector.x % 256, colourVector.y % 256, colourVector.y % 256));
+
+				} catch (NoSuchChildVariableException | ValueSerializationException e) {
 					throw new GraphicShaderConstructionException(new GraphicShaderArgumentsParseException(e));
 				}
 			}
 		});
 	}
-	
+
 	@Override
-	public IGraphicShader create(URI name) throws GraphicShaderConstructionException
-	{	
-		try
-		{
+	public IGraphicShader create(URI name) throws GraphicShaderConstructionException {
+		try {
 			DefaultGraphicShaderDeclaration decl = m_configurationFactory.create(name).getValue(DefaultGraphicShaderDeclaration.class);
 
 			List<IGraphicShader> shaderPasses = new ArrayList<>();
-			for(DefaultGraphicShaderPassDeclaration p : decl.passes)
-			{
+			for (DefaultGraphicShaderPassDeclaration p : decl.passes) {
 				IShaderConstructor shader = m_shaderTypes.get(p.type);
 
-				if(shader == null)
+				if (shader == null)
 					throw new GraphicShaderConstructionException(new UnrecognizedGraphicShaderException(name));
 
 				shaderPasses.add(shader.create(p.arguments));
 			}
-			
+
 			return new MultiPassGraphicShader(shaderPasses.toArray(new IGraphicShader[shaderPasses.size()]));
-			
-		} catch (ConfigurationConstructionException | ValueSerializationException e)
-		{
+
+		} catch (ConfigurationConstructionException | ValueSerializationException e) {
 			throw new GraphicShaderConstructionException(e);
 		}
 	}
 
-	private interface IShaderConstructor
-	{
+	private interface IShaderConstructor {
 		IGraphicShader create(final IImmutableVariable arguments) throws GraphicShaderConstructionException;
 	}
-	
-	private static final class BlackAndWhiteShader implements IGraphicShader
-	{
+
+	private static final class BlackAndWhiteShader implements IGraphicShader {
 		@Override
-		public IImmutableGraphic shade(IImmutableGraphic source)
-		{
+		public IImmutableGraphic shade(IImmutableGraphic source) {
 			return source.filterImage(new RGBImageFilter() {
 				@Override
-				public int filterRGB(int x, int y, int rgb)
-				{
+				public int filterRGB(int x, int y, int rgb) {
 					int a = rgb & 0xff000000;
 					int r = (rgb >> 16) & 0xff;
 					int g = (rgb >> 8) & 0xff;
 					int b = rgb & 0xff;
-					
+
 					int avg = (r + g + b) / 3;
 					r = avg;
 					g = avg;
 					b = avg;
-					return a | (r << 16) | (g << 8) | b;					
+					return a | (r << 16) | (g << 8) | b;
 				}
 			});
 		}
 	}
-	
-	private static final class RedGreenFilterToneBlueReplace implements IGraphicShader
-	{
+
+	private static final class RedGreenFilterToneBlueReplace implements IGraphicShader {
 		private final int m_rFilter;
 		private final int m_gFilter;
 		private final Color m_replaceColor;
-		
-		public RedGreenFilterToneBlueReplace(int rFilter, int gFilter, Color replaceColor)
-		{
+
+		public RedGreenFilterToneBlueReplace(int rFilter, int gFilter, Color replaceColor) {
 			m_rFilter = rFilter;
 			m_gFilter = gFilter;
 			m_replaceColor = replaceColor;
 		}
-		
+
 		@Override
-		public IImmutableGraphic shade(IImmutableGraphic source)
-		{
+		public IImmutableGraphic shade(IImmutableGraphic source) {
 			return source.filterImage(new RGBImageFilter() {
 				@Override
-				public int filterRGB(int x, int y, int rgb)
-				{
+				public int filterRGB(int x, int y, int rgb) {
 					int a = rgb & 0xff000000;
 					int r = (rgb >> 16) & 0xff;
 					int g = (rgb >> 8) & 0xff;
 					int b = rgb & 0xff;
-					
-					if(r != m_rFilter || g != m_gFilter)
+
+					if (r != m_rFilter || g != m_gFilter)
 						return rgb;
-					
-					r = (int)(m_replaceColor.getRed() * (b / 255.0F));
-					g = (int)(m_replaceColor.getGreen() * (b / 255.0F));
-					b = (int)(m_replaceColor.getBlue() * (b / 255.0F));
-					
-					return a | (r << 16) | (g << 8) | b;					
+
+					r = (int) (m_replaceColor.getRed() * (b / 255.0F));
+					g = (int) (m_replaceColor.getGreen() * (b / 255.0F));
+					b = (int) (m_replaceColor.getBlue() * (b / 255.0F));
+
+					return a | (r << 16) | (g << 8) | b;
 				}
 			});
 		}
 	}
-	
-	public static final class DefaultGraphicShaderDeclaration implements ISerializable
-	{
+
+	public static final class DefaultGraphicShaderDeclaration implements ISerializable {
 		public DefaultGraphicShaderPassDeclaration[] passes;
-		
+
 		@Override
-		public void serialize(IVariable target) throws ValueSerializationException
-		{
+		public void serialize(IVariable target) throws ValueSerializationException {
 			target.addChild("passes").setValue(passes);
 		}
 
 		@Override
-		public void deserialize(IImmutableVariable source) throws ValueSerializationException
-		{
-			try
-			{
+		public void deserialize(IImmutableVariable source) throws ValueSerializationException {
+			try {
 				passes = source.getChild("passes").getValues(DefaultGraphicShaderPassDeclaration[].class);
-			} catch (NoSuchChildVariableException e)
-			{
+			} catch (NoSuchChildVariableException e) {
 				throw new ValueSerializationException(e);
 			}
 		}
-			
-		public static final class DefaultGraphicShaderPassDeclaration implements ISerializable
-		{
+
+		public static final class DefaultGraphicShaderPassDeclaration implements ISerializable {
 			public String type;
 			public IImmutableVariable arguments = new NullVariable();
 
 			@Override
-			public void serialize(IVariable target) throws ValueSerializationException
-			{
+			public void serialize(IVariable target) throws ValueSerializationException {
 				target.addChild("type").setValue(type);
 				target.addChild("arguments").setValue(arguments);
 			}
 
 			@Override
-			public void deserialize(IImmutableVariable source) throws ValueSerializationException
-			{
-				try
-				{
+			public void deserialize(IImmutableVariable source) throws ValueSerializationException {
+				try {
 					type = source.getChild("type").getValue(String.class);
 
-					if(source.childExists("arguments"))
+					if (source.childExists("arguments"))
 						arguments = source.getChild("arguments");
-				} catch (NoSuchChildVariableException e)
-				{
+				} catch (NoSuchChildVariableException e) {
 					throw new ValueSerializationException(e);
 				}
 			}
 		}
 	}
-	
+
 }

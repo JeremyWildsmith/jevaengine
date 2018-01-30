@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,8 +21,8 @@ package io.github.jevaengine.world.scene.model;
 import io.github.jevaengine.IDisposable;
 import io.github.jevaengine.world.Direction;
 
-public interface ISceneModel extends IImmutableSceneModel, IDisposable
-{
+public interface ISceneModel extends IImmutableSceneModel, IDisposable {
 	void update(int deltaTime);
+
 	void setDirection(Direction direction);
 }

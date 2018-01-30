@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -20,39 +20,36 @@ package io.github.jevaengine.world;
 
 import com.google.inject.ImplementedBy;
 import io.github.jevaengine.IInitializationProgressMonitor;
+
 import java.net.URI;
 
 @ImplementedBy(DefaultWorldFactory.class)
-public interface IWorldFactory
-{
+public interface IWorldFactory {
 	World create(URI name, IInitializationProgressMonitor progressMonitor) throws WorldConstructionException;
 
-	public static final class WorldConstructionException extends Exception
-	{
+	public static final class WorldConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public WorldConstructionException(URI assetName, Exception cause) {
 			super("Error constructing world " + assetName.toString(), cause);
 		}
 	}
-	
-	public static final class NullWorldFactory implements IWorldFactory
-	{
+
+	public static final class NullWorldFactory implements IWorldFactory {
 
 		@Override
 		public World create(URI name,
-				IInitializationProgressMonitor progressMonitor)
-				throws WorldConstructionException
-		{
+		                    IInitializationProgressMonitor progressMonitor)
+				throws WorldConstructionException {
 			throw new WorldConstructionException(name, new NullWorldFactoryCannotConstructWorldException());
 		}
-		
-		public static final class NullWorldFactoryCannotConstructWorldException extends Exception
-		{
+
+		public static final class NullWorldFactoryCannotConstructWorldException extends Exception {
 			private static final long serialVersionUID = 1L;
 
-			private NullWorldFactoryCannotConstructWorldException() { }
+			private NullWorldFactoryCannotConstructWorldException() {
+			}
 		}
-		
+
 	}
 }

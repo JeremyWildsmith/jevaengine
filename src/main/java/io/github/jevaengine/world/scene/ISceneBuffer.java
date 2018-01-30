@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,48 +27,51 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 import io.github.jevaengine.world.scene.model.IImmutableSceneModel.ISceneModelComponent;
-import java.awt.Graphics2D;
+
+import java.awt.*;
 import java.util.Collection;
 
-public interface ISceneBuffer extends IImmutableSceneBuffer
-{		
+public interface ISceneBuffer extends IImmutableSceneBuffer {
 	void addModel(IImmutableSceneModel model, @Nullable IEntity dispatcher, Vector3F location);
+
 	void addModel(IImmutableSceneModel model, Vector3F location);
+
 	void addEffect(ISceneBufferEffect effect);
+
 	void reset();
-	
+
 	void translate(Vector2D translation);
-	
-	public interface ISceneBufferEffect
-	{
+
+	public interface ISceneBufferEffect {
 		IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection);
+
 		IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection);
-		
+
 		ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Vector2D renderLocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
 	}
-	
-	public interface ISceneComponentEffect
-	{
+
+	public interface ISceneComponentEffect {
 		public void prerender();
+
 		public void postrender();
 	}
-	
-	public interface ISceneBufferEntry
-	{
+
+	public interface ISceneBufferEntry {
 		@Nullable
 		IEntity getDispatcher();
-		
+
 		ISceneModelComponent getComponent();
-		
+
 		Rect2D getProjectedAABB();
 	}
-	
-	public static final class NullComponentEffect implements ISceneComponentEffect
-	{
+
+	public static final class NullComponentEffect implements ISceneComponentEffect {
 		@Override
-		public void prerender() { }
+		public void prerender() {
+		}
 
 		@Override
-		public void postrender() { }
+		public void postrender() {
+		}
 	}
 }

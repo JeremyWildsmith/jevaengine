@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,14 +18,9 @@
  */
 package io.github.jevaengine.world.physics;
 
-import io.github.jevaengine.config.IImmutableVariable;
-import io.github.jevaengine.config.ISerializable;
-import io.github.jevaengine.config.IVariable;
-import io.github.jevaengine.config.NoSuchChildVariableException;
-import io.github.jevaengine.config.ValueSerializationException;
+import io.github.jevaengine.config.*;
 
-public final class PhysicsBodyDescription implements ISerializable
-{
+public final class PhysicsBodyDescription implements ISerializable {
 	public PhysicsBodyType type = PhysicsBodyType.Static;
 	public PhysicsBodyShape shape = new PhysicsBodyShape();
 	public float density;
@@ -33,11 +28,11 @@ public final class PhysicsBodyDescription implements ISerializable
 	public boolean isSensor;
 	public float friction;
 	public Class<?>[] collisionExceptions;
-	
-	public PhysicsBodyDescription() { }
-	
-	public PhysicsBodyDescription(PhysicsBodyDescription d)
-	{
+
+	public PhysicsBodyDescription() {
+	}
+
+	public PhysicsBodyDescription(PhysicsBodyDescription d) {
 		type = d.type;
 		shape = new PhysicsBodyShape(d.shape);
 		density = d.density;
@@ -46,9 +41,8 @@ public final class PhysicsBodyDescription implements ISerializable
 		friction = d.friction;
 		collisionExceptions = d.collisionExceptions;
 	}
-	
-	public PhysicsBodyDescription(PhysicsBodyType _type, PhysicsBodyShape _shape, float _density, boolean _isFixedRotation, boolean _isSensor, float _friction, Class<?> ... _collisionExceptions)
-	{
+
+	public PhysicsBodyDescription(PhysicsBodyType _type, PhysicsBodyShape _shape, float _density, boolean _isFixedRotation, boolean _isSensor, float _friction, Class<?>... _collisionExceptions) {
 		type = _type;
 		shape = _shape;
 		density = _density;
@@ -57,16 +51,9 @@ public final class PhysicsBodyDescription implements ISerializable
 		friction = _friction;
 		collisionExceptions = _collisionExceptions;
 	}
-	
-	public enum PhysicsBodyType
-	{
-		Static,
-		Dynamic,
-	}
 
 	@Override
-	public void serialize(IVariable target) throws ValueSerializationException
-	{
+	public void serialize(IVariable target) throws ValueSerializationException {
 		target.addChild("type").setValue(type.ordinal());
 		target.addChild("shape").setValue(shape);
 		target.addChild("density").setValue(density);
@@ -76,22 +63,25 @@ public final class PhysicsBodyDescription implements ISerializable
 	}
 
 	@Override
-	public void deserialize(IImmutableVariable source) throws ValueSerializationException
-	{
-		try
-		{
+	public void deserialize(IImmutableVariable source) throws ValueSerializationException {
+		try {
 			shape = source.getChild("shape").getValue(PhysicsBodyShape.class);
 			density = source.getChild("density").getValue(Double.class).floatValue();
-			
-			if(source.childExists("isFixedRotation"))
+
+			if (source.childExists("isFixedRotation"))
 				isFixedRotation = source.getChild("isFixedRotation").getValue(Boolean.class);
-			
-			if(source.childExists("isSensor"))
+
+			if (source.childExists("isSensor"))
 				isSensor = source.getChild("isSensor").getValue(Boolean.class);
-			
+
 			friction = source.getChild("friction").getValue(Double.class).floatValue();
 		} catch (NoSuchChildVariableException e) {
 			throw new ValueSerializationException(e);
 		}
+	}
+
+	public enum PhysicsBodyType {
+		Static,
+		Dynamic,
 	}
 }

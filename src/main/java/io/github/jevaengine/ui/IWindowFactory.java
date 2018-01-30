@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,16 +19,16 @@
 package io.github.jevaengine.ui;
 
 import com.google.inject.ImplementedBy;
+
 import java.net.URI;
 
 @ImplementedBy(DefaultWindowFactory.class)
-public interface IWindowFactory
-{
+public interface IWindowFactory {
 	Window create(URI name, WindowBehaviourInjector behaviourInject) throws WindowConstructionException;
+
 	Window create(URI name) throws WindowConstructionException;
-	
-	public static final class WindowConstructionException extends Exception
-	{
+
+	public static final class WindowConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
 		public WindowConstructionException(URI assetName, Exception cause) {

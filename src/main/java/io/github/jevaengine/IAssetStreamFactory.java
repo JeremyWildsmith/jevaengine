@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,21 +19,19 @@
 package io.github.jevaengine;
 
 import io.github.jevaengine.util.ThreadSafe;
+
 import java.io.InputStream;
 import java.net.URI;
 
-public interface IAssetStreamFactory
-{
+public interface IAssetStreamFactory {
 	@ThreadSafe
 	InputStream create(URI name) throws AssetStreamConstructionException;
-	
-	public static final class AssetStreamConstructionException extends Exception
-	{
+
+	public static final class AssetStreamConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
-		public AssetStreamConstructionException(URI assetName, Exception cause)
-		{
+		public AssetStreamConstructionException(URI assetName, Exception cause) {
 			super("Error constructing asset stream " + assetName.toString(), cause);
-		}	
+		}
 	}
 }

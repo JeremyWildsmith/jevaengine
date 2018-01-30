@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,36 +19,32 @@
 package io.github.jevaengine.script;
 
 import io.github.jevaengine.util.MutableProcessList;
-import java.util.Collection;
+
 import javax.inject.Inject;
+import java.util.Collection;
 
 
-public final class ScriptEvent
-{
+public final class ScriptEvent {
 	private Collection<IFunction> m_listeners = new MutableProcessList<>();
-	
+
 	private IFunctionFactory m_functionFactory;
-	
+
 	@Inject
-	public ScriptEvent(IFunctionFactory functionFactory)
-	{
+	public ScriptEvent(IFunctionFactory functionFactory) {
 		m_functionFactory = functionFactory;
 	}
-	
-	public void add(Object function) throws UnrecognizedFunctionException
-	{
+
+	public void add(Object function) throws UnrecognizedFunctionException {
 		m_listeners.add(m_functionFactory.wrap(function));
 	}
-	
-	public void remove(Object function) throws UnrecognizedFunctionException
-	{
+
+	public void remove(Object function) throws UnrecognizedFunctionException {
 		m_listeners.remove(m_functionFactory.wrap(function));
 	}
-	
+
 	@ScriptHiddenMember
-	public void fire(final Object ... arguments) throws ScriptExecuteException
-	{
-		for(final IFunction f : m_listeners)
+	public void fire(final Object... arguments) throws ScriptExecuteException {
+		for (final IFunction f : m_listeners)
 			f.call(arguments);
 	}
 }

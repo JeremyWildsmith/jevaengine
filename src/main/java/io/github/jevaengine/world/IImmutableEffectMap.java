@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,59 +21,53 @@ package io.github.jevaengine.world;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.search.ISearchFilter;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public interface IImmutableEffectMap
-{
+public interface IImmutableEffectMap {
 	public LogicEffects getTileEffects(Vector2F location);
+
 	public LogicEffects[] getTileEffects(ISearchFilter<LogicEffects> filter);
-	
-	public static class LogicEffects
-	{
+
+	public static class LogicEffects {
 		private final Set<IEntity> m_obstructions = new HashSet<>();
-		
-		public LogicEffects() { }
-		
-		public LogicEffects(LogicEffects effects)
-		{
+
+		public LogicEffects() {
+		}
+
+		public LogicEffects(LogicEffects effects) {
 			m_obstructions.addAll(effects.m_obstructions);
 		}
 
-		public LogicEffects(IEntity ... obstructions)
-		{
+		public LogicEffects(IEntity... obstructions) {
 			m_obstructions.addAll(Arrays.asList(obstructions));
 		}
 
-		public boolean isTraversable(IEntity subject)
-		{
-			for(IEntity e : m_obstructions)
-			{
-				if(e != subject && e.getBody().collidesWith(subject.getBody()))
-					return false;
-			}
-			
-			return true;
-		}
-		
-		public float getSightEffect()
-		{
-			return 0;
-		}
-		
-		public static LogicEffects merge(LogicEffects ... tiles)
-		{
+		public static LogicEffects merge(LogicEffects... tiles) {
 			LogicEffects effect = new LogicEffects();
-			
+
 			for (LogicEffects tile : tiles)
 				effect.overlay(tile);
 
 			return effect;
 		}
 
-		public void overlay(LogicEffects overlay)
-		{
+		public boolean isTraversable(IEntity subject) {
+			for (IEntity e : m_obstructions) {
+				if (e != subject && e.getBody().collidesWith(subject.getBody()))
+					return false;
+			}
+
+			return true;
+		}
+
+		public float getSightEffect() {
+			return 0;
+		}
+
+		public void overlay(LogicEffects overlay) {
 			this.m_obstructions.addAll(overlay.m_obstructions);
 		}
 	}

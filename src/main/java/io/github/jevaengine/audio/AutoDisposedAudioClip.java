@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,69 +22,60 @@ import io.github.jevaengine.audio.IAudioClipFactory.AudioClipConstructionExcepti
 import io.github.jevaengine.util.IObserverRegistry;
 
 
-public final class AutoDisposedAudioClip implements IAudioClip
-{
+public final class AutoDisposedAudioClip implements IAudioClip {
 	private IAudioClip m_clip;
 
-	public AutoDisposedAudioClip(IAudioClip clip)
-	{
+	public AutoDisposedAudioClip(IAudioClip clip) {
 		m_clip = clip;
 		m_clip.getObservers().add(new IAudioClipStateObserver() {
-			
+
 			@Override
-			public void end()
-			{
+			public void end() {
 				dispose();
 			}
-			
+
 			@Override
-			public void begin() { }
+			public void begin() {
+			}
 		});
 	}
-	
+
 	@Override
-	public AutoDisposedAudioClip create() throws AudioClipConstructionException
-	{
+	public AutoDisposedAudioClip create() throws AudioClipConstructionException {
 		return new AutoDisposedAudioClip(m_clip.create());
 	}
-	
+
 	@Override
-	public void dispose()
-	{
-		if(m_clip == null)
+	public void dispose() {
+		if (m_clip == null)
 			return;
-		
+
 		m_clip.dispose();
 		m_clip = null;
 	}
 
 	@Override
-	public void play()
-	{
+	public void play() {
 		m_clip.play();
 	}
 
 	@Override
-	public void stop()
-	{
+	public void stop() {
 		m_clip.stop();
 	}
 
 	@Override
-	public void repeat()
-	{
+	public void repeat() {
 		m_clip.repeat();
 	}
 
 	@Override
-	public void setVolume(float volume)
-	{
+	public void setVolume(float volume) {
 		m_clip.setVolume(volume);
 	}
 
 	@Override
-	public IObserverRegistry getObservers()
-	{
+	public IObserverRegistry getObservers() {
 		return m_clip.getObservers();
 	}
 }

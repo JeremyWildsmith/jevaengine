@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,57 +22,50 @@ import io.github.jevaengine.audio.IAudioClip;
 import io.github.jevaengine.audio.IAudioClipStateObserver;
 import io.github.jevaengine.world.entity.IEntity;
 
-public class PlayAudioTask implements ITask
-{
+public class PlayAudioTask implements ITask {
 	private volatile boolean m_isPlaying = true;
-	
+
 	private IAudioClip m_clip;
-	
-	public PlayAudioTask(IAudioClip clip)
-	{
+
+	public PlayAudioTask(IAudioClip clip) {
 		m_clip = clip;
 		m_clip.stop();
 		m_clip.getObservers().add(new IAudioClipStateObserver() {
-			
+
 			@Override
-			public void end()
-			{
+			public void end() {
 				m_isPlaying = false;
 			}
-			
+
 			@Override
-			public void begin() { }
+			public void begin() {
+			}
 		});
 	}
-	
+
 	@Override
-	public void begin(IEntity entity)
-	{
+	public void begin(IEntity entity) {
 		m_clip.play();
 	}
 
 	@Override
-	public void end()
-	{
+	public void end() {
 		m_clip.dispose();
 	}
 
 	@Override
-	public void cancel()
-	{
+	public void cancel() {
 		m_clip.stop();
 	}
 
 	@Override
-	public boolean doCycle(int deltaTime)
-	{
+	public boolean doCycle(int deltaTime) {
 		return !m_isPlaying;
 	}
 
 	@Override
-	public boolean isParallel()
-	{
+	public boolean isParallel() {
 		return true;
 	}
-	
+
 }

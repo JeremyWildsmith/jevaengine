@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -27,123 +27,116 @@ import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.entity.DefaultEntity;
 
-public final class NullPhysicsBody implements IPhysicsBody
-{
+public final class NullPhysicsBody implements IPhysicsBody {
 	@Override
-	public boolean hasOwner()
-	{
+	public boolean hasOwner() {
 		return false;
 	}
 
 	@Override
-	public DefaultEntity getOwner()
-	{
+	public DefaultEntity getOwner() {
 		return null;
 	}
 
 	@Override
-	public boolean isStatic()
-	{
+	public boolean isStatic() {
 		return true;
 	}
-	
+
 	@Override
-	public float getMass()
-	{
+	public float getMass() {
 		return 1;
 	}
 
 	@Override
-	public Vector3F getLocation()
-	{
+	public Vector3F getLocation() {
 		return new Vector3F();
 	}
 
 	@Override
-	public Direction getDirection()
-	{
+	public void setLocation(Vector3F location) {
+	}
+
+	@Override
+	public Direction getDirection() {
 		return Direction.Zero;
 	}
 
 	@Override
-	public Vector3F getLinearVelocity()
-	{
+	public void setDirection(Direction direction) {
+	}
+
+	@Override
+	public Vector3F getLinearVelocity() {
 		return new Vector3F();
 	}
 
 	@Override
-	public float getAngularVelocity()
-	{
+	public void setLinearVelocity(Vector3F velocity) {
+	}
+
+	@Override
+	public float getAngularVelocity() {
 		return 0;
 	}
 
 	@Override
 	@Nullable
-	public RayCastIntersection castRay(Vector3F direction, float maxCast)
-	{
+	public RayCastIntersection castRay(Vector3F direction, float maxCast) {
 		return null;
 	}
 
 	@Override
-	public IObserverRegistry getObservers()
-	{
+	public IObserverRegistry getObservers() {
 		return new NullObservers();
 	}
 
 	@Override
-	public void setLocation(Vector3F location) { }
+	public void applyLinearImpulse(Vector3F impulse) {
+	}
 
 	@Override
-	public void setDirection(Direction direction) { }
+	public void applyAngularImpulse(float impulse) {
+	}
 
 	@Override
-	public void applyLinearImpulse(Vector3F impulse) { }
+	public void applyForceToCenter(Vector3F force) {
+	}
 
 	@Override
-	public void applyAngularImpulse(float impulse) { }
+	public void applyTorque(float torque) {
+	}
 
 	@Override
-	public void applyForceToCenter(Vector3F force) { }
+	public void destory() {
+	}
 
 	@Override
-	public void applyTorque(float torque) { }
-
-	@Override
-	public void setLinearVelocity(Vector3F velocity) { }
-
-	@Override
-	public void destory() { }
-
-	@Override
-	public IImmutablePhysicsWorld getWorld()
-	{
+	public IImmutablePhysicsWorld getWorld() {
 		return new NullPhysicsWorld();
 	}
 
 	@Override
-	public boolean isCollidable()
-	{
+	public boolean isCollidable() {
 		return false;
 	}
-	
-	@Override
-	public boolean collidesWith(IImmutablePhysicsBody subject)
-	{
-		return false;
-	}
-	
-	@Override
-	public Rect3F getAABB()
-	{
-		return new Rect3F();
-	}	
 
 	@Override
-	public Circle3F getBoundingCircle()
-	{
+	public void setCollidable(boolean isCollidable) {
+	}
+
+	@Override
+	public boolean collidesWith(IImmutablePhysicsBody subject) {
+		return false;
+	}
+
+	@Override
+	public Rect3F getAABB() {
+		return new Rect3F();
+	}
+
+	@Override
+	public Circle3F getBoundingCircle() {
 		return new Circle3F();
 	}
-
-	@Override
-	public void setCollidable(boolean isCollidable) { }
 }

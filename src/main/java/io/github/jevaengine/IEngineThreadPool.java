@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,12 +21,10 @@ package io.github.jevaengine;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(DefaultEngineThreadPool.class)
-public interface IEngineThreadPool
-{
+public interface IEngineThreadPool {
 	public void execute(Purpose purpose, Runnable task);
-	
-	public enum Purpose
-	{
+
+	public enum Purpose {
 		Loading,
 		GameLogic,
 		LongLivingLowPriority,

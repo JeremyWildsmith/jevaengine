@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -18,11 +18,9 @@
  */
 package io.github.jevaengine.world.physics;
 
-public class NullPhysicsWorldFactory implements IPhysicsWorldFactory
-{
+public class NullPhysicsWorldFactory implements IPhysicsWorldFactory {
 	@Override
-	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters)
-	{
+	public IPhysicsWorld create(float maxSurfaceFrictionForceNewtonMeters) {
 		return new NullPhysicsWorld(maxSurfaceFrictionForceNewtonMeters);
 	}
 

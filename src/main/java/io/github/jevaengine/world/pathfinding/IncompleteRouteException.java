@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,19 +19,16 @@
 package io.github.jevaengine.world.pathfinding;
 
 
-public class IncompleteRouteException extends Exception
-{
+public class IncompleteRouteException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	private Route m_incompleteRoute;
 
-	public IncompleteRouteException(Route incompleteRoute)
-	{
+	public IncompleteRouteException(Route incompleteRoute) {
 		m_incompleteRoute = incompleteRoute;
 	}
 
-	public Route getIncompleteRoute()
-	{
+	public Route getIncompleteRoute() {
 		return m_incompleteRoute;
 	}
 }

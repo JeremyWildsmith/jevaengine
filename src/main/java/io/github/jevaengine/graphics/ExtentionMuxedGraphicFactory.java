@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -22,38 +22,32 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class ExtentionMuxedGraphicFactory implements IGraphicFactory
-{
+public final class ExtentionMuxedGraphicFactory implements IGraphicFactory {
 	private final Map<String, IGraphicFactory> m_factories = new HashMap<>();
 	private final IGraphicFactory m_defaultGraphicFactory;
-	
-	public ExtentionMuxedGraphicFactory(IGraphicFactory defaultGraphicFactory)
-	{
+
+	public ExtentionMuxedGraphicFactory(IGraphicFactory defaultGraphicFactory) {
 		m_defaultGraphicFactory = defaultGraphicFactory;
 	}
-	
-	public void put(String extention, IGraphicFactory factory)
-	{
+
+	public void put(String extention, IGraphicFactory factory) {
 		String ext = extention.startsWith(".") ? extention : "." + extention;
 		m_factories.put(ext, factory);
 	}
-	
+
 	@Override
-	public IGraphic create(int width, int height)
-	{
+	public IGraphic create(int width, int height) {
 		return m_defaultGraphicFactory.create(width, height);
 	}
 
 	@Override
-	public IImmutableGraphic create(URI name) throws GraphicConstructionException
-	{
-		for(Map.Entry<String, IGraphicFactory> e : m_factories.entrySet())
-		{
-			if(name.getPath().endsWith(e.getKey()))
+	public IImmutableGraphic create(URI name) throws GraphicConstructionException {
+		for (Map.Entry<String, IGraphicFactory> e : m_factories.entrySet()) {
+			if (name.getPath().endsWith(e.getKey()))
 				return e.getValue().create(name);
 		}
-		
+
 		return m_defaultGraphicFactory.create(name);
 	}
-	
+
 }

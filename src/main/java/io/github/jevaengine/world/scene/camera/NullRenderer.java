@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -21,23 +21,21 @@ package io.github.jevaengine.world.scene.camera;
 import io.github.jevaengine.game.IRenderer;
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.math.Vector2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
 
-public final class NullRenderer implements IRenderer
-{
+import java.awt.*;
+
+public final class NullRenderer implements IRenderer {
 	@Override
-	public GraphicsConfiguration getGraphicsConfiguration()
-	{
+	public GraphicsConfiguration getGraphicsConfiguration() {
 		return GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
 	}
 
 	@Override
-	public void render(IRenderable frame) { }
+	public void render(IRenderable frame) {
+	}
 
 	@Override
-	public Vector2D getResolution()
-	{
+	public Vector2D getResolution() {
 		return new Vector2D();
 	}
 

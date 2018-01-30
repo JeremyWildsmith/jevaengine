@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2015 Jeremy Wildsmith.
  *
  * This library is free software; you can redistribute it and/or
@@ -19,11 +19,10 @@
 package io.github.jevaengine.world.scene.model.particle;
 
 import io.github.jevaengine.world.scene.model.IAnimationSceneModelFactory;
-import io.github.jevaengine.world.scene.model.ISceneModelFactory.SceneModelConstructionException;
+
 import java.net.URI;
 
-public interface IParticleEmitterFactory extends IAnimationSceneModelFactory
-{
+public interface IParticleEmitterFactory extends IAnimationSceneModelFactory {
 	@Override
 	IParticleEmitter create(URI name) throws SceneModelConstructionException;
 }
