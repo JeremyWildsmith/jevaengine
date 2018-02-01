@@ -30,7 +30,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public final class GameDriver {
-	private static final int GAMELOOP_PERIOD = 1000 / 20;
+	private static final int GAMELOOP_PERIOD = 1000 / 60;
 	private static final int MAX_FALL_BEHIND = 2 * GAMELOOP_PERIOD;
 
 	private final ScheduledExecutorService m_executor = new ScheduledThreadPoolExecutor(1);
