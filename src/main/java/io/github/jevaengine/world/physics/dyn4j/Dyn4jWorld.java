@@ -25,6 +25,7 @@ import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.physics.*;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.dynamics.Settings;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.dynamics.contact.ContactListener;
 import org.dyn4j.dynamics.contact.ContactPoint;
@@ -50,6 +51,7 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 
 		m_physicsWorld.setGravity(new Vector2());
 		m_physicsWorld.addListener(m_contactListener);
+		m_physicsWorld.getSettings().setContinuousDetectionMode(Settings.ContinuousDetectionMode.NONE);
 	}
 
 	@Nullable
