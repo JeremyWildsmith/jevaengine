@@ -138,8 +138,10 @@ public final class SceneGraph implements IDisposable {
 		for (EntitySector sector : m_sectors)
 			sector.update(delta);
 
-		for (EntityEntry e : m_dynamicEntities)
+		for (EntityEntry e : m_dynamicEntities) {
 			e.getSubject().update(delta);
+			e.refresh();
+		}
 	}
 
 	void enqueueRender(ISceneBuffer targetScene, Rect2F renderBounds) {
@@ -362,8 +364,10 @@ public final class SceneGraph implements IDisposable {
 		public void update(int deltaTime) {
 			m_dynamicEffectMap.clear();
 
-			for (IEntity e : m_dynamic)
+			for (IEntity e : m_dynamic) {
 				blendEffectMap(m_dynamicEffectMap, e);
+
+			}
 
 			if (m_isDirty) {
 				m_staticEffectMap.clear();
