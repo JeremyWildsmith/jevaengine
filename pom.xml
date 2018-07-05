@@ -50,12 +50,13 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-
+                <!-- https://mvnrepository.com/artifact/org.dyn4j/dyn4j -->
                 <dependency>
                     <groupId>org.dyn4j</groupId>
                     <artifactId>dyn4j</artifactId>
-                    <version>3.1.11</version>
+                    <version>3.3.0</version>
                 </dependency>
+
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>

@@ -70,7 +70,7 @@ public final class Dyn4jBody implements IPhysicsBody {
 	@Override
 	public void destory() {
 		m_observers.clear();
-		m_body.getWorld().removeBody(m_body);
+                m_world.m_physicsWorld.removeBody(m_body);
 		m_world = null;
 	}
 

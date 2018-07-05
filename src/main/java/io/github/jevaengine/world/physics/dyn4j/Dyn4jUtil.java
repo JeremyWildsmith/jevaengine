@@ -24,6 +24,7 @@ import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.NoSuchElementException;
+import org.dyn4j.geometry.MassType;
 
 final class Dyn4jUtil {
 	public static Vector2F wrap(Vector2 vec) {
@@ -34,12 +35,12 @@ final class Dyn4jUtil {
 		return new Vector2(vec.x, vec.y);
 	}
 
-	public static Mass.Type unwrap(PhysicsBodyType bodyType) {
+	public static MassType unwrap(PhysicsBodyType bodyType) {
 		switch (bodyType) {
 			case Dynamic:
-				return Mass.Type.NORMAL;
+				return MassType.NORMAL;
 			case Static:
-				return Mass.Type.INFINITE;
+				return MassType.INFINITE;
 			default:
 				throw new NoSuchElementException();
 		}

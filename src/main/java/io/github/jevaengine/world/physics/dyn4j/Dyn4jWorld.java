@@ -25,22 +25,22 @@ import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.physics.*;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
-import org.dyn4j.dynamics.Settings;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.dynamics.contact.ContactListener;
 import org.dyn4j.dynamics.contact.ContactPoint;
 import org.dyn4j.dynamics.contact.PersistedContactPoint;
 import org.dyn4j.dynamics.contact.SolvedContactPoint;
 import org.dyn4j.geometry.Convex;
-import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import org.dyn4j.dynamics.ContinuousDetectionMode;
+import org.dyn4j.geometry.MassType;
 
 public final class Dyn4jWorld implements IPhysicsWorld {
-	private final World m_physicsWorld = new World();
+	protected final World m_physicsWorld = new World();
 
 	private final float m_maxSurfaceFrictionForceNewtonMeters;
 
@@ -51,7 +51,7 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 
 		m_physicsWorld.setGravity(new Vector2());
 		m_physicsWorld.addListener(m_contactListener);
-		m_physicsWorld.getSettings().setContinuousDetectionMode(Settings.ContinuousDetectionMode.NONE);
+		m_physicsWorld.getSettings().setContinuousDetectionMode(ContinuousDetectionMode.NONE);
 	}
 
 	@Nullable
@@ -106,12 +106,12 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 		body.setLinearDamping(m_maxSurfaceFrictionForceNewtonMeters);
 
 		if (bodyDescription.type == PhysicsBodyDescription.PhysicsBodyType.Static || bodyDescription.isSensor)
-			body.setMass(Mass.Type.INFINITE);
+			body.setMass(MassType.INFINITE);
 		else
 			body.setMass(shape.createMass(bodyDescription.density));
 
 		if (bodyDescription.isFixedRotation)
-			body.setMassType(Mass.Type.FIXED_ANGULAR_VELOCITY);
+			body.setMassType(MassType.FIXED_ANGULAR_VELOCITY);
 
 		BodyFixture fixture = new BodyFixture(shape);
 
