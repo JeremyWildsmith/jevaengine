@@ -183,6 +183,8 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	@Override
 	public void setLinearVelocity(Vector3F velocity) {
+		if(!velocity.isZero())
+			m_body.setAsleep(false);
 		m_body.setLinearVelocity(Dyn4jUtil.unwrap(velocity.getXy()));
 	}
 
