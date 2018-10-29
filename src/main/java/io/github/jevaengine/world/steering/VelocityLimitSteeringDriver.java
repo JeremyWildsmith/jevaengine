@@ -72,9 +72,10 @@ public final class VelocityLimitSteeringDriver implements ISteeringDriver {
 		if (steerVelocity.isZero())
 			return;
 
-		m_target.applyLinearImpulse(new Vector3F(steerVelocity.multiply(m_target.getMass())
-				.add(steerVelocity.normalize().multiply(m_target.getWorld().getMaxFrictionForce())), 0).multiply(deltaTime / 1000.0F));
+		//m_target.applyLinearImpulse(new Vector3F(steerVelocity.multiply(m_target.getMass())
+		//		.add(steerVelocity.normalize().multiply(m_target.getWorld().getMaxFrictionForce())), 0).multiply(deltaTime / 1000.0F));
 
+		m_target.setLinearVelocity(new Vector3F(getSteerVelocity(), 0));
 		m_target.setDirection(Direction.fromVector(steerVelocity));
 	}
 }
