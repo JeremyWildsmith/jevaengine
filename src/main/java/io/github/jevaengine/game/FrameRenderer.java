@@ -39,9 +39,9 @@ public final class FrameRenderer implements IRenderer {
 
 	private final JFrame m_renderTarget;
 
-	private final BufferStrategy m_bufferStrategy;
-
 	private final RenderFitMode m_renderFitMode;
+
+	private BufferStrategy m_bufferStrategy;
 
 	public FrameRenderer(final JFrame target, boolean isFullscreen, RenderFitMode renderFitMode) {
 		m_renderTarget = target;
@@ -57,6 +57,10 @@ public final class FrameRenderer implements IRenderer {
 		m_bufferStrategy = target.getBufferStrategy();
 
 		BufferCapabilities cap = m_bufferStrategy.getCapabilities();
+
+		String openGlEnabled = System.getProperty("sun.java2d.opengl");
+		if(openGlEnabled == null || openGlEnabled.toLowerCase().compareTo("true") != 0)
+			m_logger.error("OpenGL Hardware Acceleration is not enabled. This will result in a significant performance loss. Please enable the property 'sun.java2d.opengl'");
 
 		if (!cap.getBackBufferCapabilities().isAccelerated())
 			m_logger.warn("Backbuffer is not accelerated, may result in poorer render performance.");
@@ -103,7 +107,20 @@ public final class FrameRenderer implements IRenderer {
 		}
 	}
 
+	private void setTargetUnDecorated(boolean isUndecorated) {
+		m_renderTarget.setVisible(false);
+		m_renderTarget.dispose();
+		m_renderTarget.setUndecorated(isUndecorated);
+		m_renderTarget.setVisible(true);
+
+
+		m_renderTarget.setIgnoreRepaint(true);
+		m_renderTarget.createBufferStrategy(2);
+		m_bufferStrategy = m_renderTarget.getBufferStrategy();
+	}
+
 	private void enterFullscreen() {
+		setTargetUnDecorated(true);
 		GraphicsDevice device = m_renderTarget.getGraphicsConfiguration().getDevice();
 
 		if (!device.isFullScreenSupported())
@@ -135,8 +152,9 @@ public final class FrameRenderer implements IRenderer {
 				}
 				device.setDisplayMode(best);
 			}
+			DisplayMode mode = device.getDisplayMode();
 
-			m_renderTarget.setBounds(new Rectangle(m_renderTarget.getLocation(), new Dimension(best.getWidth(), best.getHeight())));
+			m_renderTarget.setBounds(new Rectangle(m_renderTarget.getLocation(), new Dimension(mode.getWidth(), mode.getHeight())));
 		}
 	}
 
@@ -149,6 +167,8 @@ public final class FrameRenderer implements IRenderer {
 			device.setFullScreenWindow(null);
 			m_renderTarget.setBounds(new Rectangle(m_renderTarget.getLocation(), new Dimension(m_canvasRenderWidth, m_canvasRenderHeight)));
 		}
+
+		setTargetUnDecorated(false);
 	}
 
 	@Override
@@ -171,7 +191,7 @@ public final class FrameRenderer implements IRenderer {
 		g.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED);
 		g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
 		g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
-		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 
 		Rectangle bounds = m_renderTarget.getBounds();
 		g.setColor(Color.black);
