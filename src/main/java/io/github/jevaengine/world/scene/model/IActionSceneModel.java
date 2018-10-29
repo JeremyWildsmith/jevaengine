@@ -62,7 +62,6 @@ public interface IActionSceneModel extends ISceneModel {
 	}
 
 	public static final class NullActionSceneModelAction implements IActionSceneModelAction {
-
 		@Override
 		public String getName() {
 			return "null";
@@ -106,6 +105,9 @@ public interface IActionSceneModel extends ISceneModel {
 	}
 
 	public static final class NullActionSceneModel implements IActionSceneModel {
+
+		private Direction direction = Direction.Zero;
+
 		@Override
 		public void dispose() {
 		}
@@ -116,11 +118,12 @@ public interface IActionSceneModel extends ISceneModel {
 
 		@Override
 		public Direction getDirection() {
-			return Direction.Zero;
+			return direction;
 		}
 
 		@Override
 		public void setDirection(Direction direction) {
+			this.direction = direction;
 		}
 
 		@Override
