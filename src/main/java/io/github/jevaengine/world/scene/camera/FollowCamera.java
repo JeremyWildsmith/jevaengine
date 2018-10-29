@@ -41,6 +41,14 @@ public final class FollowCamera implements ICamera {
 		m_target = new WeakReference<>(null);
 	}
 
+	public float getZoom() {
+		return m_camera.getZoom();
+	}
+
+	public void setZoom(float zoom) {
+		m_camera.setZoom(zoom);
+	}
+
 	@Override
 	public void addEffect(ISceneBufferEffect e) {
 		m_camera.addEffect(e);
