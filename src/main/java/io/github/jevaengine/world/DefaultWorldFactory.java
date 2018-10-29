@@ -203,8 +203,8 @@ public class DefaultWorldFactory implements IWorldFactory {
 					IEntity entity = createEntity(entityConfig, name);
 					world.addEntity(entity);
 
-					entity.getBody().setLocation(entityConfig.location);
 					entity.getBody().setDirection(entityConfig.direction);
+					entity.getBody().setLocation(entityConfig.location);
 				} catch (EntityConstructionException e) {
 					m_logger.error("Unable to construct entity, assuming it does not exist.", e);
 				}
