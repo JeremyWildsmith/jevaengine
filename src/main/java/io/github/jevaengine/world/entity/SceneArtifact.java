@@ -50,6 +50,8 @@ public final class SceneArtifact implements IEntity {
 	@Nullable
 	private World m_world;
 
+	private HashMap<String, Integer> m_flags = new HashMap<>();
+
 	public SceneArtifact(ISceneModel model, boolean isStatic, boolean isTraversable) {
 		m_name = this.getClass().getName() + m_unnamedCount.getAndIncrement();
 
@@ -144,7 +146,7 @@ public final class SceneArtifact implements IEntity {
 
 	@Override
 	public Map<String, Integer> getFlags() {
-		return new HashMap<>();
+		return m_flags;
 	}
 
 	@Override
