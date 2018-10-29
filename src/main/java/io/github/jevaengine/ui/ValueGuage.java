@@ -90,7 +90,7 @@ public class ValueGuage extends Control implements IRenderable {
 
 	@Override
 	protected void onStyleChanged() {
-		m_fill = getComponentStyle().getStateStyle(ComponentState.Activated).createFrame(m_bounds.height, m_bounds.height);
+		m_fill = getComponentStyle().getStateStyle(ComponentState.Activated).createFrame(m_bounds.width, m_bounds.height);
 		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(m_fill.getBounds().width, m_fill.getBounds().height);
 	}
 }
