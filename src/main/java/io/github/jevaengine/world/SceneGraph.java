@@ -119,6 +119,7 @@ public final class SceneGraph implements IDisposable {
 	}
 
 	public void remove(IEntity entity) {
+		Vector3F location = entity.getBody().getLocation();
 		EntityEntry entry = getEntityEntry(entity);
 
 		if (entry != null) {
@@ -126,7 +127,7 @@ public final class SceneGraph implements IDisposable {
 			m_dynamicEntities.remove(entry);
 			entry.dispose();
 
-			m_observers.raise(ISceneGraphObserver.class).removedEntity(entity);
+			m_observers.raise(ISceneGraphObserver.class).removedEntity(location, entity);
 		}
 	}
 
@@ -171,7 +172,7 @@ public final class SceneGraph implements IDisposable {
 	public interface ISceneGraphObserver {
 		void addedEntity(IEntity e);
 
-		void removedEntity(IEntity e);
+		void removedEntity(Vector3F location, IEntity e);
 	}
 
 	private static class LayerSectorCoordinate {

@@ -22,10 +22,7 @@ import io.github.jevaengine.FutureResult;
 import io.github.jevaengine.IInitializationMonitor;
 import io.github.jevaengine.config.IImmutableVariable;
 import io.github.jevaengine.config.NullVariable;
-import io.github.jevaengine.math.Rect2D;
-import io.github.jevaengine.math.Rect2F;
-import io.github.jevaengine.math.Rect3F;
-import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.math.*;
 import io.github.jevaengine.script.*;
 import io.github.jevaengine.script.IScriptBuilder.ScriptConstructionException;
 import io.github.jevaengine.util.IObserverRegistry;
@@ -71,7 +68,12 @@ public final class World {
 
 	public World(int worldWidth, int worldHeight, float friction, float metersPerUnit, float logicPerUnit, IWeather weather, IPhysicsWorldFactory physicsWorldFactory, IEffectMapFactory effectMapFactory, IParallelEntityFactory entityFactory, @Nullable IScriptBuilder scriptFactory) {
 		m_weather = weather;
-		m_physicsWorld = new ScaledPhysicsWorld(physicsWorldFactory.create(friction), metersPerUnit);
+
+		if(Math.abs(metersPerUnit - 1.0F) < Vector2F.TOLERANCE)
+			m_physicsWorld = physicsWorldFactory.create(friction);
+		else
+			m_physicsWorld = new ScaledPhysicsWorld(physicsWorldFactory.create(friction), metersPerUnit);
+
 		m_logicPerUnit = logicPerUnit;
 		m_metersPerUnit = metersPerUnit;
 		m_entityFactory = entityFactory;
@@ -145,10 +147,10 @@ public final class World {
 	}
 
 	public void removeEntity(IEntity entity) {
+		m_sceneGraph.remove(entity);
+
 		if (entity.getWorld() == this)
 			entity.disassociate();
-
-		m_sceneGraph.remove(entity);
 	}
 
 	public EntitySet getEntities() {
@@ -177,7 +179,7 @@ public final class World {
 	public interface IWorldObserver {
 		void addedEntity(IEntity e);
 
-		void removedEntity(IEntity e);
+		void removedEntity(Vector3F location, IEntity e);
 	}
 
 	private class WorldEntityObserver implements ISceneGraphObserver {
@@ -187,8 +189,8 @@ public final class World {
 		}
 
 		@Override
-		public void removedEntity(IEntity e) {
-			m_observers.raise(IWorldObserver.class).removedEntity(e);
+		public void removedEntity(Vector3F location, IEntity e) {
+			m_observers.raise(IWorldObserver.class).removedEntity(location, e);
 		}
 	}
 
@@ -223,7 +225,7 @@ public final class World {
 		}
 
 		@Override
-		public void removedEntity(IEntity subject) {
+		public void removedEntity(Vector3F location, IEntity subject) {
 			try {
 				m_bridge.onEntityLeave.fire(subject.getBody());
 			} catch (ScriptExecuteException e) {
