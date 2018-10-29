@@ -73,6 +73,8 @@ public interface IAnimationSceneModel extends ISceneModel {
 	}
 
 	public static final class NullAnimationSceneModel implements IAnimationSceneModel {
+		private Direction direction;
+
 		@Override
 		public void dispose() {
 		}
@@ -83,11 +85,12 @@ public interface IAnimationSceneModel extends ISceneModel {
 
 		@Override
 		public Direction getDirection() {
-			return Direction.Zero;
+			return direction;
 		}
 
 		@Override
 		public void setDirection(Direction direction) {
+			this.direction = direction;
 		}
 
 		@Override

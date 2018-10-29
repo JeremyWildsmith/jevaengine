@@ -105,7 +105,7 @@ public final class MergeActionSceneModel implements IActionSceneModel {
 		Direction d = null;
 
 		for (ISceneModel m : m_models) {
-			if (d == null)
+			if (d == null || d == Direction.Zero)
 				d = m.getDirection();
 			else if (m.getDirection() != d)
 				return Direction.Zero;
