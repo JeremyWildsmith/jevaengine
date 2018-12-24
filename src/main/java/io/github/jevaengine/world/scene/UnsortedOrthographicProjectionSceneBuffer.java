@@ -34,6 +34,8 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 	private final LinkedList<SceneGraphicEntry> m_unsortedVertices = new LinkedList<>();
 	private final List<ISceneBufferEffect> m_effects = new ArrayList<>();
 	private Vector2D m_translation = new Vector2D();
+	private final HashSet<SceneGraphicEntry> ignored = new HashSet<>();
+
 
 	public UnsortedOrthographicProjectionSceneBuffer(Matrix3X3 projection) {
 		m_worldToScreenMatrix = new Matrix3X3(projection);
@@ -98,6 +100,8 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 
 	@Override
 	public void render(Graphics2D g, int offsetX, int offsetY, float scale, Rect2D bounds) {
+		ignored.clear();
+
 		for (ISceneBufferEffect e : m_effects)
 			e.getUnderlay(bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
 
@@ -122,10 +126,17 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 						passEffects.add(effect);
 				}
 
-				for (ISceneComponentEffect e : passEffects)
-					e.prerender();
+				boolean ignore = false;
 
-				entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
+				for (ISceneComponentEffect e : passEffects) {
+					ignore |= e.ignore(entry.dispatcher, entry.component);
+					e.prerender();
+				}
+
+				if (ignore)
+					ignored.add(entry);
+				else
+					entry.component.render(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale);
 
 				for (ISceneComponentEffect e : passEffects)
 					e.postrender();
@@ -149,6 +160,9 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 
 		while (it.hasPrevious()) {
 			SceneGraphicEntry entry = it.previous();
+
+			if(ignored.contains(entry))
+				continue;
 
 			Vector2D renderLocation = translateWorldToScreen(entry.location, scale);
 			Vector2D relativePick = new Vector2D(x - renderLocation.x, y - renderLocation.y);

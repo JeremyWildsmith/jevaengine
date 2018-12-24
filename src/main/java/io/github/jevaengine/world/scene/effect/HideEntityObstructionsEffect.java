@@ -27,6 +27,7 @@ import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
+import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -87,7 +88,12 @@ public final class HideEntityObstructionsEffect implements ISceneBufferEffect {
 							m_applied = false;
 						}
 					}
-				},
+
+                    @Override
+                    public boolean ignore(IEntity dispatcher, IImmutableSceneModel.ISceneModelComponent c) {
+                        return false;
+                    }
+                },
 				new ISceneComponentEffect() {
 					private Shape m_oldClip;
 					private Composite m_oldComposite;
@@ -119,6 +125,11 @@ public final class HideEntityObstructionsEffect implements ISceneBufferEffect {
 							g.setComposite(m_oldComposite);
 							m_applied = false;
 						}
+					}
+
+					@Override
+					public boolean ignore(IEntity dispatcher, IImmutableSceneModel.ISceneModelComponent c) {
+						return false;
 					}
 				}
 		};

@@ -28,6 +28,8 @@ import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.entity.DefaultEntity;
 
 public final class NullPhysicsBody implements IPhysicsBody {
+	private Direction direction = Direction.Zero;
+
 	@Override
 	public boolean hasOwner() {
 		return false;
@@ -59,11 +61,12 @@ public final class NullPhysicsBody implements IPhysicsBody {
 
 	@Override
 	public Direction getDirection() {
-		return Direction.Zero;
+		return direction;
 	}
 
 	@Override
 	public void setDirection(Direction direction) {
+		this.direction = direction;
 	}
 
 	@Override

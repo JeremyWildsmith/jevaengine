@@ -54,6 +54,8 @@ public interface ISceneBuffer extends IImmutableSceneBuffer {
 		public void prerender();
 
 		public void postrender();
+
+		boolean ignore(@Nullable IEntity dispatcher, ISceneModelComponent c);
 	}
 
 	public interface ISceneBufferEntry {
@@ -72,6 +74,11 @@ public interface ISceneBuffer extends IImmutableSceneBuffer {
 
 		@Override
 		public void postrender() {
+		}
+
+		@Override
+		public boolean ignore(IEntity dispatcher, ISceneModelComponent c) {
+			return false;
 		}
 	}
 }

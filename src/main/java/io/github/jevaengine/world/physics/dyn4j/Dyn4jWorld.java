@@ -23,6 +23,7 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.physics.*;
+import io.github.jevaengine.world.search.RadialSearchFilter;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.World;
@@ -34,17 +35,24 @@ import org.dyn4j.geometry.Convex;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+
 import org.dyn4j.dynamics.ContinuousDetectionMode;
 import org.dyn4j.geometry.MassType;
 
 public final class Dyn4jWorld implements IPhysicsWorld {
+	private static final float ACTIVATE_RADIUS_ON = 1.5f;
+	private static final float ACTIVATE_RADIUS_OFF_SQUARED = 1.5f * 1.5f;
+
 	protected final World m_physicsWorld = new World();
 
 	private final float m_maxSurfaceFrictionForceNewtonMeters;
 
 	private final PhysicsContactListener m_contactListener = new PhysicsContactListener();
+
+	private final Set<Dyn4jBody> m_dynamicBodies = new HashSet<>();
+	private final Set<Dyn4jBody> m_activeStaticBodies = new HashSet<>();
+	private final Set<Dyn4jBody> m_inactiveStaticBodies = new HashSet<>();
 
 	public Dyn4jWorld(float maxSurfaceFrictionForceNewtonMeters) {
 		m_maxSurfaceFrictionForceNewtonMeters = maxSurfaceFrictionForceNewtonMeters;
@@ -84,8 +92,68 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 		return m_maxSurfaceFrictionForceNewtonMeters;
 	}
 
+	private void updateEnabledBodies() {
+
+		Set<Dyn4jBody> keepEnabled = new HashSet<>();
+
+		for(Dyn4jBody b : m_dynamicBodies) {
+			if(b.hasOwner() && b.getOwner().getWorld() != null) {
+				IEntity owner = b.getOwner();
+				IEntity[] activateRadius = owner.getWorld().getEntities().search(IEntity.class,
+						new RadialSearchFilter<IEntity>(b.getLocation().getXy(), ACTIVATE_RADIUS_ON));
+
+				for(IEntity e : activateRadius)
+				{
+					IPhysicsBody activateBody = e.getBody();
+					if(activateBody instanceof Dyn4jBody) {
+						Dyn4jBody dynBody = (Dyn4jBody)activateBody;
+						if(dynBody.isStatic())
+							keepEnabled.add((Dyn4jBody) dynBody);
+					}
+				}
+			}
+
+			for(Dyn4jBody activeStatic : m_activeStaticBodies) {
+				if(activeStatic.getLocation().getXy().difference(b.getLocation().getXy()).getLengthSquared() <= ACTIVATE_RADIUS_OFF_SQUARED)
+				{
+					keepEnabled.add(activeStatic);
+				}
+			}
+		}
+
+		HashSet<Dyn4jBody> toActivate = new HashSet<>();
+		HashSet<Dyn4jBody> toDeactivate = new HashSet<>();
+
+		toActivate.addAll(keepEnabled);
+
+		for(Dyn4jBody b : m_activeStaticBodies) {
+			if(keepEnabled.contains(b))
+				toActivate.remove(b);
+			else
+				toDeactivate.add(b);
+		}
+
+		for(Dyn4jBody b : toActivate) {
+			m_inactiveStaticBodies.remove(b);
+
+			if(b.getWorld() == this) {
+				m_activeStaticBodies.add(b);
+				b.enable();
+			}
+		}
+
+		for(Dyn4jBody b : toDeactivate) {
+			m_activeStaticBodies.remove(b);
+			if(b.getWorld() == this) {
+				m_inactiveStaticBodies.add(b);
+				b.disable();
+			}
+		}
+	}
+
 	@Override
 	public void update(int deltaTime) {
+		updateEnabledBodies();
 		m_physicsWorld.update(deltaTime / 1000.0);
 		m_contactListener.relay();
 	}
@@ -120,9 +188,21 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 		fixture.setUserData(owner);
 		fixture.setFriction(bodyDescription.friction);
 		body.addFixture(fixture);
-		m_physicsWorld.addBody(body);
 
-		return new Dyn4jBody(this, body, fixture, bodyDescription.shape.aabb.getXy(), owner, bodyDescription.collisionExceptions);
+		Dyn4jBody dyn4jBody = new Dyn4jBody(this, body, fixture, bodyDescription.shape.aabb.getXy(), owner, bodyDescription.collisionExceptions);
+
+		if(!bodyDescription.isSensor) {
+			if (bodyDescription.type == PhysicsBodyDescription.PhysicsBodyType.Static) {
+				dyn4jBody.disable();
+				m_inactiveStaticBodies.add(dyn4jBody);
+			} else {
+				m_dynamicBodies.add(dyn4jBody);
+				m_physicsWorld.addBody(body);
+			}
+		} else
+			m_physicsWorld.addBody(body);
+
+		return dyn4jBody;
 	}
 
 	@Override
@@ -139,6 +219,7 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 	 */
 	private class PhysicsContactListener implements ContactListener {
 		public Queue<Runnable> m_contactProcesses = new LinkedList<>();
+
 
 		public void relay() {
 			for (Runnable r; (r = m_contactProcesses.poll()) != null; )

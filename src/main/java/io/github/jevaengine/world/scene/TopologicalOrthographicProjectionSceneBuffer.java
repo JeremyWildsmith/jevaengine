@@ -50,6 +50,8 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 	private Matrix3X3 m_worldToScreenMatrix;
 	private Vector2D m_translation = new Vector2D();
 
+	private final HashSet<SceneGraphicEntry> ignored = new HashSet<>();
+
 	public TopologicalOrthographicProjectionSceneBuffer(Matrix3X3 projection) {
 		m_worldToScreenMatrix = new Matrix3X3(projection);
 
@@ -171,10 +173,30 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 			e.getUnderlay(bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
 
 		sort();
+		ignored.clear();
 		for (Vertex v : m_sortedVertices) {
 			Vector2D renderLocation = translateWorldToScreen(v.m_entry.location, scale);
 
 			List<List<ISceneComponentEffect>> effects = createComponentRenderEffects(g, offsetX + m_translation.x, offsetY + m_translation.y, scale, renderLocation.difference(m_translation), v);
+
+			boolean ignore = false;
+			for (List<ISceneComponentEffect> passEffects : effects) {
+				for (ISceneComponentEffect e : passEffects) {
+					if (e.ignore(v.m_entry.dispatcher, v.m_entry.component)) {
+						ignore = true;
+						break;
+					}
+				}
+
+				if(ignore)
+					break;
+			}
+
+			if(ignore) {
+				ignored.add(v.m_entry);
+				continue;
+			}
+
 
 			for (List<ISceneComponentEffect> passEffects : effects) {
 				for (ISceneComponentEffect e : passEffects)
@@ -207,6 +229,9 @@ public final class TopologicalOrthographicProjectionSceneBuffer implements IScen
 
 		while (it.hasPrevious()) {
 			SceneGraphicEntry entry = it.previous().m_entry;
+
+			if(ignored.contains(entry))
+				continue;
 
 			Vector2D renderLocation = translateWorldToScreen(entry.location, scale);
 			Vector2D relativePick = new Vector2D(x - renderLocation.x, y - renderLocation.y);

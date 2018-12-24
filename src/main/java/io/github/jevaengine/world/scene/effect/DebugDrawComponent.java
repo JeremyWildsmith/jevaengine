@@ -21,9 +21,11 @@ package io.github.jevaengine.world.scene.effect;
 import io.github.jevaengine.graphics.IRenderable;
 import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.math.*;
+import io.github.jevaengine.world.entity.IEntity;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEffect;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneBufferEntry;
 import io.github.jevaengine.world.scene.ISceneBuffer.ISceneComponentEffect;
+import io.github.jevaengine.world.scene.model.IImmutableSceneModel;
 
 import java.awt.*;
 import java.util.Collection;
@@ -111,7 +113,12 @@ public final class DebugDrawComponent implements ISceneBufferEffect {
 					public void postrender() {
 						debugDrawFront(g, renderLocation.x + offsetX, renderLocation.y + offsetY, scale, subject.getComponent().getBounds(), projection);
 					}
-				}
+
+                    @Override
+                    public boolean ignore(IEntity dispatcher, IImmutableSceneModel.ISceneModelComponent c) {
+                        return false;
+                    }
+                }
 		};
 	}
 }

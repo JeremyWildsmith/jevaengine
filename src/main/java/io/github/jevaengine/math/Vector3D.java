@@ -20,6 +20,8 @@ package io.github.jevaengine.math;
 
 import io.github.jevaengine.config.*;
 
+import java.util.Objects;
+
 public final class Vector3D implements ISerializable {
 	public int x;
 	public int y;
@@ -53,14 +55,17 @@ public final class Vector3D implements ISerializable {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof Vector3D))
-			return false;
-		else if (o == this)
-			return true;
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Vector3D vector3D = (Vector3D) o;
+		return x == vector3D.x &&
+				y == vector3D.y &&
+				z == vector3D.z;
+	}
 
-		Vector3D other = (Vector3D) o;
-
-		return other.x == x && other.y == y && other.z == z;
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, z);
 	}
 
 	@Override

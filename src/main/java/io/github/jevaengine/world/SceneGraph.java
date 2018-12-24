@@ -228,6 +228,8 @@ public final class SceneGraph implements IDisposable {
 
 		private final ArrayList<EntitySector> m_containingSectors = new ArrayList<>();
 
+		private Vector3F m_lastLocation = null;
+
 		public EntityEntry(IEntity subject) {
 			m_subject = subject;
 			subject.getObservers().add(m_observer);
@@ -268,8 +270,11 @@ public final class SceneGraph implements IDisposable {
 		}
 
 		public void refresh() {
-			remove();
-			place();
+			if(m_lastLocation == null || m_lastLocation.difference(m_subject.getBody().getLocation()).getLengthSquared() > 0.5f * 0.5f) {
+				m_lastLocation = m_subject.getBody().getLocation();
+				remove();
+				place();
+			}
 		}
 
 		private class LocationObserver implements IPhysicsBodyOrientationObserver, IEntityBodyObserver {

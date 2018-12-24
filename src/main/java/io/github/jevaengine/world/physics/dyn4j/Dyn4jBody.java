@@ -18,10 +18,7 @@
  */
 package io.github.jevaengine.world.physics.dyn4j;
 
-import io.github.jevaengine.math.Circle3F;
-import io.github.jevaengine.math.Rect2F;
-import io.github.jevaengine.math.Rect3F;
-import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.math.*;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
@@ -50,6 +47,8 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	private Direction m_direction = Direction.XYPlus;
 
+	private NonparticipantPhysicsBody m_dummyBody = null;
+
 	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?>... collisionExceptions) {
 		m_body = body;
 		m_fixture = fixture;
@@ -60,17 +59,53 @@ public final class Dyn4jBody implements IPhysicsBody {
 	}
 
 	void beginContact(Dyn4jBody other) {
-		m_observers.raise(IPhysicsBodyContactObserver.class).onBeginContact(other);
+		if(m_dummyBody != null)
+			m_observers.raise(IPhysicsBodyContactObserver.class).onBeginContact(other);
 	}
 
 	void endContact(Dyn4jBody other) {
-		m_observers.raise(IPhysicsBodyContactObserver.class).onEndContact(other);
+		if(m_dummyBody != null)
+			m_observers.raise(IPhysicsBodyContactObserver.class).onEndContact(other);
+	}
+
+	protected boolean isDisabled() {
+		return m_dummyBody != null;
+	}
+
+	protected void disable() {
+		if(isDisabled() || m_world == null)
+			return;
+
+		if (m_world != null) {
+			NonparticipantPhysicsBody dummy = new NonparticipantPhysicsBody();
+			dummy.setCollidable(m_isCollidable);
+			dummy.setDirection(m_direction);
+			dummy.setLocation(this.getLocation());
+			m_dummyBody = dummy;
+			m_world.m_physicsWorld.removeBody(m_body);
+		}
+	}
+
+	protected void enable() {
+		if(!isDisabled() || m_world == null)
+			return;
+
+		m_world.m_physicsWorld.addBody(m_body);
+		m_body.setAsleep(true);
+
+		Direction dir = m_dummyBody.getDirection();
+		Vector3F loc = m_dummyBody.getLocation();
+
+		m_dummyBody = null;
+
+		setLocation(loc);
+		setDirection(dir);
 	}
 
 	@Override
 	public void destory() {
 		m_observers.clear();
-                m_world.m_physicsWorld.removeBody(m_body);
+		m_world.m_physicsWorld.removeBody(m_body);
 		m_world = null;
 	}
 
@@ -82,7 +117,8 @@ public final class Dyn4jBody implements IPhysicsBody {
 	@Override
 	@Nullable
 	public RayCastIntersection castRay(Vector3F direction, float maxCast) {
-		if (direction.isZero() || m_world == null)
+
+		if (m_dummyBody != null || direction.isZero() || m_world == null)
 			return null;
 
 		Vector3F startPoint = getLocation().add(direction.normalize().multiply((float) m_fixture.getShape().getRadius()));
@@ -108,6 +144,10 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	@Override
 	public boolean isStatic() {
+		if(m_dummyBody != null) {
+			return m_dummyBody.isStatic();
+		}
+
 		return m_body.getMass().isInfinite();
 	}
 
@@ -153,26 +193,42 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	@Override
 	public Vector3F getLocation() {
+		if(m_dummyBody != null)
+			return m_dummyBody.getLocation();
+
 		return new Vector3F(Dyn4jUtil.wrap(m_body.getTransform().getTranslation()), m_depth);
 	}
 
 	@Override
 	public void setLocation(Vector3F location) {
-		Transform t = m_body.getTransform();
-		t.translate(new Vector2(location.x, location.y));
-		m_body.setTransform(t);
-		m_depth = location.z;
+		if (m_dummyBody != null) {
+			m_dummyBody.setLocation(location);
+		} else {
+			Transform t = m_body.getTransform();
+			t.translate(new Vector2(location.x - t.getTranslationX(), location.y - t.getTranslationY()));
+
+			m_body.setTransform(t);
+			m_depth = location.z;
+		}
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).locationSet();
 	}
 
 	@Override
 	public Direction getDirection() {
-		return m_direction;
+		if(m_dummyBody != null) {
+			return m_dummyBody.getDirection();
+		} else
+			return m_direction;
 	}
 
 	@Override
 	public void setDirection(Direction direction) {
-		m_direction = direction;
+		if (m_dummyBody != null) {
+			m_dummyBody.setDirection(direction);
+		} else {
+			m_direction = direction;
+		}
+
 		m_observers.raise(IPhysicsBodyOrientationObserver.class).directionSet();
 	}
 
@@ -183,9 +239,11 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	@Override
 	public void setLinearVelocity(Vector3F velocity) {
-		if(!velocity.isZero())
-			m_body.setAsleep(false);
-		m_body.setLinearVelocity(Dyn4jUtil.unwrap(velocity.getXy()));
+		if (m_dummyBody == null) {
+			if (!velocity.isZero())
+				m_body.setAsleep(false);
+			m_body.setLinearVelocity(Dyn4jUtil.unwrap(velocity.getXy()));
+		}
 	}
 
 	@Override
@@ -195,21 +253,29 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	@Override
 	public void applyLinearImpulse(Vector3F impulse) {
-		m_body.applyImpulse(Dyn4jUtil.unwrap(impulse.getXy()));
+		if (m_dummyBody == null) {
+			m_body.applyImpulse(Dyn4jUtil.unwrap(impulse.getXy()));
+		}
 	}
 
 	@Override
 	public void applyAngularImpulse(float impulse) {
-		m_body.applyImpulse(impulse);
+		if (m_dummyBody == null) {
+			m_body.applyImpulse(impulse);
+		}
 	}
 
 	@Override
 	public void applyForceToCenter(Vector3F force) {
-		m_body.applyForce(Dyn4jUtil.unwrap(force.getXy()));
+		if (m_dummyBody == null) {
+			m_body.applyForce(Dyn4jUtil.unwrap(force.getXy()));
+		}
 	}
 
 	@Override
 	public void applyTorque(float torque) {
-		m_body.applyTorque(torque);
+		if (m_dummyBody == null) {
+			m_body.applyTorque(torque);
+		}
 	}
 }

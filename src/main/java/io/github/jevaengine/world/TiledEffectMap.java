@@ -60,8 +60,8 @@ public final class TiledEffectMap implements IEffectMap {
 
 		Rect2D searchBounds = filter.getSearchBounds();
 
-		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++) {
-			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++) {
+		for (int x = searchBounds.x; x < searchBounds.x + searchBounds.width; x++) {
+			for (int y = searchBounds.y; y < searchBounds.y + searchBounds.height; y++) {
 				LogicEffects effects = m_tileEffects.get(new Vector2D(x, y));
 
 				if (effects != null && filter.shouldInclude(new Vector2F(x, y)) && filter.filter(effects))
@@ -76,8 +76,8 @@ public final class TiledEffectMap implements IEffectMap {
 	public void applyOverlayEffects(ISearchFilter<LogicEffects> filter, LogicEffects overlay) {
 		Rect2D searchBounds = filter.getSearchBounds();
 
-		for (int x = searchBounds.x; x <= searchBounds.x + searchBounds.width; x++) {
-			for (int y = searchBounds.y; y <= searchBounds.y + searchBounds.height; y++) {
+		for (int x = searchBounds.x; x < searchBounds.x + searchBounds.width; x++) {
+			for (int y = searchBounds.y; y < searchBounds.y + searchBounds.height; y++) {
 				if (!filter.shouldInclude(new Vector2F(x, y)))
 					continue;
 
