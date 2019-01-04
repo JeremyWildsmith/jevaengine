@@ -30,7 +30,7 @@ public final class DirectionSteeringBehavior implements ISteeringBehavior {
 	}
 
 	@Override
-	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
+	public Vector2F direct() {
 		return new Vector2F(m_direction.getDirectionVector());
 	}
 }

@@ -22,11 +22,11 @@ import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
 public interface ISteeringBehavior {
-	Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection);
+	Vector2F direct();
 
 	public static final class NullSteeringBehavior implements ISteeringBehavior {
 		@Override
-		public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
+		public Vector2F direct() {
 			return new Vector2F();
 		}
 	}

@@ -25,20 +25,22 @@ public final class SeekBehavior implements ISteeringBehavior {
 	private final float m_arrivalTolorance;
 	private final float m_influence;
 	private final ISteeringSubject m_target;
+	private final IImmutablePhysicsBody m_subject;
 
-	public SeekBehavior(float influence, float arrivalTolorance, ISteeringSubject target) {
+	public SeekBehavior(IImmutablePhysicsBody subject, float influence, float arrivalTolorance, ISteeringSubject target) {
 		m_arrivalTolorance = arrivalTolorance;
 		m_influence = influence;
 		m_target = target;
+		m_subject = subject;
 	}
 
 	@Override
-	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
-		Vector2F deltaFromDestination = m_target.getLocation().difference(subject.getLocation().getXy());
+	public Vector2F direct() {
+		Vector2F deltaFromDestination = m_target.getLocation().difference(m_subject.getLocation().getXy());
 
 		if (deltaFromDestination.getLength() < m_arrivalTolorance)
-			return currentDirection;
+			return new Vector2F();
 
-		return currentDirection.add(deltaFromDestination.normalize().multiply(m_influence));
+		return deltaFromDestination.normalize().multiply(m_influence);
 	}
 }

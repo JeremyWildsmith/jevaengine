@@ -32,11 +32,11 @@ public final class SteeringBehaviorList extends ArrayList<ISteeringBehavior> imp
 	}
 
 	@Override
-	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
+	public Vector2F direct() {
 		Vector2F steerDirection = new Vector2F();
 
 		for (ISteeringBehavior b : this)
-			steerDirection = b.direct(subject, steerDirection);
+			steerDirection = b.direct();
 
 		return steerDirection.isZero() ? steerDirection : steerDirection.normalize();
 	}

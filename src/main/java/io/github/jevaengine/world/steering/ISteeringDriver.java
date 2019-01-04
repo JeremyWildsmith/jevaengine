@@ -20,6 +20,7 @@ package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.world.physics.IPhysicsBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ISteeringDriver {
@@ -32,4 +33,31 @@ public interface ISteeringDriver {
 	void update(int deltaTime);
 
 	boolean isDriving();
+
+	public static class NullSteeringDriver implements ISteeringDriver {
+		@Override
+		public List<ISteeringBehavior> getBehaviors() {
+			return new ArrayList<>();
+		}
+
+		@Override
+		public void attach(IPhysicsBody target) {
+
+		}
+
+		@Override
+		public void dettach() {
+
+		}
+
+		@Override
+		public void update(int deltaTime) {
+
+		}
+
+		@Override
+		public boolean isDriving() {
+			return false;
+		}
+	}
 }

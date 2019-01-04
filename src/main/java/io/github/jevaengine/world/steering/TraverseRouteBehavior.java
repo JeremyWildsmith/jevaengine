@@ -27,13 +27,13 @@ public class TraverseRouteBehavior implements ISteeringBehavior {
 	private final PointSubject m_seekTarget = new PointSubject(new Vector2F());
 	private final Route m_route;
 
-	public TraverseRouteBehavior(float influence, Route route, float arrivaleTolorance) {
-		m_seekBehavior = new SeekBehavior(influence, arrivaleTolorance, m_seekTarget);
+	public TraverseRouteBehavior(IImmutablePhysicsBody subject, float influence, Route route, float arrivaleTolorance) {
+		m_seekBehavior = new SeekBehavior(subject, influence, arrivaleTolorance, m_seekTarget);
 		m_route = new Route(route);
 	}
 
 	@Override
-	public Vector2F direct(IImmutablePhysicsBody subject, Vector2F currentDirection) {
+	public Vector2F direct() {
 		Vector2F currentTarget = m_route.getCurrentTarget();
 
 		if (currentTarget == null)
@@ -41,11 +41,11 @@ public class TraverseRouteBehavior implements ISteeringBehavior {
 
 		m_seekTarget.setLocation(currentTarget);
 
-		Vector2F direction = m_seekBehavior.direct(subject, currentDirection);
+		Vector2F direction = m_seekBehavior.direct();
 
 		if (direction.isZero()) {
 			m_route.nextTarget();
-			return direct(subject, currentDirection);
+			return direct();
 		} else
 			return direction;
 	}

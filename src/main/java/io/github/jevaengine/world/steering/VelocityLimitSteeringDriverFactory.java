@@ -26,7 +26,7 @@ public final class VelocityLimitSteeringDriverFactory implements ISteeringDriver
 	}
 
 	@Override
-	public ISteeringDriver create() {
+	public VelocityLimitSteeringDriver create() {
 		return new VelocityLimitSteeringDriver(m_maxVelocity);
 	}
 

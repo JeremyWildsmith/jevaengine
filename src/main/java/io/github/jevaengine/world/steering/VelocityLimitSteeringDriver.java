@@ -29,7 +29,7 @@ import java.util.List;
 public final class VelocityLimitSteeringDriver implements ISteeringDriver {
 	private final SteeringBehaviorList m_behaviors = new SteeringBehaviorList();
 
-	private final float m_maxSteerVelocity;
+	private float m_maxSteerVelocity;
 
 	@Nullable
 	private IPhysicsBody m_target;
@@ -51,6 +51,10 @@ public final class VelocityLimitSteeringDriver implements ISteeringDriver {
 		m_target = null;
 	}
 
+	public void setSpeed(float speed) {
+		m_maxSteerVelocity = speed;
+	}
+
 	@Override
 	public boolean isDriving() {
 		if (m_target == null)
@@ -60,7 +64,7 @@ public final class VelocityLimitSteeringDriver implements ISteeringDriver {
 	}
 
 	private Vector2F getSteerVelocity() {
-		return m_behaviors.direct(m_target, new Vector2F()).multiply(m_maxSteerVelocity);
+		return m_behaviors.direct().multiply(m_maxSteerVelocity);
 	}
 
 	public void update(int deltaTime) {
@@ -71,9 +75,6 @@ public final class VelocityLimitSteeringDriver implements ISteeringDriver {
 
 		if (steerVelocity.isZero())
 			return;
-
-		//m_target.applyLinearImpulse(new Vector3F(steerVelocity.multiply(m_target.getMass())
-		//		.add(steerVelocity.normalize().multiply(m_target.getWorld().getMaxFrictionForce())), 0).multiply(deltaTime / 1000.0F));
 
 		m_target.setLinearVelocity(new Vector3F(getSteerVelocity(), 0));
 		m_target.setDirection(Direction.fromVector(steerVelocity));
