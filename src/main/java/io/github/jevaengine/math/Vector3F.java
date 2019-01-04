@@ -20,7 +20,9 @@ package io.github.jevaengine.math;
 
 import io.github.jevaengine.config.*;
 
-public final class Vector3F implements ISerializable {
+import java.io.Serializable;
+
+public final class Vector3F implements ISerializable, Serializable {
 	public static final float TOLERANCE = 0.0000001F;
 
 	public float x;

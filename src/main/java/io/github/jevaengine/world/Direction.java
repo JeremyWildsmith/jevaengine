@@ -21,9 +21,10 @@ package io.github.jevaengine.world;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public enum Direction {
+public enum Direction implements Serializable {
 	XPlus(new Vector2D(1, 0), false),
 	YPlus(new Vector2D(0, 1), false),
 	XMinus(new Vector2D(-1, 0), false),
