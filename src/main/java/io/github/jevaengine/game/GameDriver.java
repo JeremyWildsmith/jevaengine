@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class GameDriver {
 	private static final int GAMELOOP_PERIOD = 1000 / 60;
-	private static final int MAX_FALL_BEHIND = 2 * GAMELOOP_PERIOD;
+	private static final int MAX_FALL_BEHIND = 20 * GAMELOOP_PERIOD;
 
 	private final ScheduledExecutorService m_executor = new ScheduledThreadPoolExecutor(1);
 
@@ -75,7 +75,16 @@ public final class GameDriver {
 				long delta = System.currentTimeMillis() - m_lastTime;
 				m_lastTime = System.currentTimeMillis();
 
-				m_timeSinceLastUpdate = Math.min(m_timeSinceLastUpdate + delta, MAX_FALL_BEHIND);
+				long deltaCalc = m_timeSinceLastUpdate + delta;
+
+				m_timeSinceLastUpdate = Math.min(deltaCalc, MAX_FALL_BEHIND);
+
+				long lostTime = deltaCalc - m_timeSinceLastUpdate;
+
+				if(lostTime > 0)
+				{
+					m_logger.info("Lost time: " + lostTime);
+				}
 
 				for (; m_timeSinceLastUpdate > GAMELOOP_PERIOD; m_timeSinceLastUpdate -= GAMELOOP_PERIOD)
 					m_game.update(GAMELOOP_PERIOD);
