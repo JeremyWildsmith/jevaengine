@@ -26,19 +26,21 @@ import io.github.jevaengine.world.physics.*;
 import io.github.jevaengine.world.search.RadialSearchFilter;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.dynamics.ContinuousDetectionMode;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.dynamics.contact.ContactListener;
 import org.dyn4j.dynamics.contact.ContactPoint;
 import org.dyn4j.dynamics.contact.PersistedContactPoint;
 import org.dyn4j.dynamics.contact.SolvedContactPoint;
 import org.dyn4j.geometry.Convex;
+import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Polygon;
 import org.dyn4j.geometry.Vector2;
 
-import java.util.*;
-
-import org.dyn4j.dynamics.ContinuousDetectionMode;
-import org.dyn4j.geometry.MassType;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 public final class Dyn4jWorld implements IPhysicsWorld {
 	private static final float ACTIVATE_RADIUS_ON = 1.5f;

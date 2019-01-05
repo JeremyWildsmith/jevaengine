@@ -19,7 +19,6 @@
 package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.math.Vector2F;
-import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
 import java.util.ArrayList;
 import java.util.Arrays;

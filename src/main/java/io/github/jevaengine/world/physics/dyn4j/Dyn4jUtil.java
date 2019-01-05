@@ -20,11 +20,10 @@ package io.github.jevaengine.world.physics.dyn4j;
 
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.physics.PhysicsBodyDescription.PhysicsBodyType;
-import org.dyn4j.geometry.Mass;
+import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 
 import java.util.NoSuchElementException;
-import org.dyn4j.geometry.MassType;
 
 final class Dyn4jUtil {
 	public static Vector2F wrap(Vector2 vec) {

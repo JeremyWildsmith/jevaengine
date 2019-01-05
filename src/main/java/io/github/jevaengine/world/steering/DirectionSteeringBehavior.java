@@ -20,7 +20,6 @@ package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.world.Direction;
-import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
 public final class DirectionSteeringBehavior implements ISteeringBehavior {
 	private final Direction m_direction;

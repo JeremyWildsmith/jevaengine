@@ -18,7 +18,10 @@
  */
 package io.github.jevaengine.world.physics.dyn4j;
 
-import io.github.jevaengine.math.*;
+import io.github.jevaengine.math.Circle3F;
+import io.github.jevaengine.math.Rect2F;
+import io.github.jevaengine.math.Rect3F;
+import io.github.jevaengine.math.Vector3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;

@@ -19,9 +19,6 @@
 package io.github.jevaengine.world.steering;
 
 import io.github.jevaengine.math.Vector2F;
-import io.github.jevaengine.math.Vector3F;
-import io.github.jevaengine.world.Direction;
-import io.github.jevaengine.world.physics.IImmutablePhysicsBody;
 
 public final class VectorSteeringBehavior implements ISteeringBehavior {
 	private final Vector2F m_direction;
