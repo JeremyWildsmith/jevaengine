@@ -32,10 +32,7 @@ import org.dyn4j.dynamics.contact.ContactListener;
 import org.dyn4j.dynamics.contact.ContactPoint;
 import org.dyn4j.dynamics.contact.PersistedContactPoint;
 import org.dyn4j.dynamics.contact.SolvedContactPoint;
-import org.dyn4j.geometry.Convex;
-import org.dyn4j.geometry.MassType;
-import org.dyn4j.geometry.Polygon;
-import org.dyn4j.geometry.Vector2;
+import org.dyn4j.geometry.*;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -74,8 +71,9 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 		switch (shape.type) {
 			default:
 				assert false : "Unrecognized shape type.";
-			case Box:
 			case Circle:
+				return new Circle(shape.aabb.width / 2);
+			case Box:
 				Vector2 points[] = new Vector2[4];
 				points[0] = new Vector2(shape.aabb.x, shape.aabb.y);
 				points[1] = new Vector2(shape.aabb.x + shape.aabb.width, shape.aabb.y);
