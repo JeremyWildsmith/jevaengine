@@ -19,6 +19,7 @@
 package io.github.jevaengine.graphics;
 
 import io.github.jevaengine.math.Rect2D;
+import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.util.Nullable;
 
 import java.awt.*;
@@ -28,12 +29,16 @@ import java.util.HashMap;
 public final class DefaultFont implements IFont {
 	private final IImmutableGraphic m_srcImage;
 	private final HashMap<Character, Rect2D> m_characterMap;
+	private final HashMap<Character, Integer> m_advanceMap;
+	private final HashMap<Character, Vector2D> m_offsetMap;
 
 	private final Rect2D m_maxCharacterBounds;
 
-	public DefaultFont(IImmutableGraphic srcImage, HashMap<Character, Rect2D> characterMap) {
+	public DefaultFont(IImmutableGraphic srcImage, HashMap<Character, Rect2D> characterMap, HashMap<Character, Integer> advanceMap, HashMap<Character, Vector2D> offsetMap) {
 		m_srcImage = srcImage;
 		m_characterMap = characterMap;
+		m_advanceMap = advanceMap;
+		m_offsetMap = offsetMap;
 
 		m_maxCharacterBounds = getMaxBounds(characterMap.values());
 	}
@@ -58,6 +63,20 @@ public final class DefaultFont implements IFont {
 		return m_characterMap.get(c);
 	}
 
+	private int getCharAdvance(char c) {
+		if(!m_advanceMap.containsKey(c))
+			return 0;
+
+		return m_advanceMap.get(c);
+	}
+
+	private Vector2D getCharOffset(char c) {
+		if(!m_offsetMap.containsKey(c))
+			return new Vector2D();
+
+		return m_offsetMap.get(c);
+	}
+
 	@Override
 	public boolean doesMappingExists(char keyChar) {
 		return getChar(keyChar) != null;
@@ -77,7 +96,8 @@ public final class DefaultFont implements IFont {
 			Rect2D charBounds = getChar(c);
 
 			if (charBounds != null) {
-				x += charBounds.width * scale;
+				x += getCharOffset(c).x * scale;
+				x += getCharAdvance(c) * scale;
 				y = Math.max(y, (int) (charBounds.height * scale));
 			}
 		}
@@ -93,10 +113,13 @@ public final class DefaultFont implements IFont {
 		for (char c : text.toCharArray()) {
 			Rect2D charBounds = getChar(c);
 			if (charBounds != null) {
-				m_srcImage.render(g, x + (int) currentX, y, (int) (charBounds.width * scale), (int) (charBounds.height * scale),
+				Vector2D offset = getCharOffset(c);
+				currentX += offset.x * scale;
+
+				m_srcImage.render(g, x + (int) currentX, (int)(y + offset.y * scale), (int) (charBounds.width * scale), (int) (charBounds.height * scale),
 						charBounds.x, charBounds.y, charBounds.width, charBounds.height);
 
-				currentX += charBounds.width * scale;
+				currentX += getCharAdvance(c) * scale;
 				maxY = Math.max(y, charBounds.height * scale);
 			}
 		}

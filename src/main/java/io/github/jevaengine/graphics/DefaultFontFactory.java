@@ -23,6 +23,7 @@ import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructi
 import io.github.jevaengine.graphics.DefaultFontFactory.FontDeclaration.GlyphDeclaration;
 import io.github.jevaengine.graphics.IGraphicFactory.GraphicConstructionException;
 import io.github.jevaengine.math.Rect2D;
+import io.github.jevaengine.math.Vector2D;
 
 import javax.inject.Inject;
 import java.awt.*;
@@ -68,11 +69,16 @@ public final class DefaultFontFactory implements IFontFactory {
 			srcImage = filterImage(srcImage, color);
 
 			HashMap<Character, Rect2D> charMap = new HashMap<Character, Rect2D>();
+			HashMap<Character, Integer> advanceMap = new HashMap<>();
+			HashMap<Character, Vector2D> offsetMap = new HashMap<>();
 
-			for (GlyphDeclaration glyph : fontDecl.glyphs)
+			for (GlyphDeclaration glyph : fontDecl.glyphs) {
 				charMap.put(glyph.character, glyph.region);
+				advanceMap.put(glyph.character, glyph.advance);
+				offsetMap.put(glyph.character, glyph.offset);
+			}
 
-			return new DefaultFont(srcImage, charMap);
+			return new DefaultFont(srcImage, charMap, advanceMap, offsetMap);
 
 		} catch (ValueSerializationException |
 				ConfigurationConstructionException |
@@ -89,11 +95,16 @@ public final class DefaultFontFactory implements IFontFactory {
 			IImmutableGraphic srcImage = m_graphicFactory.create(name.resolve(new URI(fontDecl.texture)));
 
 			HashMap<Character, Rect2D> charMap = new HashMap<>();
+			HashMap<Character, Integer> advanceMap = new HashMap<>();
+			HashMap<Character, Vector2D > offsetMap = new HashMap<>();
 
-			for (GlyphDeclaration glyph : fontDecl.glyphs)
+			for (GlyphDeclaration glyph : fontDecl.glyphs) {
 				charMap.put(glyph.character, glyph.region);
+				advanceMap.put(glyph.character, glyph.advance);
+				offsetMap.put(glyph.character, glyph.offset);
+			}
 
-			return new DefaultFont(srcImage, charMap);
+			return new DefaultFont(srcImage, charMap, advanceMap, offsetMap);
 
 		} catch (ValueSerializationException |
 				ConfigurationConstructionException |
@@ -128,6 +139,8 @@ public final class DefaultFontFactory implements IFontFactory {
 		public static class GlyphDeclaration implements ISerializable {
 			public char character;
 			public Rect2D region;
+			public int advance;
+			public Vector2D offset = new Vector2D();
 
 			public GlyphDeclaration() {
 			}
@@ -143,6 +156,15 @@ public final class DefaultFontFactory implements IFontFactory {
 				try {
 					this.character = (char) source.getChild("char").getValue(Integer.class).intValue();
 					this.region = source.getChild("region").getValue(Rect2D.class);
+
+					if(source.childExists("advance"))
+						advance = source.getChild("advance").getValue(Integer.class);
+					else
+						advance = region.width;
+
+					if(source.childExists("offset"))
+						offset = source.getChild("offset").getValue(Vector2D.class);
+
 				} catch (NoSuchChildVariableException e) {
 					throw new ValueSerializationException(e);
 				}
