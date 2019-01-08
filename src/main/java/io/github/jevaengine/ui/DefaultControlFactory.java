@@ -97,11 +97,15 @@ public class DefaultControlFactory implements IControlFactory {
 				String defaultText = configVar.childExists("text") ? configVar.getChild("text").getValue(String.class) : "";
 				boolean editable = configVar.childExists("allowEdit") ? configVar.getChild("allowEdit").getValue(Boolean.class) : true;
 				boolean wordWrap = configVar.childExists("wordWrap") ? configVar.getChild("wordWrap").getValue(Boolean.class) : true;
+				boolean multiline = configVar.childExists("multiline") ? configVar.getChild("multiline").getValue(Boolean.class) : true;
+				int maxLength = configVar.childExists("maxLength") ? configVar.getChild("maxLength").getValue(Integer.class) : -1;
 				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
 
 				TextArea textArea = new TextArea(instanceName, defaultText, bounds.width, bounds.height);
 				textArea.setEditable(editable);
 				textArea.setWordWrapped(wordWrap);
+				textArea.setMultiline(multiline);
+				textArea.setMaxLength(maxLength);
 
 				return (T) textArea;
 			} else if (controlClass.equals(Viewport.class)) {

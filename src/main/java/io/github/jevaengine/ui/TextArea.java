@@ -49,6 +49,8 @@ public class TextArea extends Control {
 	private int m_blinkTimeout = 0;
 	private TextLayout m_textLayout;
 	private boolean m_isWordWrapped = true;
+	private boolean m_multiline = true;
+	private int m_maxLength = -1;
 
 	public TextArea(String text, int width, int height) {
 		super(COMPONENT_NAME);
@@ -167,6 +169,7 @@ public class TextArea extends Control {
 
 	public void writeText(String text) {
 		String safeString = stripUnsupportedChars(text);
+
 		//backspace
 		if (safeString == "\b") {
 			m_workingText = m_workingText.isEmpty() ? "" : new StringBuilder(m_workingText).deleteCharAt(m_cursorLocation).toString();
@@ -238,12 +241,14 @@ public class TextArea extends Control {
 			if (keyEvent.keyChar == '\b') {
 				m_cursorLocation = Math.min(m_workingText.length(), Math.max(0, m_cursorLocation - 1));
 				writeText("\b");
-			} else if (keyEvent.keyChar == '\n') {
-				writeText(String.valueOf(keyEvent.keyChar));
-				m_cursorLocation = Math.min(m_workingText.length(), Math.max(0, m_cursorLocation + 1));
-			} else if (m_font.doesMappingExists(keyEvent.keyChar)) {
-				writeText(String.valueOf(keyEvent.keyChar));
-				m_cursorLocation = Math.min(m_workingText.length(), Math.max(0, m_cursorLocation + 1));
+			} else if(m_maxLength < 0 || m_workingText.length() < m_maxLength) {
+				if (keyEvent.keyChar == '\n' && m_multiline) {
+					writeText(String.valueOf(keyEvent.keyChar));
+					m_cursorLocation = Math.min(m_workingText.length(), Math.max(0, m_cursorLocation + 1));
+				} else if (m_font.doesMappingExists(keyEvent.keyChar)) {
+					writeText(String.valueOf(keyEvent.keyChar));
+					m_cursorLocation = Math.min(m_workingText.length(), Math.max(0, m_cursorLocation + 1));
+				}
 			}
 		} else if (keyEvent.type == InputKeyEvent.KeyEventType.KeyUp) {
 			if (keyEvent.keyCode == KeyEvent.VK_LEFT) {
@@ -277,6 +282,14 @@ public class TextArea extends Control {
 	@Override
 	public void update(int deltaTime) {
 		m_blinkTimeout += deltaTime;
+	}
+
+	public void setMultiline(boolean multiline) {
+		m_multiline = multiline;
+	}
+
+	public void setMaxLength(int maxLength) {
+		m_maxLength = maxLength;
 	}
 
 	private static class LineLayout {
