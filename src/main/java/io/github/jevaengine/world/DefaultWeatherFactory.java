@@ -156,12 +156,7 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 		}
 
 		@Override
-		public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection) {
-			return new NullGraphic();
-		}
-
-		@Override
-		public IRenderable getOverlay(final Rect2D bounds, final Matrix3X3 projection) {
+		public IRenderable getOverlay(Vector2D translation, final Rect2D bounds, final Matrix3X3 projection) {
 			final ISceneBuffer sceneBuffer = new UnsortedOrthographicProjectionSceneBuffer(projection);
 			return new IRenderable() {
 				@Override

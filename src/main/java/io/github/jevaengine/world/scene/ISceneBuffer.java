@@ -19,6 +19,7 @@
 package io.github.jevaengine.world.scene;
 
 import io.github.jevaengine.graphics.IRenderable;
+import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
@@ -43,9 +44,13 @@ public interface ISceneBuffer extends IImmutableSceneBuffer {
 	void translate(Vector2D translation);
 
 	public interface ISceneBufferEffect {
-		IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection);
+		default IRenderable getUnderlay(Vector2D translation, Rect2D bounds, Matrix3X3 projection) {
+			return new NullGraphic();
+		}
 
-		IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection);
+		default IRenderable getOverlay(Vector2D translation, Rect2D bounds, Matrix3X3 projection) {
+			return new NullGraphic();
+		}
 
 		ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, Vector2D renderLocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath);
 	}

@@ -54,16 +54,6 @@ public interface IWeatherFactory {
 		}
 
 		@Override
-		public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection) {
-			return new NullGraphic();
-		}
-
-		@Override
-		public IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection) {
-			return new NullGraphic();
-		}
-
-		@Override
 		public ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, final Vector2D renderlocation, Matrix3X3 projection, ISceneBufferEntry subject, Collection<ISceneBufferEntry> beneath) {
 			return new ISceneComponentEffect[0];
 		}

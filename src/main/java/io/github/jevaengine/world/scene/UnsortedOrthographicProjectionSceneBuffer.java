@@ -103,7 +103,7 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 		ignored.clear();
 
 		for (ISceneBufferEffect e : m_effects)
-			e.getUnderlay(bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
+			e.getUnderlay(m_translation, bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
 
 		for (SceneGraphicEntry entry : m_unsortedVertices) {
 			Vector2D renderLocation = translateWorldToScreen(entry.location, scale);
@@ -145,7 +145,7 @@ public final class UnsortedOrthographicProjectionSceneBuffer implements ISceneBu
 		}
 
 		for (ISceneBufferEffect e : m_effects)
-			e.getOverlay(bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
+			e.getOverlay(m_translation, bounds, new Matrix3X3(m_worldToScreenMatrix)).render(g, offsetX, offsetY, scale);
 
 	}
 

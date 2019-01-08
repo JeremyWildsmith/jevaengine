@@ -31,16 +31,6 @@ import java.awt.*;
 import java.util.Collection;
 
 public final class DebugDrawComponent implements ISceneBufferEffect {
-	@Override
-	public IRenderable getUnderlay(Rect2D bounds, Matrix3X3 projection) {
-		return new NullGraphic();
-	}
-
-	@Override
-	public IRenderable getOverlay(Rect2D bounds, Matrix3X3 projection) {
-		return new NullGraphic();
-	}
-
 	private Vector2D translateWorldToScreen(Matrix3X3 projection, Vector3F location, float fScale) {
 		Vector3D translation = projection.scale(fScale).dot(location).round();
 		return new Vector2D(translation.x, translation.y);
