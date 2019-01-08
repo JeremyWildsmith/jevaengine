@@ -27,6 +27,15 @@ import java.net.URI;
 public interface IWorldFactory {
 	World create(URI name, IInitializationProgressMonitor progressMonitor) throws WorldConstructionException;
 
+	default World create(URI name) throws WorldConstructionException {
+		return this.create(name, new IInitializationProgressMonitor() {
+			@Override
+			public void statusChanged(float progress, String status) {
+
+			}
+		});
+	}
+
 	public static final class WorldConstructionException extends Exception {
 		private static final long serialVersionUID = 1L;
 
