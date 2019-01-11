@@ -52,27 +52,35 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	private NonparticipantPhysicsBody m_dummyBody = null;
 
-	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, Rect2F aabb, @Nullable IEntity owner, Class<?>... collisionExceptions) {
+	private final boolean m_isSensor;
+
+	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, boolean isSensor, Rect2F aabb, @Nullable IEntity owner, Class<?>... collisionExceptions) {
 		m_body = body;
 		m_fixture = fixture;
 		m_owner = owner;
 		m_body.setUserData(this);
 		m_world = world;
 		m_collisionExceptions.addAll(Arrays.asList(collisionExceptions));
+		m_isSensor = isSensor;
 	}
 
 	void beginContact(Dyn4jBody other) {
-		if(m_dummyBody != null)
+		if(m_dummyBody == null)
 			m_observers.raise(IPhysicsBodyContactObserver.class).onBeginContact(other);
 	}
 
 	void endContact(Dyn4jBody other) {
-		if(m_dummyBody != null)
+		if(m_dummyBody == null)
 			m_observers.raise(IPhysicsBodyContactObserver.class).onEndContact(other);
 	}
 
 	protected boolean isDisabled() {
 		return m_dummyBody != null;
+	}
+
+	@Override
+	public boolean isSensor() {
+		return m_isSensor;
 	}
 
 	protected void disable() {

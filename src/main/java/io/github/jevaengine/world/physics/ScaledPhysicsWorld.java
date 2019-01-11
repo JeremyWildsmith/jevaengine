@@ -115,6 +115,11 @@ public final class ScaledPhysicsWorld extends ImmutableScaledPhysicsWorld implem
 		}
 
 		@Override
+		public boolean isSensor() {
+			return m_body.isSensor();
+		}
+
+		@Override
 		public boolean isCollidable() {
 			return m_body.isCollidable();
 		}

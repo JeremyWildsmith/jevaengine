@@ -50,6 +50,11 @@ public final class NonparticipantPhysicsBody implements IPhysicsBody {
 	}
 
 	@Override
+	public boolean isSensor() {
+		return false;
+	}
+
+	@Override
 	public void destory() {
 	}
 

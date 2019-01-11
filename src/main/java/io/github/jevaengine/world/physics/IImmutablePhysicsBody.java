@@ -39,6 +39,8 @@ public interface IImmutablePhysicsBody {
 
 	boolean collidesWith(IImmutablePhysicsBody subject);
 
+	boolean isSensor();
+
 	Circle3F getBoundingCircle();
 
 	Rect3F getAABB();

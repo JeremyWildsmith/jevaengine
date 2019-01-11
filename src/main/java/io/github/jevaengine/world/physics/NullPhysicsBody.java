@@ -51,6 +51,11 @@ public final class NullPhysicsBody implements IPhysicsBody {
 	}
 
 	@Override
+	public boolean isSensor() {
+		return false;
+	}
+
+	@Override
 	public Vector3F getLocation() {
 		return new Vector3F();
 	}

@@ -189,7 +189,7 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 		fixture.setFriction(bodyDescription.friction);
 		body.addFixture(fixture);
 
-		Dyn4jBody dyn4jBody = new Dyn4jBody(this, body, fixture, bodyDescription.shape.aabb.getXy(), owner, bodyDescription.collisionExceptions);
+		Dyn4jBody dyn4jBody = new Dyn4jBody(this, body, fixture, bodyDescription.isSensor, bodyDescription.shape.aabb.getXy(), owner, bodyDescription.collisionExceptions);
 
 		if(!bodyDescription.isSensor) {
 			if (bodyDescription.type == PhysicsBodyDescription.PhysicsBodyType.Static) {
@@ -199,8 +199,11 @@ public final class Dyn4jWorld implements IPhysicsWorld {
 				m_dynamicBodies.add(dyn4jBody);
 				m_physicsWorld.addBody(body);
 			}
-		} else
+		} else {
+			if(bodyDescription.type == PhysicsBodyDescription.PhysicsBodyType.Dynamic)
+				m_dynamicBodies.add(dyn4jBody);
 			m_physicsWorld.addBody(body);
+		}
 
 		return dyn4jBody;
 	}
