@@ -28,6 +28,8 @@ import io.github.jevaengine.graphics.Sprite.NoSuchSpriteAnimation;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.util.IObserverRegistry;
+import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.scene.model.IAnimationSceneModel;
@@ -327,6 +329,16 @@ public final class DefaultParticleEmitterFactory implements IParticleEmitterFact
 		@Override
 		public boolean hasAnimation(String name) {
 			return false;
+		}
+
+		@Override
+		public String[] getAnimations() {
+			return new String[0];
+		}
+
+		@Override
+		public IObserverRegistry getObservers() {
+			return new Observers();
 		}
 	}
 }

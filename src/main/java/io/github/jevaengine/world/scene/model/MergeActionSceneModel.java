@@ -20,7 +20,9 @@ package io.github.jevaengine.world.scene.model;
 
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
+import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.MutableProcessList;
+import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 import io.github.jevaengine.world.physics.PhysicsBodyShape.PhysicsBodyShapeType;
@@ -33,6 +35,7 @@ import java.util.List;
 public final class MergeActionSceneModel implements IActionSceneModel {
 	private final MutableProcessList<ISceneModel> m_models = new MutableProcessList<>();
 	private final IActionSceneModel m_base;
+	private final Observers m_observers = new Observers();
 
 	public MergeActionSceneModel(IActionSceneModel base, ISceneModel... merge) {
 		m_base = base;
@@ -116,8 +119,18 @@ public final class MergeActionSceneModel implements IActionSceneModel {
 
 	@Override
 	public void setDirection(Direction direction) {
+		Direction old = getDirection();
 		for (ISceneModel m : m_models)
 			m.setDirection(direction);
+
+		if(old != getDirection()) {
+			m_observers.raise(ISceneModelObserver.class).directionChanged();
+		}
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_observers;
 	}
 
 	@Override

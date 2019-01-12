@@ -32,6 +32,8 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel {
 	private final List<IAnimationSceneModel> m_models = new ArrayList<>();
 	private final Map<String, MergeAnimationSceneModelAnimationObserverRelay> m_observerRelays = new HashMap<>();
 
+	private final Observers m_observers = new Observers();
+
 	public MergeAnimationSceneModel(IAnimationSceneModel... models) {
 		m_models.addAll(Arrays.asList(models));
 	}
@@ -45,6 +47,11 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel {
 			remove(m);
 			m.dispose();
 		}
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_observers;
 	}
 
 	public void add(IAnimationSceneModel model) {
@@ -141,8 +148,14 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel {
 
 	@Override
 	public void setDirection(Direction direction) {
+
+		Direction oldDirection = getDirection();
+
 		for (ISceneModel m : m_models)
 			m.setDirection(direction);
+
+		if(oldDirection != getDirection())
+			m_observers.raise(ISceneModelObserver.class).directionChanged();
 	}
 
 	@Override
@@ -186,6 +199,17 @@ public final class MergeAnimationSceneModel implements IAnimationSceneModel {
 				return true;
 
 		return false;
+	}
+
+	@Override
+	public String[] getAnimations() {
+		HashSet<String> animations = new HashSet<>();
+
+		for(IAnimationSceneModel m : m_models) {
+			animations.addAll(Arrays.asList(m.getAnimations()));
+		}
+
+		return animations.toArray(new String[animations.size()]);
 	}
 
 	private static final class MergeAnimationSceneModelAnimationObserverRelay {

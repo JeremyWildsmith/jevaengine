@@ -44,6 +44,8 @@ public final class SpriteSceneModel implements IAnimationSceneModel {
 
 	private PhysicsBodyShape m_bodyShape;
 
+	private final Observers m_observers = new Observers();
+
 	SpriteSceneModel(PhysicsBodyShape bodyShape) {
 		m_bodyShape = new PhysicsBodyShape(bodyShape);
 	}
@@ -142,6 +144,13 @@ public final class SpriteSceneModel implements IAnimationSceneModel {
 		return m_animations.containsKey(name);
 	}
 
+
+	@Override
+	public String[] getAnimations() {
+		return m_animations.keySet().toArray(new String[0]);
+	}
+
+
 	private void refreshCurrentAnimation() {
 		refreshCurrentAnimation(null);
 	}
@@ -188,8 +197,19 @@ public final class SpriteSceneModel implements IAnimationSceneModel {
 
 	@Override
 	public void setDirection(Direction direction) {
+
+		Direction oldDirection = direction;
 		m_direction = direction;
+
 		refreshCurrentAnimation();
+
+		if(oldDirection != m_direction)
+			m_observers.raise(ISceneModelObserver.class).directionChanged();
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_observers;
 	}
 
 	public final class SpriteSceneModelAnimation implements IAnimationSceneModelAnimation, IDisposable {

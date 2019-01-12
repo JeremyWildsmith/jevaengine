@@ -22,9 +22,11 @@ import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.NullObservers;
+import io.github.jevaengine.util.Observers;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +35,11 @@ public interface IAnimationSceneModel extends ISceneModel {
 
 	IAnimationSceneModelAnimation getAnimation(String name);
 
+	String[] getAnimations();
+
 	boolean hasAnimation(String name);
 
-	public enum AnimationSceneModelAnimationState {
+	public enum AnimationSceneModelAnimationState implements Serializable {
 		Play,
 		PlayWrap,
 		Stop,
@@ -119,8 +123,18 @@ public interface IAnimationSceneModel extends ISceneModel {
 		}
 
 		@Override
+		public String[] getAnimations() {
+			return new String[0];
+		}
+
+		@Override
 		public boolean hasAnimation(String name) {
 			return false;
+		}
+
+		@Override
+		public IObserverRegistry getObservers() {
+			return new Observers();
 		}
 	}
 }

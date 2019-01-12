@@ -20,6 +20,7 @@ package io.github.jevaengine.world.scene.model;
 
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
+import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 
@@ -68,6 +69,11 @@ public final class DecoratedSceneModel implements ISceneModel {
 		components.addAll(m_additionalComponents);
 
 		return components;
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_model.getObservers();
 	}
 
 	@Override

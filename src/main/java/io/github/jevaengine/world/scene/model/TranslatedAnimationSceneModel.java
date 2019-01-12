@@ -3,6 +3,7 @@ package io.github.jevaengine.world.scene.model;
 import io.github.jevaengine.math.Matrix3X3;
 import io.github.jevaengine.math.Rect3F;
 import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.world.Direction;
 import io.github.jevaengine.world.physics.PhysicsBodyShape;
 
@@ -38,6 +39,11 @@ public final class TranslatedAnimationSceneModel implements IAnimationSceneModel
 	@Override
 	public void update(int deltaTime) {
 		m_model.update(deltaTime);
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_model.getObservers();
 	}
 
 	@Override
@@ -101,4 +107,8 @@ public final class TranslatedAnimationSceneModel implements IAnimationSceneModel
 		m_model.dispose();
 	}
 
+	@Override
+	public String[] getAnimations() {
+		return m_model.getAnimations();
+	}
 }

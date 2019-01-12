@@ -42,6 +42,8 @@ public final class DefaultActionModel implements IActionSceneModel {
 	@Nullable
 	private DefaultActionModelAction m_currentAction;
 
+	private final Observers m_observers = new Observers();
+
 	public DefaultActionModel(ISceneModel sceneModel) {
 		m_sceneModel = sceneModel;
 	}
@@ -70,7 +72,17 @@ public final class DefaultActionModel implements IActionSceneModel {
 
 	@Override
 	public void setDirection(Direction d) {
+		Direction old = m_sceneModel.getDirection();
 		m_sceneModel.setDirection(d);
+
+		if(old != m_sceneModel.getDirection()) {
+			m_observers.raise(ISceneModelObserver.class).directionChanged();
+		}
+	}
+
+	@Override
+	public IObserverRegistry getObservers() {
+		return m_observers;
 	}
 
 	@Override
