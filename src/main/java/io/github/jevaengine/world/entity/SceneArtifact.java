@@ -51,13 +51,18 @@ public final class SceneArtifact implements IEntity {
 	private World m_world;
 
 	private HashMap<String, Integer> m_flags = new HashMap<>();
-
+	private final boolean m_isTraversable;
 	public SceneArtifact(ISceneModel model, boolean isStatic, boolean isTraversable) {
-		m_name = this.getClass().getName() + m_unnamedCount.getAndIncrement();
+		this(SceneArtifact.class.getName() + m_unnamedCount.getAndIncrement(), model, isStatic, isTraversable);
+	}
 
+	public SceneArtifact(String instanceName, ISceneModel model, boolean isStatic, boolean isTraversable) {
+		m_name = instanceName;
 		m_isStatic = isStatic;
 
 		m_model = model;
+
+		m_isTraversable = isTraversable;
 
 		if (!isTraversable)
 			m_physicsBodyDescription = new PhysicsBodyDescription(PhysicsBodyType.Static, model.getBodyShape(), 1.0F, true, false, 1.0F);
@@ -65,6 +70,10 @@ public final class SceneArtifact implements IEntity {
 			m_physicsBodyDescription = null;
 
 		m_bridge = new EntityBridge(this);
+	}
+
+	public boolean isTraversable() {
+		return m_isTraversable;
 	}
 
 	@Override
