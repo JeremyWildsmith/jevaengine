@@ -28,4 +28,8 @@ public final class ValueSerializationException extends Exception {
 		super(cause);
 	}
 
+	public ValueSerializationException(String cause) {
+		super(cause);
+	}
+
 }
