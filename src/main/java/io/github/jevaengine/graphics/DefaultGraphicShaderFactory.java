@@ -42,21 +42,40 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory 
 
 		m_shaderTypes.put("null", new IShaderConstructor() {
 			@Override
-			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
+			public IGraphicShader create(URI context, IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				return new NullGraphicShader();
 			}
 		});
 
 		m_shaderTypes.put("blackAndWhite", new IShaderConstructor() {
 			@Override
-			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
+			public IGraphicShader create(URI context, IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				return new BlackAndWhiteShader();
 			}
 		});
 
 		m_shaderTypes.put("redGreenFilterToneBlueReplace", new IShaderConstructor() {
 			@Override
-			public IGraphicShader create(IImmutableVariable arguments) throws GraphicShaderConstructionException {
+			public IGraphicShader create(URI context, IImmutableVariable arguments) throws GraphicShaderConstructionException {
+				try {
+					Vector3D colourVector = arguments.getChild("replace").getValue(Vector3D.class);
+					int redFilter = arguments.getChild("redFilter").getValue(Integer.class);
+					int greenFilter = arguments.getChild("greenFilter").getValue(Integer.class);
+
+					return new RedGreenFilterToneBlueReplace(redFilter % 256,
+							greenFilter % 256,
+							new Color(colourVector.x % 256, colourVector.y % 256, colourVector.y % 256));
+
+				} catch (NoSuchChildVariableException | ValueSerializationException e) {
+					throw new GraphicShaderConstructionException(new GraphicShaderArgumentsParseException(e));
+				}
+			}
+		});
+
+
+		m_shaderTypes.put("maskBlack", new IShaderConstructor() {
+			@Override
+			public IGraphicShader create(URI context, IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				try {
 					Vector3D colourVector = arguments.getChild("replace").getValue(Vector3D.class);
 					int redFilter = arguments.getChild("redFilter").getValue(Integer.class);
@@ -85,7 +104,7 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory 
 				if (shader == null)
 					throw new GraphicShaderConstructionException(new UnrecognizedGraphicShaderException(name));
 
-				shaderPasses.add(shader.create(p.arguments));
+				shaderPasses.add(shader.create(name, p.arguments));
 			}
 
 			return new MultiPassGraphicShader(shaderPasses.toArray(new IGraphicShader[shaderPasses.size()]));
@@ -96,7 +115,7 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory 
 	}
 
 	private interface IShaderConstructor {
-		IGraphicShader create(final IImmutableVariable arguments) throws GraphicShaderConstructionException;
+		IGraphicShader create(final URI context, final IImmutableVariable arguments) throws GraphicShaderConstructionException;
 	}
 
 	private static final class BlackAndWhiteShader implements IGraphicShader {
