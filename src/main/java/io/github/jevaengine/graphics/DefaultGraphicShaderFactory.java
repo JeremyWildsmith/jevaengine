@@ -18,6 +18,7 @@
  */
 package io.github.jevaengine.graphics;
 
+import com.google.inject.Provider;
 import io.github.jevaengine.config.*;
 import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
 import io.github.jevaengine.graphics.DefaultGraphicShaderFactory.DefaultGraphicShaderDeclaration.DefaultGraphicShaderPassDeclaration;
@@ -27,18 +28,18 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.RGBImageFilter;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory {
 	public final Map<String, IShaderConstructor> m_shaderTypes = new HashMap<>();
 	private final IConfigurationFactory m_configurationFactory;
+	private final Provider<IGraphicFactory> m_graphicFactory;
 
 	@Inject
-	public DefaultGraphicShaderFactory(IConfigurationFactory configurationFactory) {
+	public DefaultGraphicShaderFactory(Provider<IGraphicFactory> graphicFactory, IConfigurationFactory configurationFactory) {
 		m_configurationFactory = configurationFactory;
+		m_graphicFactory = graphicFactory;
 
 		m_shaderTypes.put("null", new IShaderConstructor() {
 			@Override
@@ -77,15 +78,10 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory 
 			@Override
 			public IGraphicShader create(URI context, IImmutableVariable arguments) throws GraphicShaderConstructionException {
 				try {
-					Vector3D colourVector = arguments.getChild("replace").getValue(Vector3D.class);
-					int redFilter = arguments.getChild("redFilter").getValue(Integer.class);
-					int greenFilter = arguments.getChild("greenFilter").getValue(Integer.class);
+					IImmutableGraphic mask = m_graphicFactory.get().create(context.resolve(arguments.getChild("mask").getValue(String.class)));
 
-					return new RedGreenFilterToneBlueReplace(redFilter % 256,
-							greenFilter % 256,
-							new Color(colourVector.x % 256, colourVector.y % 256, colourVector.y % 256));
-
-				} catch (NoSuchChildVariableException | ValueSerializationException e) {
+					return new MaskBlack(mask);
+				} catch (NoSuchChildVariableException | ValueSerializationException | IGraphicFactory.GraphicConstructionException e) {
 					throw new GraphicShaderConstructionException(new GraphicShaderArgumentsParseException(e));
 				}
 			}
@@ -166,6 +162,52 @@ public final class DefaultGraphicShaderFactory implements IGraphicShaderFactory 
 					r = (int) (m_replaceColor.getRed() * (b / 255.0F));
 					g = (int) (m_replaceColor.getGreen() * (b / 255.0F));
 					b = (int) (m_replaceColor.getBlue() * (b / 255.0F));
+
+					return a | (r << 16) | (g << 8) | b;
+				}
+			});
+		}
+	}
+
+
+	private static final class MaskBlack implements IGraphicShader {
+		private final BitSet bitmask;
+		private final int maskWidth;
+		private final int maskHeight;
+
+		public MaskBlack(IImmutableGraphic mask) {
+			maskWidth = mask.getBounds().width;
+			maskHeight = mask.getBounds().height;
+			this.bitmask = new BitSet(maskWidth * maskHeight);
+
+			mask.filterImage(new RGBImageFilter() {
+				@Override
+				public int filterRGB(int x, int y, int rgb) {
+					int a = rgb & 0xff000000;
+					int r = (rgb >> 16) & 0xff;
+					int g = (rgb >> 8) & 0xff;
+					int b = rgb & 0xff;
+
+					if(r == 0 && g == 0 && b == 0)
+						bitmask.set(y * maskWidth + x);
+
+					return rgb;
+				}
+			});
+		}
+
+		@Override
+		public IImmutableGraphic shade(IImmutableGraphic source) {
+			return source.filterImage(new RGBImageFilter() {
+				@Override
+				public int filterRGB(int x, int y, int rgb) {
+					int a = rgb & 0xff000000;
+					int r = (rgb >> 16) & 0xff;
+					int g = (rgb >> 8) & 0xff;
+					int b = rgb & 0xff;
+
+					if(!bitmask.get(y * maskWidth + x))
+						a = 0;
 
 					return a | (r << 16) | (g << 8) | b;
 				}
