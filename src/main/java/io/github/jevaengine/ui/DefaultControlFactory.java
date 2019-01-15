@@ -20,18 +20,24 @@ package io.github.jevaengine.ui;
 
 import io.github.jevaengine.config.*;
 import io.github.jevaengine.config.IConfigurationFactory.ConfigurationConstructionException;
+import io.github.jevaengine.graphics.IGraphicFactory;
+import io.github.jevaengine.graphics.IImmutableGraphic;
+import io.github.jevaengine.graphics.NullGraphic;
 import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.util.Nullable;
 
 import javax.inject.Inject;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 public class DefaultControlFactory implements IControlFactory {
 	private final IConfigurationFactory m_configurationFactory;
+	private final IGraphicFactory m_graphicFactory;
 
 	@Inject
-	public DefaultControlFactory(IConfigurationFactory configurationFactory) {
+	public DefaultControlFactory(IGraphicFactory graphicFactory, IConfigurationFactory configurationFactory) {
 		m_configurationFactory = configurationFactory;
+		m_graphicFactory = graphicFactory;
 	}
 
 	@Override
@@ -53,6 +59,8 @@ public class DefaultControlFactory implements IControlFactory {
 			return ValueGuage.class;
 		else if (className.equals(Checkbox.COMPONENT_NAME))
 			return Checkbox.class;
+		else if (className.equals(Icon.COMPONENT_NAME))
+			return Icon.class;
 
 		return null;
 	}
@@ -75,6 +83,8 @@ public class DefaultControlFactory implements IControlFactory {
 			return ValueGuage.COMPONENT_NAME;
 		else if (controlClass.equals(Checkbox.class))
 			return Checkbox.COMPONENT_NAME;
+		else if (controlClass.equals(Icon.class))
+			return Icon.COMPONENT_NAME;
 
 		return null;
 	}
@@ -133,8 +143,15 @@ public class DefaultControlFactory implements IControlFactory {
 				boolean value = configVar.childExists("value") ? configVar.getChild("value").getValue(Boolean.class) : false;
 
 				return (T) new Checkbox(instanceName, value);
+			} else if (controlClass.equals(Icon.class)) {
+				IImmutableGraphic graphic = new NullGraphic();
+				graphic = m_graphicFactory.create(config.resolve(new URI(configVar.getChild("texture").getValue(String.class))));
+
+				boolean value = configVar.childExists("value") ? configVar.getChild("value").getValue(Boolean.class) : false;
+
+				return (T) new Icon(instanceName, graphic);
 			}
-		} catch (ConfigurationConstructionException | ValueSerializationException | NoSuchChildVariableException e) {
+		} catch (ConfigurationConstructionException | ValueSerializationException | NoSuchChildVariableException | URISyntaxException | IGraphicFactory.GraphicConstructionException e) {
 			throw new ControlConstructionException(controlClass.getName(), e);
 		}
 

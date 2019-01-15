@@ -61,7 +61,8 @@ public final class DefaultWindowFactory implements IWindowFactory {
 
 			Window window = new Window(decl.bounds.width, decl.bounds.height);
 
-			window.setStyle(m_styleFactory.create(name.resolve(new URI(decl.style))));
+			if(decl.style != null)
+				window.setStyle(m_styleFactory.create(name.resolve(new URI(decl.style))));
 
 			for (ControlLayoutDeclaration ctrlDecl : decl.controls) {
 
@@ -94,7 +95,9 @@ public final class DefaultWindowFactory implements IWindowFactory {
 		@Override
 		public void deserialize(IImmutableVariable source) throws ValueSerializationException {
 			try {
-				style = source.getChild("style").getValue(String.class);
+				if(source.childExists("style"))
+					style = source.getChild("style").getValue(String.class);
+
 				bounds = source.getChild("bounds").getValue(Rect2D.class);
 				controls = source.getChild("controls").getValues(ControlLayoutDeclaration[].class);
 			} catch (NoSuchChildVariableException e) {
