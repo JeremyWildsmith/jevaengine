@@ -54,6 +54,8 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	private final boolean m_isSensor;
 
+	private Rect3F m_aabb = null;
+
 	public Dyn4jBody(Dyn4jWorld world, Body body, Fixture fixture, boolean isSensor, Rect2F aabb, @Nullable IEntity owner, Class<?>... collisionExceptions) {
 		m_body = body;
 		m_fixture = fixture;
@@ -187,14 +189,17 @@ public final class Dyn4jBody implements IPhysicsBody {
 
 	@Override
 	public Rect3F getAABB() {
-		Rect3F aabb = new Rect3F();
-		AABB b2aabb = m_fixture.getShape().createAABB();
+		if(m_aabb == null) {
+			m_aabb = new Rect3F();
+			AABB b2aabb = m_fixture.getShape().createAABB();
 
-		aabb.x = (float) b2aabb.getMinX();
-		aabb.y = (float) b2aabb.getMinY();
-		aabb.width = (float) (b2aabb.getMaxX() - b2aabb.getMinX());
-		aabb.height = (float) (b2aabb.getMaxY() - b2aabb.getMinY());
-		return aabb.add(getLocation());
+			m_aabb.x = (float) b2aabb.getMinX();
+			m_aabb.y = (float) b2aabb.getMinY();
+			m_aabb.width = (float) (b2aabb.getMaxX() - b2aabb.getMinX());
+			m_aabb.height = (float) (b2aabb.getMaxY() - b2aabb.getMinY());
+		}
+
+		return m_aabb.add(getLocation());
 	}
 
 	@Override
