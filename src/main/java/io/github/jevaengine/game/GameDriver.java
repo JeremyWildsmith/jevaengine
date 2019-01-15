@@ -81,15 +81,21 @@ public final class GameDriver {
 
 				long lostTime = deltaCalc - m_timeSinceLastUpdate;
 
-				if(lostTime > 0)
-				{
+				if (lostTime > 0) {
 					m_logger.info("Lost time: " + lostTime);
 				}
 
-				for (; m_timeSinceLastUpdate > GAMELOOP_PERIOD; m_timeSinceLastUpdate -= GAMELOOP_PERIOD)
+				boolean updated = false;
+				for (; m_timeSinceLastUpdate >= GAMELOOP_PERIOD; m_timeSinceLastUpdate -= GAMELOOP_PERIOD)
+				{
+					updated = true;
 					m_game.update(GAMELOOP_PERIOD);
+				}
 
-				m_game.render(m_renderer);
+				if(updated)
+					m_game.render(m_renderer);
+				else
+					Thread.sleep(1);
 			} catch (Throwable e) {
 				m_logger.error("Game loop execution error, terminating game loop.", e);
 				stop();
