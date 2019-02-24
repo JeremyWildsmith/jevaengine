@@ -66,7 +66,8 @@ public final class Observers implements IObserverRegistry {
 
 	@Override
 	public void add(Object o) {
-		m_observers.add(o);
+		if(!m_observers.contains(o))
+			m_observers.add(o);
 	}
 
 	@Override

@@ -72,6 +72,8 @@ public final class DefaultWindowFactory implements IWindowFactory {
 
 				if (ctrlDecl.style != null)
 					control.setStyle(m_styleFactory.create(name.resolve(new URI(ctrlDecl.style))));
+
+				control.setVisible(ctrlDecl.visible);
 			}
 
 			return window;
@@ -113,6 +115,8 @@ public final class DefaultWindowFactory implements IWindowFactory {
 
 			public Vector2D location;
 
+			public boolean visible = true;
+
 			@Override
 			public void serialize(IVariable target) throws ValueSerializationException {
 				target.addChild("type").setValue(type);
@@ -126,6 +130,8 @@ public final class DefaultWindowFactory implements IWindowFactory {
 
 				if (config != null)
 					target.addChild("config").setValue(config);
+
+				target.addChild("visible").setValue(visible);
 			}
 
 			@Override
@@ -142,6 +148,10 @@ public final class DefaultWindowFactory implements IWindowFactory {
 
 					if (source.childExists("config"))
 						config = source.getChild("config");
+
+					if(source.childExists("visible"))
+						visible = source.getChild("visible").getValue(Boolean.class);
+
 				} catch (NoSuchChildVariableException e) {
 					throw new ValueSerializationException(e);
 				}
