@@ -213,6 +213,7 @@ public class TextArea extends Control {
 
 	public void scrollToEnd() {
 		m_cursorLocation = m_workingText.length() == 0 ? 0 : m_workingText.length() - 1;
+		m_textLayout.makeLineVisible(m_textLayout.getCursorLineIndex(m_cursorLocation));
 	}
 
 	@Override
@@ -345,7 +346,7 @@ public class TextArea extends Control {
 
 		public TextLayout(String text, IFont font, Rect2D bounds, int scroll) {
 			m_font = font;
-			m_height = bounds.height / font.getMaxCharacterBounds().height;
+			m_height = bounds.height / font.getMaxCharacterBounds().height - 1;
 
 			int lineWidth = 0;
 			int lastStartIndex = 0;

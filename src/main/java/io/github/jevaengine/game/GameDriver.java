@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class GameDriver {
 	private static final int GAMELOOP_PERIOD = 1000 / 60;
-	private static final int MAX_FALL_BEHIND = 20 * GAMELOOP_PERIOD;
+	private static final int MAX_FALL_BEHIND = 10 * GAMELOOP_PERIOD;
 
 	private final ScheduledExecutorService m_executor = new ScheduledThreadPoolExecutor(1);
 

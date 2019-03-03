@@ -62,11 +62,11 @@ public final class WindowManager {
 	}
 
 	public void setFocusedWindow(Window window) {
-		if (m_windows.contains(window)) {
-			if (m_windows.get(0) != window) {
-				m_windows.get(0).clearFocus();
-				m_windows.remove(window);
-				m_windows.add(0, window);
+		if (m_effectiveOrderBuffer.contains(window)) {
+			if (m_effectiveOrderBuffer.get(0) != window) {
+				m_effectiveOrderBuffer.get(0).clearFocus();
+				m_effectiveOrderBuffer.remove(window);
+				m_effectiveOrderBuffer.add(0, window);
 				window.setFocus();
 			}
 		}
@@ -83,8 +83,16 @@ public final class WindowManager {
 	private void initEffectiveOrderBuffer() {
 		List<Window> topMost = new ArrayList<>();
 
+		Window top = null;
+
+		if(m_effectiveOrderBuffer != null && !m_effectiveOrderBuffer.isEmpty())
+			top = m_effectiveOrderBuffer.get(0);
+
 		m_effectiveOrderBuffer.clear();
 		for (Window w : m_windows) {
+			if(w == top)
+				continue;
+
 			if (w.isTopMost())
 				topMost.add(w);
 			else
@@ -92,10 +100,18 @@ public final class WindowManager {
 		}
 
 		m_effectiveOrderBuffer.addAll(0, topMost);
+
+		if(top != null)
+			m_effectiveOrderBuffer.add(0, top);
 	}
 
 	public void onMouseEvent(InputMouseEvent mouseEvent) {
 		Window moveToTop = null;
+
+		if(mouseEvent.type !=MouseEventType.MouseMoved)
+		{
+			int i = 0;
+		}
 
 		initEffectiveOrderBuffer();
 
@@ -131,16 +147,22 @@ public final class WindowManager {
 	}
 
 	public boolean onKeyEvent(InputKeyEvent keyEvent) {
-		if (!m_windows.isEmpty())
-			m_windows.get(0).onKeyEvent(keyEvent);
+		if (!m_effectiveOrderBuffer.isEmpty())
+			m_effectiveOrderBuffer.get(0).onKeyEvent(keyEvent);
 
 		return true;
 	}
 
 	public void render(Graphics2D g, int x, int y, float fScale) {
 		initEffectiveOrderBuffer();
+		//Render topmost last
 		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--) {
-			if (m_effectiveOrderBuffer.get(i).isVisible())
+			if (!m_effectiveOrderBuffer.get(i).isTopMost() && m_effectiveOrderBuffer.get(i).isVisible())
+				m_effectiveOrderBuffer.get(i).render(g, x + m_effectiveOrderBuffer.get(i).getLocation().x, y + m_effectiveOrderBuffer.get(i).getLocation().y, fScale);
+		}
+
+		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--) {
+			if (m_effectiveOrderBuffer.get(i).isTopMost() && m_effectiveOrderBuffer.get(i).isVisible())
 				m_effectiveOrderBuffer.get(i).render(g, x + m_effectiveOrderBuffer.get(i).getLocation().x, y + m_effectiveOrderBuffer.get(i).getLocation().y, fScale);
 		}
 	}

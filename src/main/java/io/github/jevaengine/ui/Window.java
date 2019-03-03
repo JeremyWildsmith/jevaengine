@@ -137,7 +137,8 @@ public final class Window extends Control implements IDisposable {
 	@Override
 	public boolean onMouseEvent(InputMouseEvent mouseEvent) {
 		m_observers.raise(IWindowInputObserver.class).onMouseEvent(mouseEvent);
-		return m_rootPanel.onMouseEvent(mouseEvent);
+		boolean x = m_rootPanel.onMouseEvent(mouseEvent);
+		return x;
 	}
 
 	@Override
