@@ -26,6 +26,8 @@ import io.github.jevaengine.util.MutableProcessList;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public final class WindowManager {
@@ -98,44 +100,58 @@ public final class WindowManager {
 			else
 				m_effectiveOrderBuffer.add(w);
 		}
-
 		m_effectiveOrderBuffer.addAll(0, topMost);
 
 		if(top != null)
 			m_effectiveOrderBuffer.add(0, top);
+
+		m_windows.clear();
+		m_windows.addAll(m_effectiveOrderBuffer);
+	}
+
+	private List<Window> getRenderOrder(boolean reversed) {
+		List<Window> order = new ArrayList<>();
+
+		//Render topmost last
+		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--) {
+			if (!m_effectiveOrderBuffer.get(i).isTopMost() && m_effectiveOrderBuffer.get(i).isVisible())
+				order.add(m_effectiveOrderBuffer.get(i));
+		}
+
+		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--) {
+			if (m_effectiveOrderBuffer.get(i).isTopMost() && m_effectiveOrderBuffer.get(i).isVisible())
+				order.add(m_effectiveOrderBuffer.get(i));
+		}
+
+		if(reversed)
+			Collections.reverse(order);
+
+		return order;
 	}
 
 	public void onMouseEvent(InputMouseEvent mouseEvent) {
 		Window moveToTop = null;
 
-		if(mouseEvent.type !=MouseEventType.MouseMoved)
-		{
-			int i = 0;
-		}
-
 		initEffectiveOrderBuffer();
 
 		Window topWindow = m_effectiveOrderBuffer.size() > 0 ? m_effectiveOrderBuffer.get(0) : null;
 
-		for (Window window : m_effectiveOrderBuffer) {
+		for (Window window : getRenderOrder(true)) {
 			if (window.isVisible()) {
 				Vector2D relativePoint = mouseEvent.location.difference(window.getLocation());
 				Vector2D topRelativePoint = mouseEvent.location.difference(topWindow.getLocation());
 
-				boolean isCursorOverTop = topWindow.isVisible() && topWindow.getBounds().contains(topRelativePoint);
-
 				if (window.getBounds().contains(relativePoint)) {
-					if (window.isFocusable() &&
-							(!isCursorOverTop && (mouseEvent.type == MouseEventType.MousePressed)))
+					if (window.isFocusable() && mouseEvent.type == MouseEventType.MousePressed && moveToTop == null)
 						moveToTop = topWindow = window;
 
 					if (mouseEvent.isDragging && window.isMovable() && window == topWindow) {
 						if (!window.onMouseEvent(mouseEvent))
 							window.setLocation(window.getLocation().add(mouseEvent.delta));
 					} else {
-						if (window == topWindow || !isCursorOverTop)
+						if (window == topWindow)
 							window.onMouseEvent(mouseEvent);
-						else if (mouseEvent.type == MouseEventType.MouseMoved && !isCursorOverTop)
+						else if (mouseEvent.type == MouseEventType.MouseMoved)
 							window.onMouseEvent(mouseEvent);
 					}
 				}
@@ -156,14 +172,8 @@ public final class WindowManager {
 	public void render(Graphics2D g, int x, int y, float fScale) {
 		initEffectiveOrderBuffer();
 		//Render topmost last
-		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--) {
-			if (!m_effectiveOrderBuffer.get(i).isTopMost() && m_effectiveOrderBuffer.get(i).isVisible())
-				m_effectiveOrderBuffer.get(i).render(g, x + m_effectiveOrderBuffer.get(i).getLocation().x, y + m_effectiveOrderBuffer.get(i).getLocation().y, fScale);
-		}
-
-		for (int i = m_effectiveOrderBuffer.size() - 1; i >= 0; i--) {
-			if (m_effectiveOrderBuffer.get(i).isTopMost() && m_effectiveOrderBuffer.get(i).isVisible())
-				m_effectiveOrderBuffer.get(i).render(g, x + m_effectiveOrderBuffer.get(i).getLocation().x, y + m_effectiveOrderBuffer.get(i).getLocation().y, fScale);
+		for (Window w : getRenderOrder(false)) {
+			w.render(g, x + w.getLocation().x, y + w.getLocation().y, fScale);
 		}
 	}
 
