@@ -198,7 +198,7 @@ public final class SpriteSceneModel implements IAnimationSceneModel {
 	@Override
 	public void setDirection(Direction direction) {
 
-		Direction oldDirection = direction;
+		Direction oldDirection = m_direction;
 		m_direction = direction;
 
 		refreshCurrentAnimation();
