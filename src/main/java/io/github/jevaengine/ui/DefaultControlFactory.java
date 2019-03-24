@@ -130,7 +130,12 @@ public class DefaultControlFactory implements IControlFactory {
 				return (T) panel;
 			} else if (controlClass.equals(WorldView.class)) {
 				Rect2D bounds = configVar.getChild("bounds").getValue(Rect2D.class);
-				WorldView worldView = new WorldView(instanceName, bounds.width, bounds.height);
+				boolean transparent = false;
+
+				if(configVar.childExists("transparentBackground"))
+					transparent = configVar.getChild("transparentBackground").getValue(Boolean.class);
+
+				WorldView worldView = new WorldView(instanceName, bounds.width, bounds.height, transparent);
 
 				return (T) worldView;
 			} else if (controlClass.equals(ValueGuage.class)) {

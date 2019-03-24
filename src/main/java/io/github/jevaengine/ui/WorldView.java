@@ -41,6 +41,7 @@ public final class WorldView extends Control {
 
 	private final int m_desiredWidth;
 	private final int m_desiredHeight;
+	private final boolean m_transparent;
 	private final Observers m_observers = new Observers();
 	private IImmutableGraphic m_frame;
 	private ICamera m_camera = new NullCamera();
@@ -52,13 +53,19 @@ public final class WorldView extends Control {
 		m_desiredWidth = desiredWidth;
 		m_desiredHeight = desiredHeight;
 		m_frame = new NullGraphic(desiredWidth, desiredHeight);
+		m_transparent = false;
 	}
 
-	public WorldView(String instanceName, int desiredWidth, int desiredHeight) {
+	public WorldView(String instanceName, int desiredWidth, int desiredHeight, boolean transparent) {
 		super(COMPONENT_NAME, instanceName);
 		m_desiredWidth = desiredWidth;
 		m_desiredHeight = desiredHeight;
 		m_frame = new NullGraphic(desiredWidth, desiredHeight);
+		m_transparent = transparent;
+	}
+
+	public WorldView(String instanceName, int desiredWidth, int desiredHeight) {
+		this(instanceName, desiredWidth, desiredHeight, false);
 	}
 
 	public IObserverRegistry getObservers() {
@@ -120,8 +127,10 @@ public final class WorldView extends Control {
 	public void render(Graphics2D g, int x, int y, float scale) {
 		m_frame.render(g, x, y, scale);
 
-		g.setColor(Color.black);
-		g.fillRect(x, y, getBounds().width, getBounds().height);
+		if(!m_transparent) {
+			g.setColor(Color.black);
+			g.fillRect(x, y, getBounds().width, getBounds().height);
+		}
 
 		Shape oldClip = g.getClip();
 		g.clipRect(x, y, getBounds().width, getBounds().height);
