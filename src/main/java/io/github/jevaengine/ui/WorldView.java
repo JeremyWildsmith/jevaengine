@@ -26,6 +26,7 @@ import io.github.jevaengine.math.Rect2D;
 import io.github.jevaengine.math.Vector2D;
 import io.github.jevaengine.math.Vector2F;
 import io.github.jevaengine.math.Vector3F;
+import io.github.jevaengine.ui.style.ComponentStyle;
 import io.github.jevaengine.util.IObserverRegistry;
 import io.github.jevaengine.util.Nullable;
 import io.github.jevaengine.util.Observers;
@@ -75,6 +76,10 @@ public final class WorldView extends Control {
 	@Override
 	public Rect2D getBounds() {
 		return m_frame.getBounds();
+	}
+
+	public void setBounds(Rect2D bounds) {
+		m_frame = getComponentStyle().getStateStyle(ComponentState.Default).createFrame(bounds.width, bounds.height);
 	}
 
 	public void setCamera(ICamera camera) {

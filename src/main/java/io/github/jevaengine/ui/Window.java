@@ -152,6 +152,11 @@ public final class Window extends Control implements IDisposable {
 		return m_rootPanel.getBounds();
 	}
 
+	public void setBounds(Rect2D bounds) {
+		m_rootPanel.setHeight(bounds.height);
+		m_rootPanel.setWidth(bounds.width);
+	}
+
 	@Override
 	public void update(int deltaTime) {
 		m_rootPanel.update(deltaTime);

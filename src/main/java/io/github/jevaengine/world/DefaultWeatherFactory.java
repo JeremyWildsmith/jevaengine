@@ -79,7 +79,8 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 			for (DefaultWeatherPhaseDeclaration p : decl.phases) {
 				IAudioClip clip = p.audio == null ? new NullAudioClip() : m_audioClipFactory.create(name.resolve(new URI(p.audio)));
 				IImmutableGraphic overlay = p.overlay == null ? new NullGraphic() : m_graphicFactory.create(name.resolve(new URI(p.overlay)));
-				phases.add(new DefaultWeatherPhase(clip, overlay, p.period, p.length));
+				IImmutableGraphic underlay = p.underlay == null ? new NullGraphic() : m_graphicFactory.create(name.resolve(new URI(p.underlay)));
+				phases.add(new DefaultWeatherPhase(clip, overlay, underlay, p.period, p.length));
 			}
 
 			if (decl.shower != null) {
@@ -176,6 +177,18 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 		}
 
 		@Override
+		public IRenderable getUnderlay(Vector2D translation, Rect2D bounds, Matrix3X3 projection) {
+			return new IRenderable() {
+				@Override
+				public void render(Graphics2D g, int x, int y, float scale) {
+
+					for (DefaultWeatherPhase p : m_phases)
+						p.renderUnderlay(g, x, y, scale, bounds);
+				}
+			};
+		}
+
+		@Override
 		public ISceneBuffer.ISceneComponentEffect[] getComponentEffect(Graphics2D g, int offsetX, int offsetY, float scale, final Vector2D renderLocation, Matrix3X3 projection, ISceneBuffer.ISceneBufferEntry subject, Collection<ISceneBuffer.ISceneBufferEntry> beneath) {
 			return new ISceneBuffer.ISceneComponentEffect[0];
 		}
@@ -233,6 +246,7 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 
 		public static final class DefaultWeatherPhaseDeclaration implements ISerializable {
 			public String overlay;
+			public String underlay;
 			public String audio;
 			public int period;
 			public int length;
@@ -241,6 +255,9 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 			public void serialize(IVariable target) throws ValueSerializationException {
 				if (overlay != null)
 					target.addChild("overlay").setValue(overlay);
+
+				if (underlay != null)
+					target.addChild("underlay").setValue(underlay);
 
 				if (audio != null)
 					target.addChild("audio").setValue(audio);
@@ -254,6 +271,9 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 				try {
 					if (source.childExists("overlay"))
 						overlay = source.getChild("overlay").getValue(String.class);
+
+					if (source.childExists("underlay"))
+						underlay = source.getChild("underlay").getValue(String.class);
 
 					if (source.childExists("audio"))
 						audio = source.getChild("audio").getValue(String.class);
@@ -271,15 +291,18 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 	private final class DefaultWeatherPhase implements IDisposable {
 		private final IAudioClip m_audioClip;
 		private final IImmutableGraphic m_overlay;
+		private final IImmutableGraphic m_underlay;
+
 		private final int m_period;
 		private final int m_length;
 
 		private int m_activeTimeOut = 0;
 		private int m_idleTimeout = 0;
 
-		public DefaultWeatherPhase(IAudioClip audioClip, IImmutableGraphic overlay, int period, int length) {
+		public DefaultWeatherPhase(IAudioClip audioClip, IImmutableGraphic overlay, IImmutableGraphic underlay, int period, int length) {
 			m_audioClip = audioClip;
 			m_overlay = overlay;
+			m_underlay = underlay;
 			m_period = period;
 			m_length = length;
 
@@ -323,6 +346,20 @@ public final class DefaultWeatherFactory implements IWeatherFactory {
 		public void render(Graphics2D g, int x, int y, float scale, Rect2D bounds) {
 			if (m_activeTimeOut > 0)
 				m_overlay.render(g, x + bounds.x, y + bounds.y, bounds.width, bounds.height, 0, 0, m_overlay.getBounds().width, m_overlay.getBounds().height);
+		}
+
+		public void renderUnderlay(Graphics2D g, int x, int y, float scale, Rect2D bounds) {
+			scale = 1.0f;
+
+			int width = (int)Math.floor(m_underlay.getBounds().width * scale);
+			int height = (int)Math.floor(m_underlay.getBounds().height * scale);
+			int tile_x = (int)Math.ceil(bounds.width / (float)width);
+			int tile_y = (int)Math.ceil(bounds.height / (float)height);
+			for(int xt = 0; xt < tile_x; xt++)
+				for(int yt = 0; yt < tile_y; yt++)
+					m_underlay.render(g, x + xt * width, y + yt * height, scale);
+
+
 		}
 	}
 }
