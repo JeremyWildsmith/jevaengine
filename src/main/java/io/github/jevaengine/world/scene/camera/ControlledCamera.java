@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ControlledCamera implements ICamera {
-	private static final float MIN_ZOOM = 0.1F;
+	private static final float MIN_ZOOM = 0.0001F;
 	private final ISceneBufferFactory m_sceneBufferFactory;
 	private final List<ISceneBufferEffect> m_effects = new ArrayList<>();
 	private Vector3F m_lookAtTile = new Vector3F();
